@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": ".",			
+		}, 
+		{
+			"path": "./frontend",
+		},
+		{
+			"path": "./townService"
+		}
+	],
+	"settings": {
+		"typescript.tsdk": "covey-town-project-boeing-707/node_modules/typescript/lib",
+	}
+}
