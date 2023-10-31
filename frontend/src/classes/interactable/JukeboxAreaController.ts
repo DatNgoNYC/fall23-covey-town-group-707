@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import InteractableAreaController, { BaseInteractableEventMap } from './InteractableAreaController';
 import { JukeboxArea as JukeboxAreaModel, Song, SongQueueItem } from '../../types/CoveyTownSocket';
+import { useEffect, useState } from 'react';
 
 export type JukeboxAreaEvents = BaseInteractableEventMap & {
   curSongChanged: (curSong: Song | undefined) => void;
@@ -59,4 +60,37 @@ export default class JukeboxAreaController extends InteractableAreaController<
   public isActive(): boolean {
     return this.occupants.length > 0;
   }
+}
+
+export function useJukeboxAreaCurSong(controller: JukeboxAreaController): Song {
+  const [curSong, setCurSong] = useState(controller.curSong);
+  const noSongPlaying: Song = {
+    songName: 'No song playing...',
+    artistName: 'No song playing...',
+    videoId: '',
+  };
+
+  useEffect(() => {
+    controller.addListener('curSongChanged', setCurSong);
+
+    return () => {
+      controller.removeListener('curSongChanged', setCurSong);
+    };
+  }, [controller]);
+
+  return curSong || noSongPlaying;
+}
+
+export function useJukeboxAreaQueue(controller: JukeboxAreaController): SongQueueItem[] {
+  const [queue, setQueue] = useState(controller.queue);
+
+  useEffect(() => {
+    controller.addListener('queueChanged', setQueue);
+
+    return () => {
+      controller.removeListener('queueChanged', setQueue);
+    };
+  }, [controller]);
+
+  return queue;
 }
