@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import InteractableAreaController, { BaseInteractableEventMap } from './InteractableAreaController';
-import { JukeboxArea as JukeboxAreaModel, Song, SongQueueItem } from '../../types/CoveyTownSocket';
+import { JukeboxArea as JukeboxAreaModel, JukeboxVote, Song, SongQueueItem } from '../../types/CoveyTownSocket';
 import { useEffect, useState } from 'react';
+import TownController from '../TownController';
 
 export type JukeboxAreaEvents = BaseInteractableEventMap & {
   curSongChanged: (curSong: Song | undefined) => void;
@@ -14,8 +15,11 @@ export default class JukeboxAreaController extends InteractableAreaController<
 > {
   private _model: JukeboxAreaModel;
 
-  constructor(id: string, curSong?: Song, queue: SongQueueItem[] = []) {
+  protected _townController: TownController;
+
+  constructor(id: string, queue: SongQueueItem[] = [], townController: TownController, curSong?: Song) {
     super(id);
+    this._townController = townController;
     this._model = {
       id: this.id,
       occupants: this.occupants.map(player => player.id),
@@ -59,6 +63,14 @@ export default class JukeboxAreaController extends InteractableAreaController<
 
   public isActive(): boolean {
     return this.occupants.length > 0;
+  }
+
+  public async vote(jukeboxVote: JukeboxVote, song: Song) {
+    await this._townController.sendInteractableCommand(this.id, {
+      type: 'VoteOnSongInQueue',
+      song: song,
+      vote: jukeboxVote,
+    });
   }
 }
 

@@ -20,6 +20,7 @@ export default function SocialSidebar(): JSX.Element {
       </Heading>
       <PlayersList />
       <ConversationAreasList />
+      <JukeboxDashboard/>
     </VStack>
   );
 }
