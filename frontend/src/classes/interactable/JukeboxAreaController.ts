@@ -1,6 +1,11 @@
 import _ from 'lodash';
 import InteractableAreaController, { BaseInteractableEventMap } from './InteractableAreaController';
-import { JukeboxArea as JukeboxAreaModel, JukeboxVote, Song, SongQueueItem } from '../../types/CoveyTownSocket';
+import {
+  JukeboxArea as JukeboxAreaModel,
+  JukeboxVote,
+  Song,
+  SongQueueItem,
+} from '../../types/CoveyTownSocket';
 import { useEffect, useState } from 'react';
 import TownController from '../TownController';
 
@@ -17,7 +22,12 @@ export default class JukeboxAreaController extends InteractableAreaController<
 
   protected _townController: TownController;
 
-  constructor(id: string, queue: SongQueueItem[] = [], townController: TownController, curSong?: Song) {
+  constructor(
+    id: string,
+    townController: TownController,
+    curSong?: Song,
+    queue: SongQueueItem[] = [],
+  ) {
     super(id);
     this._townController = townController;
     this._model = {
