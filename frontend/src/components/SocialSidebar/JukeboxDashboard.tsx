@@ -85,11 +85,13 @@ export default function JukeboxDashboard(): JSX.Element {
   // if (jukeboxAreaController.length === 0) {
   //   return <></>;
   // } else {
+  console.log(jukeboxAreaController.length.toString())
   return (
     <Box>
       <Heading as='h2' fontSize='l'>
         Jukebox Area:
       </Heading>
+      hi
       {jukeboxAreaController.map(controller => (
         <JukeboxDashboardView controller={controller} key={controller.id} />
       ))}
