@@ -1,9 +1,12 @@
+import { ITiledMapObject } from '@jonbell/tiled-map-type-guard';
 import InvalidParametersError, { INVALID_COMMAND_MESSAGE } from '../../lib/InvalidParametersError';
 import Player from '../../lib/Player';
 import {
+  BoundingBox,
   InteractableCommand,
   InteractableCommandReturnType,
   JukeboxArea as JukeboxAreaModel,
+  TownEmitter,
 } from '../../types/CoveyTownSocket';
 import InteractableArea from '../InteractableArea';
 import Jukebox from './Jukebox';
@@ -37,5 +40,17 @@ export default class JukeboxArea extends InteractableArea {
     }
 
     throw new InvalidParametersError(INVALID_COMMAND_MESSAGE);
+  }
+
+  public static fromMapObject(
+    mapObject: ITiledMapObject,
+    broadcastEmitter: TownEmitter,
+  ): JukeboxArea {
+    const { name, width, height } = mapObject;
+    if (!width || !height) {
+      throw new Error(`Malformed viewing area ${name}`);
+    }
+    const rect: BoundingBox = { x: mapObject.x, y: mapObject.y, width, height };
+    return new JukeboxArea(name, rect, broadcastEmitter);
   }
 }

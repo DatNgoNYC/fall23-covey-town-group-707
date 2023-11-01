@@ -24,6 +24,7 @@ export default class JukeboxArea extends Interactable {
   }
 
   interact(): void {
+    console.log("interacting");
     this._isInteracting = true;
   }
 

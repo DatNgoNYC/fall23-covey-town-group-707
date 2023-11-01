@@ -26,7 +26,7 @@ import {
   TownSettingsUpdate,
   ViewingArea as ViewingAreaModel,
 } from '../types/CoveyTownSocket';
-import { isConversationArea, isTicTacToeArea, isViewingArea } from '../types/TypeUtils';
+import { isConversationArea, isJukeboxArea, isTicTacToeArea, isViewingArea } from '../types/TypeUtils';
 import ConversationAreaController from './interactable/ConversationAreaController';
 import GameAreaController, { GameEventTypes } from './interactable/GameAreaController';
 import InteractableAreaController, {
@@ -36,6 +36,7 @@ import TicTacToeAreaController from './interactable/TicTacToeAreaController';
 import ViewingAreaController from './interactable/ViewingAreaController';
 import PlayerController from './PlayerController';
 import JukeboxAreaController from './interactable/JukeboxAreaController';
+import JukeboxArea from '../components/Town/interactables/JukeboxArea';
 
 const CALCULATE_NEARBY_PLAYERS_DELAY_MS = 300;
 const SOCKET_COMMAND_TIMEOUT_MS = 5000;
@@ -334,7 +335,7 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
   public get jukeboxAreas() {
     const ret = this._interactableControllers.filter(
       eachInteractable => eachInteractable instanceof JukeboxAreaController,
-    )
+    );
     return ret as JukeboxAreaController[];
   }
 
@@ -613,6 +614,12 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
             this._interactableControllers.push(
               new TicTacToeAreaController(eachInteractable.id, eachInteractable, this),
             );
+            console.log("TTT");
+          } else if (isJukeboxArea(eachInteractable)) {
+            this._interactableControllers.push(
+              new JukeboxAreaController(eachInteractable.id, this)
+            );
+            console.log("Jukey");
           }
         });
         this._userID = initialData.userID;
@@ -673,6 +680,19 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
       return existingController as GameAreaController<GameType, EventsType>;
     } else {
       throw new Error('Game area controller not created');
+    }
+  }
+
+  public getJukeboxController(
+    jukeboxArea: JukeboxArea,
+  ): JukeboxAreaController {
+    const existingController = this._interactableControllers.find(
+      eachExistingArea => eachExistingArea.id === jukeboxArea.name,
+    );
+    if (existingController instanceof JukeboxAreaController) {
+      return existingController as JukeboxAreaController;
+    } else {
+      throw new Error('Jukebox area controller not created');
     }
   }
 
