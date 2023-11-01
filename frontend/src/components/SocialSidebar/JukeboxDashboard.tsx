@@ -1,4 +1,4 @@
-import { Box, Button, HStack, Heading, ListItem, OrderedList } from '@chakra-ui/react';
+import { Box, Button, HStack, Heading, ListItem, OrderedList, Text } from '@chakra-ui/react';
 import useTownController from '../../hooks/useTownController';
 import JukeboxAreaController, {
   useJukeboxAreaCurSong,
@@ -19,12 +19,12 @@ type SongQueueItemDisplayProps = {
 function SongDisplay({ song }: { song: Song }): JSX.Element {
   return (
     <>
-      <Heading as='h4' fontSize='m'>
+      <Text>
         Song name: {song.songName}
-      </Heading>
-      <Heading as='h4' fontSize='m'>
+      </Text>
+      <Text>
         Artist name: {song.artistName}
-      </Heading>
+      </Text>
     </>
   );
 }
@@ -50,8 +50,6 @@ function JukeboxDashboardView({ controller }: JukeboxAreaViewProps): JSX.Element
   const song = useJukeboxAreaCurSong(controller);
   const queue = useJukeboxAreaQueue(controller);
 
-  // make text bold
-
   return (
     <Box>
       <Heading as='h3' fontSize='m'>
@@ -59,7 +57,7 @@ function JukeboxDashboardView({ controller }: JukeboxAreaViewProps): JSX.Element
       </Heading>
       <SongDisplay song={song} />
       <Heading as='h3' fontSize='m'>
-        Song queue::
+        Song queue:
       </Heading>
       <OrderedList>
         {queue.map(queueItem => {
@@ -80,21 +78,19 @@ function JukeboxDashboardView({ controller }: JukeboxAreaViewProps): JSX.Element
 export default function JukeboxDashboard(): JSX.Element {
   const townController = useTownController();
   const jukeboxAreaController = townController.jukeboxAreas;
-  // const curSong = jukeboxAreaController.curSong;
 
-  // if (jukeboxAreaController.length === 0) {
-  //   return <></>;
-  // } else {
   console.log(jukeboxAreaController.length.toString())
   return (
     <Box>
       <Heading as='h2' fontSize='l'>
         Jukebox Area:
       </Heading>
-      hi
       {jukeboxAreaController.map(controller => (
         <JukeboxDashboardView controller={controller} key={controller.id} />
       ))}
+      <Button>
+        Suggest Song
+      </Button>
     </Box>
   );
   // }
