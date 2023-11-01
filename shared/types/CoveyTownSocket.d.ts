@@ -17,7 +17,7 @@ export type TownJoinResponse = {
   interactables: TypedInteractable[];
 }
 
-export type InteractableType = 'ConversationArea' | 'ViewingArea' | 'TicTacToeArea';
+export type InteractableType = 'ConversationArea' | 'ViewingArea' | 'TicTacToeArea' | 'JukeboxArea';
 export interface Interactable {
   type: InteractableType;
   id: InteractableID;
@@ -39,6 +39,18 @@ export interface Player {
 };
 
 export type XY = { x: number, y: number };
+
+export type Song = {
+  songName: string;
+  artistName: string;
+  videoId: string;
+}
+
+export type SongQueueItem = {
+  song: Song;
+  numUpvotes: number;
+  numDownvotes: number;
+}
 
 export interface PlayerLocation {
   /* The CENTER x coordinate of this player's location */
@@ -71,6 +83,11 @@ export interface ViewingArea extends Interactable {
   video?: string;
   isPlaying: boolean;
   elapsedTimeSec: number;
+}
+
+export interface JukeboxArea extends Interactable {
+  curSong?: Song;
+  queue: SongQueueItem[];
 }
 
 export type GameStatus = 'IN_PROGRESS' | 'WAITING_TO_START' | 'OVER';
