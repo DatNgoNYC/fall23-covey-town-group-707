@@ -1,5 +1,5 @@
 import InvalidParametersError from '../../lib/InvalidParametersError';
-import { JukboxVote, Song, SongQueueItem } from '../../types/CoveyTownSocket';
+import { JukeboxVote, Song, SongQueueItem } from '../../types/CoveyTownSocket';
 
 export default class Jukebox {
   private _curSong?: Song;
@@ -22,7 +22,7 @@ export default class Jukebox {
     this._queue.push({ song, numUpvotes: 0, numDownvotes: 0 });
   }
 
-  public voteOnSongInQueue(song: Song, vote: JukboxVote) {
+  public voteOnSongInQueue(song: Song, vote: JukeboxVote) {
     const songInQueue: SongQueueItem | undefined = this.queue.find(
       queueItem => queueItem.song.videoId === song.videoId,
     );
@@ -36,5 +36,9 @@ export default class Jukebox {
     } else if (vote === 'Downvote') {
       songInQueue.numDownvotes += 1;
     }
+
+    this._queue = this._queue.sort(
+      (a, b) => b.numUpvotes - b.numDownvotes - (a.numUpvotes - a.numDownvotes),
+    );
   }
 }

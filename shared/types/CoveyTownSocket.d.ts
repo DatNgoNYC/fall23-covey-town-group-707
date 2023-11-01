@@ -52,7 +52,7 @@ export type SongQueueItem = {
   numDownvotes: number;
 }
 
-export type JukboxVote = 'Upvote' | 'Downvote';
+export type JukeboxVote = 'Upvote' | 'Downvote';
 
 export interface PlayerLocation {
   /* The CENTER x coordinate of this player's location */
