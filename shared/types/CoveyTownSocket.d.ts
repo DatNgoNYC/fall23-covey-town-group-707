@@ -52,6 +52,8 @@ export type SongQueueItem = {
   numDownvotes: number;
 }
 
+export type JukboxVote = 'Upvote' | 'Downvote';
+
 export interface PlayerLocation {
   /* The CENTER x coordinate of this player's location */
   x: number;
@@ -191,28 +193,45 @@ interface InteractableCommandBase {
   type: string;
 }
 
-export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | LeaveGameCommand;
+export type InteractableCommand =  ViewingAreaUpdateCommand | JoinGameCommand | GameMoveCommand<TicTacToeMove> | LeaveGameCommand | AddSongToQueueCommand | VoteOnSongInQueueCommand;
 export interface ViewingAreaUpdateCommand  {
   type: 'ViewingAreaUpdate';
   update: ViewingArea;
 }
+
 export interface JoinGameCommand {
   type: 'JoinGame';
 }
+
 export interface LeaveGameCommand {
   type: 'LeaveGame';
   gameID: GameInstanceID;
 }
+
 export interface GameMoveCommand<MoveType> {
   type: 'GameMove';
   gameID: GameInstanceID;
   move: MoveType;
 }
+
+export interface AddSongToQueueCommand {
+  type: 'AddSongToQueue';
+  song: Song;
+}
+
+export interface VoteOnSongInQueueCommand {
+  type: 'VoteOnSongInQueue';
+  song: Song;
+  vote: JukeboxVote;
+}
+
 export type InteractableCommandReturnType<CommandType extends InteractableCommand> = 
   CommandType extends JoinGameCommand ? { gameID: string}:
   CommandType extends ViewingAreaUpdateCommand ? undefined :
   CommandType extends GameMoveCommand<TicTacToeMove> ? undefined :
   CommandType extends LeaveGameCommand ? undefined :
+  CommandType extends AddSongToQueueCommand ? undefined :
+  CommandType extends VoteOnSongInQueueCommand ? undefined :
   never;
 
 export type InteractableCommandResponse<MessageType> = {
