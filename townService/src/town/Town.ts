@@ -389,6 +389,10 @@ export default class Town {
     if (!objectLayer) {
       throw new Error(`Unable to find objects layer in map`);
     }
+    // the following lines go through the objects defined in the map
+    // and create the repective interactable area object using the info
+    // defined in the mpa
+
     const viewingAreas = objectLayer.objects
       .filter(eachObject => eachObject.type === 'ViewingArea')
       .map(eachViewingAreaObject =>
@@ -411,11 +415,14 @@ export default class Town {
         JukeboxArea.fromMapObject(eachJukeboxAreaObj, this._broadcastEmitter),
       );
 
+    // all the processed interactable areas are combined into one array to return
     this._interactables = this._interactables
       .concat(viewingAreas)
       .concat(conversationAreas)
       .concat(gameAreas)
       .concat(jukeboxAreas);
+
+    // the processed interactable areas are validated to ensure they're correctly formed
     this._validateInteractables();
   }
 

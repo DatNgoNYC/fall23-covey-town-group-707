@@ -26,7 +26,12 @@ import {
   TownSettingsUpdate,
   ViewingArea as ViewingAreaModel,
 } from '../types/CoveyTownSocket';
-import { isConversationArea, isJukeboxArea, isTicTacToeArea, isViewingArea } from '../types/TypeUtils';
+import {
+  isConversationArea,
+  isJukeboxArea,
+  isTicTacToeArea,
+  isViewingArea,
+} from '../types/TypeUtils';
 import ConversationAreaController from './interactable/ConversationAreaController';
 import GameAreaController, { GameEventTypes } from './interactable/GameAreaController';
 import InteractableAreaController, {
@@ -332,10 +337,15 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     return ret as GameAreaController<GameState, GameEventTypes>[];
   }
 
+  /**
+   * Iterates through all the interactable area controllers and returns a list
+   * of all the JukeboxArea controllers
+   */
   public get jukeboxAreas() {
     const ret = this._interactableControllers.filter(
       eachInteractable => eachInteractable instanceof JukeboxAreaController,
     );
+
     return ret as JukeboxAreaController[];
   }
 
@@ -599,6 +609,8 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
           PlayerController.fromPlayerModel(eachPlayerModel),
         );
 
+        // the following lines create the respective controller object for each interactable area
+        // in the town map
         this._interactableControllers = [];
         initialData.interactables.forEach(eachInteractable => {
           if (isConversationArea(eachInteractable)) {
@@ -614,14 +626,13 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
             this._interactableControllers.push(
               new TicTacToeAreaController(eachInteractable.id, eachInteractable, this),
             );
-            console.log("TTT");
           } else if (isJukeboxArea(eachInteractable)) {
             this._interactableControllers.push(
-              new JukeboxAreaController(eachInteractable.id, this)
+              new JukeboxAreaController(eachInteractable.id, this),
             );
-            console.log("Jukey");
           }
         });
+
         this._userID = initialData.userID;
         this._ourPlayer = this.players.find(eachPlayer => eachPlayer.id == this.userID);
         this.emit('connect', initialData.providerVideoToken);
@@ -683,9 +694,16 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     }
   }
 
-  public getJukeboxController(
-    jukeboxArea: JukeboxArea,
-  ): JukeboxAreaController {
+  /**
+   * Finds and returns the associated JukeboxAreaController for the interactable area,
+   * if it exists.
+   *
+   * @param jukeboxArea represents the provided interactable area
+   * @returns the controller for the area
+   * @throws error if the jukebox interactable area does not have
+   *  an associated controller created
+   */
+  public getJukeboxController(jukeboxArea: JukeboxArea): JukeboxAreaController {
     const existingController = this._interactableControllers.find(
       eachExistingArea => eachExistingArea.id === jukeboxArea.name,
     );
