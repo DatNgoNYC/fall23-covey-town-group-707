@@ -33,16 +33,22 @@ export default class JukeboxAreaController extends InteractableAreaController<
     townController: TownController,
     curSong?: Song,
     queue: SongQueueItem[] = [],
+    model?: JukeboxAreaModel,
   ) {
     super(id);
     this._townController = townController;
-    this._model = {
-      id: this.id,
-      occupants: this.occupants.map(player => player.id),
-      type: 'JukeboxArea',
-      curSong,
-      queue,
-    };
+
+    if (model) {
+      this._model = model;
+    } else {
+      this._model = {
+        id: this.id,
+        occupants: this.occupants.map(player => player.id),
+        type: 'JukeboxArea',
+        curSong,
+        queue,
+      };
+    }
   }
 
   /**
