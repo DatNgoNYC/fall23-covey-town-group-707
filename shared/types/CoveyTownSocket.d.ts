@@ -40,18 +40,23 @@ export interface Player {
 
 export type XY = { x: number, y: number };
 
+// Represents a song, which has a name,
+// artist, and a unique videoID
 export type Song = {
   songName: string;
   artistName: string;
   videoId: string;
 }
 
+// Represents a song in the queue, which has the song,
+// the number of upvotes, and the number of downvotes casted.
 export type SongQueueItem = {
   song: Song;
   numUpvotes: number;
   numDownvotes: number;
 }
 
+// Represents the types of votes a user can make
 export type JukeboxVote = 'Upvote' | 'Downvote';
 
 export interface PlayerLocation {
@@ -87,6 +92,7 @@ export interface ViewingArea extends Interactable {
   elapsedTimeSec: number;
 }
 
+// Represents a Jukebox area interactable model
 export interface JukeboxArea extends Interactable {
   curSong?: Song;
   queue: SongQueueItem[];
@@ -214,11 +220,14 @@ export interface GameMoveCommand<MoveType> {
   move: MoveType;
 }
 
+// command to tell jukebox area backend to add the given song to queue
 export interface AddSongToQueueCommand {
   type: 'AddSongToQueue';
   song: Song;
 }
 
+// command to tell jukebox area backend to cast the given vote
+// on the provided song in queue
 export interface VoteOnSongInQueueCommand {
   type: 'VoteOnSongInQueue';
   song: Song;
