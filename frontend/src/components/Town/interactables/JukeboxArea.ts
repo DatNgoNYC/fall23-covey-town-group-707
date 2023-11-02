@@ -3,6 +3,9 @@ import Interactable, { KnownInteractableTypes } from '../Interactable';
 export default class JukeboxArea extends Interactable {
   private _isInteracting = false;
 
+  /**
+   * Building the scene for jukebox area
+   */
   addedToScene() {
     super.addedToScene();
     this.setTintFill();
@@ -16,6 +19,12 @@ export default class JukeboxArea extends Interactable {
     );
   }
 
+  /**
+   * End interaction
+   *
+   * If it is currently interacting, emits a 'endInteraction' event with this AukeboxArea.
+   * And also set _isInteracting to false
+   */
   overlapExit(): void {
     if (this._isInteracting) {
       this.townController.interactableEmitter.emit('endInteraction', this);
@@ -23,11 +32,16 @@ export default class JukeboxArea extends Interactable {
     }
   }
 
+  /**
+   * Interact with area
+   */
   interact(): void {
-    console.log("interacting");
     this._isInteracting = true;
   }
 
+  /**
+   * Returns the type of the interactable
+   */
   getType(): KnownInteractableTypes {
     return 'jukeboxArea';
   }

@@ -16,19 +16,25 @@ type SongQueueItemDisplayProps = {
   handleVote: (jukeboxVote: JukeboxVote, song: Song) => void;
 };
 
+/**
+ * Displays a song, the song name and artist name for the song
+ */
 function SongDisplay({ song }: { song: Song }): JSX.Element {
   return (
     <>
-      <Text>
-        Song name: {song.songName}
-      </Text>
-      <Text>
-        Artist name: {song.artistName}
-      </Text>
+      <Text>Song name: {song.songName}</Text>
+      <Text>Artist name: {song.artistName}</Text>
     </>
   );
 }
 
+/**
+ * Displays each song in the queue
+ *
+ * Displays the song name, artist name for each item in queue
+ * Also displays upvote and downvote buttons
+ * Also displays upvote and downvote count next to its corresponding button
+ */
 function SongQueueItemDisplay({
   songQueueItem,
   handleVote,
@@ -46,6 +52,13 @@ function SongQueueItemDisplay({
   );
 }
 
+/**
+ * Displays information in the jukebox for a JukeboxAreaController
+ *
+ * Displays the current song playing, the queue of songs.
+ *
+ * See relevant hooks: useTownController.
+ */
 function JukeboxDashboardView({ controller }: JukeboxAreaViewProps): JSX.Element {
   const song = useJukeboxAreaCurSong(controller);
   const queue = useJukeboxAreaQueue(controller);
@@ -75,11 +88,16 @@ function JukeboxDashboardView({ controller }: JukeboxAreaViewProps): JSX.Element
   );
 }
 
+/**
+ * Displays information in the jukebox
+ *
+ * See relevant hooks: useTownController.
+ */
 export default function JukeboxDashboard(): JSX.Element {
   const townController = useTownController();
   const jukeboxAreaController = townController.jukeboxAreas;
 
-  console.log(jukeboxAreaController.length.toString())
+  console.log(jukeboxAreaController.length.toString());
   return (
     <Box>
       <Heading as='h2' fontSize='l'>
@@ -88,10 +106,7 @@ export default function JukeboxDashboard(): JSX.Element {
       {jukeboxAreaController.map(controller => (
         <JukeboxDashboardView controller={controller} key={controller.id} />
       ))}
-      <Button>
-        Suggest Song
-      </Button>
+      <Button>Suggest Song</Button>
     </Box>
   );
-  // }
 }
