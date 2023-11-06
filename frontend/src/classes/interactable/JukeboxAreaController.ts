@@ -88,6 +88,46 @@ export default class JukeboxAreaController extends InteractableAreaController<
   }
 
   /**
+   * Checks if the two given songs are the same.
+   *
+   * @param songOne first song to compare with
+   * @param songTwo second song to compare
+   * @returns true if both songs have the same values for the properties
+   */
+  private _isSongSame(songOne: Song | undefined, songTwo: Song | undefined) {
+    return (
+      songOne?.songName === songTwo?.songName &&
+      songOne?.artistName === songTwo?.artistName &&
+      songOne?.videoId === songTwo?.videoId
+    );
+  }
+
+  /**
+   * Checks if the two given queues are the same.
+   *
+   * @param queueOne first queue to compare with
+   * @param queueTwo second queue to compare
+   * @returns true if both queues have the same songs, in the same order in the list
+   */
+  private _isQueueSame(queueOne: SongQueueItem[], queueTwo: SongQueueItem[]) {
+    if (queueOne.length !== queueTwo.length) {
+      return false;
+    }
+
+    for (let i = 0; i < queueOne.length; i++) {
+      if (
+        !this._isSongSame(queueOne[i].song, queueTwo[i].song) ||
+        queueOne[i].numUpvotes !== queueTwo[i].numUpvotes ||
+        queueOne[i].numDownvotes !== queueTwo[i].numDownvotes
+      ) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
    * Updates the internal state of this JukeboxAreaController to match the new model.
    *
    * It updates the current song, song queue of this jukebox area, and this._model.
@@ -99,11 +139,11 @@ export default class JukeboxAreaController extends InteractableAreaController<
    * If the queue has not changed, does not emit the event.
    */
   protected _updateFrom(newModel: JukeboxAreaModel): void {
-    if (this.curSong !== newModel.curSong) {
+    if (!this._isSongSame(this.curSong, newModel.curSong)) {
       this.emit('curSongChanged', newModel.curSong);
     }
 
-    if (_.isEqual(this.queue, newModel.queue)) {
+    if (!this._isQueueSame(this.queue, newModel.queue)) {
       this.emit('queueChanged', newModel.queue);
     }
 

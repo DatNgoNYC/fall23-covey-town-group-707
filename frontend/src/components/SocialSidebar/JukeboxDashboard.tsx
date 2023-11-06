@@ -78,7 +78,7 @@ function JukeboxDashboardView({ controller }: JukeboxAreaViewProps): JSX.Element
             <ListItem key={queueItem.song.videoId}>
               <SongQueueItemDisplay
                 songQueueItem={queueItem}
-                handleVote={async (vote, songVotedOn) => controller.vote(vote, songVotedOn)}
+                handleVote={(vote, songVotedOn) => controller.vote(vote, songVotedOn)}
               />
             </ListItem>
           );
@@ -97,7 +97,6 @@ export default function JukeboxDashboard(): JSX.Element {
   const townController = useTownController();
   const jukeboxAreaController = townController.jukeboxAreas;
 
-  console.log(jukeboxAreaController.length.toString());
   return (
     <Box>
       <Heading as='h2' fontSize='l'>
