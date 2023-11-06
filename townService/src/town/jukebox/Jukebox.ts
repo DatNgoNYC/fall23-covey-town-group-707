@@ -10,7 +10,21 @@ export default class Jukebox {
   private _curSong?: Song;
 
   // sorted queue of songs
-  private _queue: SongQueueItem[] = [];
+  private _queue: SongQueueItem[];
+
+  /**
+   * Creates a new Jukebox model with the provided parameters.
+   *
+   * If no song is provided, defaults to undefined.
+   * If no queue is provided, defaults to an empty list.
+   *
+   * @param curSong the current song playing in the Jukebox
+   * @param queue the songs in the queue to play next
+   */
+  constructor(curSong?: Song | undefined, queue: SongQueueItem[] = []) {
+    this._curSong = curSong;
+    this._queue = queue;
+  }
 
   /**
    * Gets the song currently playing the jukebox.
