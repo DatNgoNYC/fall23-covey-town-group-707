@@ -59,7 +59,7 @@ export default class JukeboxAreaController extends InteractableAreaController<
   }
 
   /**
-   * Set the song that is currently playing to te input value
+   * Set the song that is currently playing to the input value
    */
   set curSong(song: Song | undefined) {
     this._model.curSong = song;
@@ -137,6 +137,8 @@ export default class JukeboxAreaController extends InteractableAreaController<
    *
    * If the queue has changed, emits a 'queueChanged' event with true if it is our turn, and false otherwise.
    * If the queue has not changed, does not emit the event.
+   *
+   * @param newModel the model to update the controller
    */
   protected _updateFrom(newModel: JukeboxAreaModel): void {
     if (!this._isSongSame(this.curSong, newModel.curSong)) {
@@ -151,7 +153,7 @@ export default class JukeboxAreaController extends InteractableAreaController<
   }
 
   /**
-   * Returns true if the game has occupants
+   * @returns true if the game has occupants
    */
   public isActive(): boolean {
     return this.occupants.length > 0;
@@ -177,6 +179,9 @@ export default class JukeboxAreaController extends InteractableAreaController<
  * If there is currently no song playing, then we will return a song object where the song name and artist name are both "No song playing...".
  *
  * This hook will re-render any components that use it when the topic changes.
+ * 
+ * @param controller the controller whose current song to use
+ * @returns the current song or a song with songName and artistName as "No song playing..." if current song is undefined
  */
 export function useJukeboxAreaCurSong(controller: JukeboxAreaController): Song {
   const [curSong, setCurSong] = useState(controller.curSong);
@@ -202,6 +207,9 @@ export function useJukeboxAreaCurSong(controller: JukeboxAreaController): Song {
  * If there is no song in the queue, then we will return an empty list
  *
  * This hook will re-render any components that use it when the topic changes.
+ * 
+ * @param controller the controller whose song queue to use
+ * @returns the queue 
  */
 export function useJukeboxAreaQueue(controller: JukeboxAreaController): SongQueueItem[] {
   const [queue, setQueue] = useState(controller.queue);
