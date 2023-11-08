@@ -6,9 +6,12 @@ import JukeboxAreaController, {
 } from '../../classes/interactable/JukeboxAreaController';
 import React from 'react';
 import { JukeboxVote, Song, SongQueueItem } from '../../types/CoveyTownSocket';
+import PlayerController from '../../classes/PlayerController';
+import { useInteractableAreaOccupants } from '../../classes/interactable/InteractableAreaController';
 
 type JukeboxAreaViewProps = {
   controller: JukeboxAreaController;
+  ourPlayer: PlayerController;
 };
 
 type SongQueueItemDisplayProps = {
@@ -59,12 +62,20 @@ function SongQueueItemDisplay({
  *
  * See relevant hooks: useTownController.
  */
-function JukeboxDashboardView({ controller }: JukeboxAreaViewProps): JSX.Element {
+function JukeboxDashboardView({ controller, ourPlayer }: JukeboxAreaViewProps): JSX.Element {
+  const occupants = useInteractableAreaOccupants(controller);
   const song = useJukeboxAreaCurSong(controller);
   const queue = useJukeboxAreaQueue(controller);
 
+  if (occupants.filter(p => p === ourPlayer).length === 0) {
+    return <></>;
+  }
+
   return (
     <Box>
+      <Heading as='h2' fontSize='l'>
+        Jukebox Area:
+      </Heading>
       <Heading as='h3' fontSize='m'>
         Current song playing:
       </Heading>
@@ -84,6 +95,7 @@ function JukeboxDashboardView({ controller }: JukeboxAreaViewProps): JSX.Element
           );
         })}
       </OrderedList>
+      <Button>Suggest Song</Button>
     </Box>
   );
 }
@@ -95,17 +107,16 @@ function JukeboxDashboardView({ controller }: JukeboxAreaViewProps): JSX.Element
  */
 export default function JukeboxDashboard(): JSX.Element {
   const townController = useTownController();
-  const jukeboxAreaController = townController.jukeboxAreas;
 
   return (
     <Box>
-      <Heading as='h2' fontSize='l'>
-        Jukebox Area:
-      </Heading>
-      {jukeboxAreaController.map(controller => (
-        <JukeboxDashboardView controller={controller} key={controller.id} />
+      {townController.jukeboxAreas.map(controller => (
+        <JukeboxDashboardView
+          controller={controller}
+          ourPlayer={townController.ourPlayer}
+          key={controller.id}
+        />
       ))}
-      <Button>Suggest Song</Button>
     </Box>
   );
 }
