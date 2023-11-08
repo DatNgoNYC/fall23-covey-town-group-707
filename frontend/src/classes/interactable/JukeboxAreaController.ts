@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import InteractableAreaController, { BaseInteractableEventMap } from './InteractableAreaController';
 import {
   JukeboxArea as JukeboxAreaModel,
@@ -95,11 +94,9 @@ export default class JukeboxAreaController extends InteractableAreaController<
    * @returns true if both songs have the same values for the properties
    */
   private _isSongSame(songOne: Song | undefined, songTwo: Song | undefined) {
-    return (
-      songOne?.songName === songTwo?.songName &&
-      songOne?.artistName === songTwo?.artistName &&
-      songOne?.videoId === songTwo?.videoId
-    );
+    // videoID is the unique identifier for a song, so we check to
+    // see if the videoID is the same
+    return songOne?.videoId === songTwo?.videoId;
   }
 
   /**
@@ -179,7 +176,7 @@ export default class JukeboxAreaController extends InteractableAreaController<
  * If there is currently no song playing, then we will return a song object where the song name and artist name are both "No song playing...".
  *
  * This hook will re-render any components that use it when the topic changes.
- * 
+ *
  * @param controller the controller whose current song to use
  * @returns the current song or a song with songName and artistName as "No song playing..." if current song is undefined
  */
@@ -207,9 +204,9 @@ export function useJukeboxAreaCurSong(controller: JukeboxAreaController): Song {
  * If there is no song in the queue, then we will return an empty list
  *
  * This hook will re-render any components that use it when the topic changes.
- * 
+ *
  * @param controller the controller whose song queue to use
- * @returns the queue 
+ * @returns the queue
  */
 export function useJukeboxAreaQueue(controller: JukeboxAreaController): SongQueueItem[] {
   const [queue, setQueue] = useState(controller.queue);
