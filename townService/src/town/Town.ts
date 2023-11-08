@@ -389,10 +389,10 @@ export default class Town {
     if (!objectLayer) {
       throw new Error(`Unable to find objects layer in map`);
     }
+
     // the following lines go through the objects defined in the map
     // and create the repective interactable area object using the info
-    // defined in the mpa
-
+    // defined in the map
     const viewingAreas = objectLayer.objects
       .filter(eachObject => eachObject.type === 'ViewingArea')
       .map(eachViewingAreaObject =>
