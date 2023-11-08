@@ -26,7 +26,12 @@ import {
   TownSettingsUpdate,
   ViewingArea as ViewingAreaModel,
 } from '../types/CoveyTownSocket';
-import { isConversationArea, isTicTacToeArea, isViewingArea } from '../types/TypeUtils';
+import {
+  isConversationArea,
+  isJukeboxArea,
+  isTicTacToeArea,
+  isViewingArea,
+} from '../types/TypeUtils';
 import ConversationAreaController from './interactable/ConversationAreaController';
 import GameAreaController, { GameEventTypes } from './interactable/GameAreaController';
 import InteractableAreaController, {
@@ -35,6 +40,8 @@ import InteractableAreaController, {
 import TicTacToeAreaController from './interactable/TicTacToeAreaController';
 import ViewingAreaController from './interactable/ViewingAreaController';
 import PlayerController from './PlayerController';
+import JukeboxAreaController from './interactable/JukeboxAreaController';
+import JukeboxArea from '../components/Town/interactables/JukeboxArea';
 
 const CALCULATE_NEARBY_PLAYERS_DELAY_MS = 300;
 const SOCKET_COMMAND_TIMEOUT_MS = 5000;
@@ -331,6 +338,18 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
   }
 
   /**
+   * Iterates through all the interactable area controllers and returns a list
+   * of all the JukeboxArea controllers
+   */
+  public get jukeboxAreas() {
+    const ret = this._interactableControllers.filter(
+      eachInteractable => eachInteractable instanceof JukeboxAreaController,
+    );
+
+    return ret as JukeboxAreaController[];
+  }
+
+  /**
    * Begin interacting with an interactable object. Emits an event to all listeners.
    * @param interactedObj
    */
@@ -590,6 +609,8 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
           PlayerController.fromPlayerModel(eachPlayerModel),
         );
 
+        // the following lines create the respective controller object for each interactable area
+        // in the town map
         this._interactableControllers = [];
         initialData.interactables.forEach(eachInteractable => {
           if (isConversationArea(eachInteractable)) {
@@ -605,8 +626,13 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
             this._interactableControllers.push(
               new TicTacToeAreaController(eachInteractable.id, eachInteractable, this),
             );
+          } else if (isJukeboxArea(eachInteractable)) {
+            this._interactableControllers.push(
+              new JukeboxAreaController(eachInteractable.id, this),
+            );
           }
         });
+
         this._userID = initialData.userID;
         this._ourPlayer = this.players.find(eachPlayer => eachPlayer.id == this.userID);
         this.emit('connect', initialData.providerVideoToken);
@@ -665,6 +691,26 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
       return existingController as GameAreaController<GameType, EventsType>;
     } else {
       throw new Error('Game area controller not created');
+    }
+  }
+
+  /**
+   * Finds and returns the associated JukeboxAreaController for the interactable area,
+   * if it exists.
+   *
+   * @param jukeboxArea represents the provided interactable area
+   * @returns the controller for the area
+   * @throws error if the jukebox interactable area does not have
+   *  an associated controller created
+   */
+  public getJukeboxController(jukeboxArea: JukeboxArea): JukeboxAreaController {
+    const existingController = this._interactableControllers.find(
+      eachExistingArea => eachExistingArea.id === jukeboxArea.name,
+    );
+    if (existingController instanceof JukeboxAreaController) {
+      return existingController as JukeboxAreaController;
+    } else {
+      throw new Error('Jukebox area controller not created');
     }
   }
 

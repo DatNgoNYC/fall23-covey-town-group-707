@@ -23,6 +23,7 @@ import ConversationArea from './ConversationArea';
 import GameAreaFactory from './games/GameAreaFactory';
 import InteractableArea from './InteractableArea';
 import ViewingArea from './ViewingArea';
+import JukeboxArea from './jukebox/JukeboxArea';
 
 /**
  * The Town class implements the logic for each town: managing the various events that
@@ -388,6 +389,10 @@ export default class Town {
     if (!objectLayer) {
       throw new Error(`Unable to find objects layer in map`);
     }
+
+    // the following lines go through the objects defined in the map
+    // and create the repective interactable area object using the info
+    // defined in the map
     const viewingAreas = objectLayer.objects
       .filter(eachObject => eachObject.type === 'ViewingArea')
       .map(eachViewingAreaObject =>
@@ -404,10 +409,20 @@ export default class Town {
       .filter(eachObject => eachObject.type === 'GameArea')
       .map(eachGameAreaObj => GameAreaFactory(eachGameAreaObj, this._broadcastEmitter));
 
+    const jukeboxAreas = objectLayer.objects
+      .filter(eachObject => eachObject.type === 'JukeboxArea')
+      .map(eachJukeboxAreaObj =>
+        JukeboxArea.fromMapObject(eachJukeboxAreaObj, this._broadcastEmitter),
+      );
+
+    // all the processed interactable areas are combined into one array to return
     this._interactables = this._interactables
       .concat(viewingAreas)
       .concat(conversationAreas)
-      .concat(gameAreas);
+      .concat(gameAreas)
+      .concat(jukeboxAreas);
+
+    // the processed interactable areas are validated to ensure they're correctly formed
     this._validateInteractables();
   }
 

@@ -609,6 +609,17 @@
                  "width":1.33529176124966,
                  "x":3296.83535852584,
                  "y":1068.23340899987
+                }, 
+                {
+                 "height":93.4953621516071,
+                 "id":54,
+                 "name":"Dance Floor",
+                 "rotation":0,
+                 "type":"JukeboxArea",
+                 "visible":true,
+                 "width":105.720937629446,
+                 "x":3172.40480205929,
+                 "y":769.364866264276
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -617,7 +628,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":52,
+ "nextobjectid":57,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
