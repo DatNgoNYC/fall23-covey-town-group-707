@@ -70,8 +70,12 @@ function JukeboxDashboardView({ controller, ourPlayer }: JukeboxAreaViewProps): 
   const [showForm, setShowForm] = useState(false);
 
   const handleSuggestSong = () => {
-    setShowForm(true)
-  }
+    setShowForm(true);
+  };
+
+  const handleClose = () => {
+    setShowForm(false);
+  };
 
   if (occupants.filter(p => p === ourPlayer).length === 0) {
     return <></>;
@@ -102,7 +106,7 @@ function JukeboxDashboardView({ controller, ourPlayer }: JukeboxAreaViewProps): 
         })}
       </OrderedList>
       <Button onClick={handleSuggestSong}>Suggest Song</Button>
-      <SuggestionFormWrapper showForm={showForm} setShowForm={setShowForm}/>
+      <SuggestionFormWrapper showForm={showForm} handleClose={handleClose} />
     </Box>
   );
 }

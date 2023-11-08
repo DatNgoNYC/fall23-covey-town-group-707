@@ -13,7 +13,7 @@ import React from 'react';
 
 type SuggestionFormProps = {
   showForm: boolean;
-  setShowForm: (show: boolean) => void;
+  handleClose: () => void;
 };
 
 function SuggestionForm(): JSX.Element {
@@ -37,9 +37,18 @@ function SuggestionForm(): JSX.Element {
   );
 }
 
-export default function SuggestionFormWrapper({ showForm, setShowForm }: SuggestionFormProps): JSX.Element {
+export default function SuggestionFormWrapper({
+  showForm,
+  handleClose,
+}: SuggestionFormProps): JSX.Element {
   return (
-    <Modal isOpen={showForm} onClose={() => {setShowForm(false)}} closeOnOverlayClick={false}>
+    <Modal
+      isOpen={showForm}
+      onClose={() => {
+        handleClose();
+      }}
+      closeOnOverlayClick={false}
+    >
       <ModalOverlay />
       <ModalContent minH='80vh'>
         <ModalHeader>{'Song Suggest'}</ModalHeader>
