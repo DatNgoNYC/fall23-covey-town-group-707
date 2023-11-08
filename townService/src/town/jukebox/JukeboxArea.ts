@@ -15,7 +15,7 @@ import Jukebox from './Jukebox';
  * Represents an interactable area on the map that contains a Jukebox.
  */
 export default class JukeboxArea extends InteractableArea {
-  private _jukebox: Jukebox = new Jukebox();
+  private _jukebox: Jukebox = new Jukebox(undefined, []);
 
   /**
    * Provides the model representation of the state of jukebox in the interactable area.
@@ -24,11 +24,15 @@ export default class JukeboxArea extends InteractableArea {
   public toModel(): JukeboxAreaModel {
     return {
       id: this.id,
-      occupants: this.occupants.map(player => player.id),
+      occupants: this.occupantsByID,
       type: 'JukeboxArea',
       curSong: this._jukebox.curSong,
       queue: this._jukebox.queue,
     };
+  }
+
+  public get isActive(): boolean {
+    return true;
   }
 
   /**
