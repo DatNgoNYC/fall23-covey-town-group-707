@@ -42,13 +42,7 @@ export default function SuggestionFormWrapper({
   handleClose,
 }: SuggestionFormProps): JSX.Element {
   return (
-    <Modal
-      isOpen={showForm}
-      onClose={() => {
-        handleClose();
-      }}
-      closeOnOverlayClick={false}
-    >
+    <Modal isOpen={showForm} onClose={handleClose} closeOnOverlayClick={false}>
       <ModalOverlay />
       <ModalContent minH='80vh'>
         <ModalHeader>{'Song Suggest'}</ModalHeader>
