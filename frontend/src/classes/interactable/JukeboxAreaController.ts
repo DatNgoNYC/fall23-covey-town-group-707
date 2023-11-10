@@ -4,14 +4,17 @@ import {
   JukeboxVote,
   Song,
   SongQueueItem,
+  ViewingArea as ViewingAreaModel,
 } from '../../types/CoveyTownSocket';
 import { useEffect, useState } from 'react';
 import TownController from '../TownController';
+import ViewingAreaController, { ViewingAreaEvents } from './ViewingAreaController';
 
-export type JukeboxAreaEvents = BaseInteractableEventMap & {
-  curSongChanged: (curSong: Song | undefined) => void;
-  queueChanged: (queue: SongQueueItem[]) => void;
-};
+export type JukeboxAreaEvents = BaseInteractableEventMap &
+  ViewingAreaEvents & {
+    curSongChanged: (curSong: Song | undefined) => void;
+    queueChanged: (queue: SongQueueItem[]) => void;
+  };
 
 /**
  * This class is responsible for managing the state of the jukebox area, and for sending commands to the server
@@ -21,6 +24,8 @@ export default class JukeboxAreaController extends InteractableAreaController<
   JukeboxAreaModel
 > {
   private _model: JukeboxAreaModel;
+
+  private _viewingAreaController: ViewingAreaController;
 
   protected _townController: TownController;
 
@@ -40,20 +45,33 @@ export default class JukeboxAreaController extends InteractableAreaController<
     if (model) {
       this._model = model;
     } else {
+      // instantiates the viewing area model
+      const videoPlayer: ViewingAreaModel = {
+        id: this.id,
+        occupants: this.occupants.map(player => player.id),
+        type: 'ViewingArea',
+        video: undefined,
+        isPlaying: false,
+        elapsedTimeSec: 0,
+      };
+
       this._model = {
         id: this.id,
         occupants: this.occupants.map(player => player.id),
         type: 'JukeboxArea',
         curSong,
         queue,
+        videoPlayer,
       };
     }
+
+    this._viewingAreaController = new ViewingAreaController(this._model.videoPlayer);
   }
 
   /**
    * Returns the song that is currently playing
    */
-  get curSong(): Song | undefined {
+  public get curSong(): Song | undefined {
     return this._model.curSong;
   }
 
@@ -67,7 +85,7 @@ export default class JukeboxAreaController extends InteractableAreaController<
   /**
    * Returns the queue of songs
    */
-  get queue(): SongQueueItem[] {
+  public get queue(): SongQueueItem[] {
     return this._model.queue;
   }
 
@@ -76,6 +94,10 @@ export default class JukeboxAreaController extends InteractableAreaController<
    */
   set queue(queue: SongQueueItem[]) {
     this._model.queue = [...queue];
+  }
+
+  public get viewingAreaController() {
+    return this._viewingAreaController;
   }
 
   /**
@@ -145,6 +167,8 @@ export default class JukeboxAreaController extends InteractableAreaController<
     if (!this._isQueueSame(this.queue, newModel.queue)) {
       this.emit('queueChanged', newModel.queue);
     }
+
+    this._viewingAreaController.updateFrom(newModel.videoPlayer, this.occupants);
 
     this._model = newModel;
   }
