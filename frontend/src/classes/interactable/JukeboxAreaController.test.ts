@@ -55,20 +55,24 @@ describe('JukeboxAreaController', () => {
     occupants,
     queue,
     curSong,
+    model,
   }: {
     _id?: string;
     occupants: string[];
     curSong?: Song;
     queue?: SongQueueItem[];
+    model?: JukeboxAreaModel;
   }) {
     const id = _id || nanoid();
-    const model: JukeboxAreaModel = {
-      id: id,
-      occupants: occupants,
-      type: 'JukeboxArea',
-      curSong: curSong,
-      queue: queue || [],
-    };
+    model = model
+      ? model
+      : {
+          id: id,
+          occupants: occupants,
+          type: 'JukeboxArea',
+          curSong: curSong,
+          queue: queue || [],
+        };
     const ret = new JukeboxAreaController(id, mockTownController, undefined, [], model);
     return ret;
   }
@@ -78,18 +82,18 @@ describe('JukeboxAreaController', () => {
       const controller = jukeboxControllerWithProp({
         occupants: [],
       });
-      expect(controller.occupants).toBe([]);
+      expect(controller.occupants).toEqual([]);
       players.map(player => controller.occupants.push(player));
-      expect(controller.occupants).toBe(players);
+      expect(controller.occupants).toEqual(players);
 
-      expect(controller.isActive()).toBe(true);
+      expect(controller.isActive()).toEqual(true);
     });
     it('is not active if there are no players in the area', () => {
       const controller = jukeboxControllerWithProp({
         occupants: [],
       });
-      expect(controller.occupants).toBe([]);
-      expect(controller.isActive()).toBe(false);
+      expect(controller.occupants).toEqual([]);
+      expect(controller.isActive()).toEqual(false);
     });
   });
   describe('Test toInteractableAreaModel', () => {
@@ -104,7 +108,7 @@ describe('JukeboxAreaController', () => {
         curSong: undefined,
         queue: [],
       };
-      expect(controller.toInteractableAreaModel).toBe(model);
+      expect(controller.toInteractableAreaModel()).toEqual(model);
     });
     test('model has correct values after it has been changed', () => {
       const controller = jukeboxControllerWithProp({
@@ -117,7 +121,7 @@ describe('JukeboxAreaController', () => {
         curSong: undefined,
         queue: [],
       };
-      expect(controller.toInteractableAreaModel).toBe(model);
+      expect(controller.toInteractableAreaModel()).toEqual(model);
 
       const modelChanged: JukeboxAreaModel = {
         id: controller.id,
@@ -126,10 +130,8 @@ describe('JukeboxAreaController', () => {
         curSong: songs[0],
         queue: [queueItems[1], queueItems[2]],
       };
-      players.map(player => controller.occupants.push(player));
-      controller.curSong = songs[0];
-      controller.queue = [queueItems[1], queueItems[2]];
-      expect(controller.toInteractableAreaModel).toBe(modelChanged);
+      controller.updateFrom(modelChanged, players);
+      expect(controller.toInteractableAreaModel()).toEqual(modelChanged);
     });
   });
   describe('Test _updateFrom', () => {
@@ -148,8 +150,8 @@ describe('JukeboxAreaController', () => {
       controller.updateFrom(model, []);
       const curSongChangedCalled = emitSpy.mock.calls.find(call => call[0] === 'curSongChanged');
       expect(curSongChangedCalled).toBeDefined();
-      if (curSongChangedCalled) expect(curSongChangedCalled[1]).toEqual(false);
-      expect(controller.toInteractableAreaModel).toBe(model);
+      if (curSongChangedCalled) expect(curSongChangedCalled[1]).toEqual(songs[1]);
+      expect(controller.toInteractableAreaModel()).toEqual(model);
     });
     it('emits chenge for queue if the queue has been changed', () => {
       const controller = jukeboxControllerWithProp({
@@ -166,8 +168,10 @@ describe('JukeboxAreaController', () => {
       controller.updateFrom(model, []);
       const queueChangedCalled = emitSpy.mock.calls.find(call => call[0] === 'queueChanged');
       expect(queueChangedCalled).toBeDefined();
-      if (queueChangedCalled) expect(queueChangedCalled[1]).toEqual(false);
-      expect(controller.toInteractableAreaModel).toBe(model);
+      if (queueChangedCalled) {
+        expect(queueChangedCalled[1]).toEqual(queueItems);
+      }
+      expect(controller.toInteractableAreaModel()).toEqual(model);
     });
     test('model does not change if no change has occured', () => {
       const controller = jukeboxControllerWithProp({
@@ -186,7 +190,7 @@ describe('JukeboxAreaController', () => {
       expect(noSongChangeCalled).not.toBeDefined();
       const noQueueChangeCalled = emitSpy.mock.calls.find(call => call[0] === 'queueChanged');
       expect(noQueueChangeCalled).not.toBeDefined();
-      expect(controller.toInteractableAreaModel).toBe(model);
+      expect(controller.toInteractableAreaModel()).toEqual(model);
     });
     test('the model returned has the changes from the given model', () => {
       const controller = jukeboxControllerWithProp({
@@ -199,7 +203,7 @@ describe('JukeboxAreaController', () => {
         curSong: undefined,
         queue: [],
       };
-      expect(controller.toInteractableAreaModel).toBe(model);
+      expect(controller.toInteractableAreaModel()).toEqual(model);
 
       const modelChanged: JukeboxAreaModel = {
         id: controller.id,
@@ -208,8 +212,8 @@ describe('JukeboxAreaController', () => {
         curSong: songs[0],
         queue: [queueItems[1], queueItems[2]],
       };
-      controller.updateFrom(model, players);
-      expect(controller.toInteractableAreaModel).toBe(modelChanged);
+      controller.updateFrom(modelChanged, players);
+      expect(controller.toInteractableAreaModel()).toEqual(modelChanged);
     });
   });
   describe('Test vote', () => {
@@ -219,10 +223,27 @@ describe('JukeboxAreaController', () => {
         curSong: songs[0],
         queue: [queueItems[1], queueItems[2]],
       });
-      expect(controller.queue[0].numUpvotes).toBe(22);
+
+      const model: JukeboxAreaModel = {
+        id: nanoid(),
+        occupants: [],
+        type: 'JukeboxArea',
+        curSong: undefined,
+        queue: [{ song: songs[1], numUpvotes: 23, numDownvotes: 0 }, queueItems[2]],
+      };
+
+      expect(controller.queue[0].numUpvotes).toEqual(22);
       const vote: JukeboxVote = 'Upvote';
       await controller.vote(vote, songs[0]);
-      expect(controller.queue[0].numUpvotes).toBe(23);
+
+      expect(mockTownController.sendInteractableCommand).toHaveBeenCalledWith(controller.id, {
+        type: 'VoteOnSongInQueue',
+        song: songs[0],
+        vote: vote,
+      });
+
+      controller.updateFrom(model, []);
+      expect(controller.queue[0].numUpvotes).toEqual(23);
     });
     it('decreases votes for a song when given a downvote', async () => {
       const controller = jukeboxControllerWithProp({
@@ -230,42 +251,27 @@ describe('JukeboxAreaController', () => {
         curSong: songs[0],
         queue: [queueItems[1], queueItems[2]],
       });
-      expect(controller.queue[1].numDownvotes).toBe(5);
+
+      const model: JukeboxAreaModel = {
+        id: nanoid(),
+        occupants: [],
+        type: 'JukeboxArea',
+        curSong: songs[0],
+        queue: [queueItems[1], { song: songs[2], numUpvotes: 6, numDownvotes: 6 }],
+      };
+
+      expect(controller.queue[1].numDownvotes).toEqual(5);
       const vote: JukeboxVote = 'Downvote';
-      await controller.vote(vote, songs[1]);
-      expect(controller.queue[1].numDownvotes).toBe(6);
-    });
-  });
-  describe('Test useJukeboxAreaCurSong', () => {
-    it('returns current song if one is playing', () => {
-      const controller = jukeboxControllerWithProp({
-        occupants: [],
-        curSong: songs[0],
-        queue: [queueItems[1], queueItems[2]],
+      await controller.vote(vote, songs[2]);
+
+      expect(mockTownController.sendInteractableCommand).toHaveBeenCalledWith(controller.id, {
+        type: 'VoteOnSongInQueue',
+        song: songs[2],
+        vote: vote,
       });
-      expect(useJukeboxAreaCurSong(controller)).toBe(songs[0]);
-    });
-    it('returns song default message if no song is playing', () => {
-      const controller = jukeboxControllerWithProp({
-        occupants: [],
-      });
-      expect(useJukeboxAreaCurSong(controller)).toBe({
-        songName: 'No song playing...',
-        artistName: 'No song playing...',
-        videoId: '',
-      });
-    });
-  });
-  describe('test useJukeboxAreaQueue', () => {
-    it('returns the current queue', () => {
-      const controller = jukeboxControllerWithProp({
-        occupants: [],
-        curSong: songs[0],
-        queue: [],
-      });
-      expect(useJukeboxAreaQueue(controller)).toBe([]);
-      controller.queue = [queueItems[1], queueItems[2]];
-      expect(useJukeboxAreaQueue(controller)).toBe([queueItems[1], queueItems[2]]);
+
+      controller.updateFrom(model, []);
+      expect(controller.queue[1].numDownvotes).toEqual(6);
     });
   });
 });
