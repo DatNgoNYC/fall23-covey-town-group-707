@@ -106,7 +106,11 @@ function JukeboxDashboardView({ controller, ourPlayer }: JukeboxAreaViewProps): 
         })}
       </OrderedList>
       <Button onClick={handleSuggestSong}>Suggest Song</Button>
-      <SuggestionFormWrapper showForm={showForm} handleClose={handleClose} />
+      <SuggestionFormWrapper
+        controller={controller}
+        showForm={showForm}
+        handleClose={handleClose}
+      />
     </Box>
   );
 }
