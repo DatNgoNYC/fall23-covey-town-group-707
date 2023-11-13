@@ -349,6 +349,10 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     return ret as JukeboxAreaController[];
   }
 
+  public get interactableAreas() {
+    return this._interactableControllers;
+  }
+
   /**
    * Begin interacting with an interactable object. Emits an event to all listeners.
    * @param interactedObj
@@ -793,7 +797,7 @@ export function useTownSettings() {
  */
 export function useInteractableAreaController<T>(interactableAreaID: string): T {
   const townController = useTownController();
-  const interactableAreaController = townController.gameAreas.find(
+  const interactableAreaController = townController.interactableAreas.find(
     eachArea => eachArea.id == interactableAreaID,
   );
   if (!interactableAreaController) {
