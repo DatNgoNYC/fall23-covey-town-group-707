@@ -169,6 +169,17 @@ export default class JukeboxAreaController extends InteractableAreaController<
       vote: jukeboxVote,
     });
   }
+
+  /**
+   * Send a request to the server to queue the given song.
+   * @param song - The song to add.
+   */
+  public async queueSong(song: Song) {
+    await this._townController.sendInteractableCommand(this.id, {
+      type: 'AddSongToQueue',
+      song: song,
+    });
+  }
 }
 
 /**
