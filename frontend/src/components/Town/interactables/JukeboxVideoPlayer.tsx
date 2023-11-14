@@ -6,16 +6,18 @@ import { InteractableID } from '../../../types/CoveyTownSocket';
 import JukeboxAreaController, {
   noSongPlaying,
   useJukeboxAreaCurSong,
+  useJukeboxViewingAreaController,
 } from '../../../classes/interactable/JukeboxAreaController';
 
 function JukeboxVideoPlayer({ interactableID }: { interactableID: InteractableID }): JSX.Element {
   const jukeboxAreaController =
     useInteractableAreaController<JukeboxAreaController>(interactableID);
+  const viewingAreaController = useJukeboxViewingAreaController(jukeboxAreaController);
 
   const curSong = useJukeboxAreaCurSong(jukeboxAreaController);
 
   if (curSong.videoId !== noSongPlaying.videoId) {
-    return <ViewingAreaVideo controller={jukeboxAreaController.viewingAreaController} />;
+    return <ViewingAreaVideo controller={viewingAreaController} />;
   }
 
   return <></>;
