@@ -632,7 +632,7 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
             );
           } else if (isJukeboxArea(eachInteractable)) {
             this._interactableControllers.push(
-              new JukeboxAreaController(eachInteractable.id, this),
+              new JukeboxAreaController(eachInteractable.id, eachInteractable, this),
             );
           }
         });
