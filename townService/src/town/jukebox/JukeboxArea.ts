@@ -4,17 +4,20 @@ import {
   InteractableCommand,
   InteractableCommandReturnType,
   JukeboxArea as JukeboxAreaModel,
+  Song,
   TownEmitter,
+  ViewingArea as ViewingAreaModel,
 } from '../../types/CoveyTownSocket';
 import InteractableArea from '../InteractableArea';
 import Jukebox from './Jukebox';
 import ViewingArea from '../ViewingArea';
+import Player from '../../lib/Player';
 
 /**
  * Represents an interactable area on the map that contains a Jukebox.
  */
 export default class JukeboxArea extends InteractableArea {
-  private _jukebox: Jukebox = new Jukebox(undefined, []);
+  private _jukebox: Jukebox;
 
   private _viewingArea: ViewingArea;
 
@@ -27,6 +30,7 @@ export default class JukeboxArea extends InteractableArea {
     super(id, { x, y, width, height }, townEmitter);
 
     this._viewingArea = viewingArea;
+    this._jukebox = new Jukebox(undefined, []);
   }
 
   /**
@@ -46,6 +50,71 @@ export default class JukeboxArea extends InteractableArea {
 
   public get isActive(): boolean {
     return true;
+  }
+
+  /**
+   * Updates the state of this ViewingArea, setting the video, isPlaying and progress properties
+   *
+   * @param viewingArea updated model
+   */
+  public updateModel(newViewingAreaModel: ViewingAreaModel) {
+    this._viewingArea.updateModel(newViewingAreaModel);
+  }
+
+  /**
+   * Adds a new player to this interactable area.
+   *
+   * Adds the player to this area's occupants array, sets the player's interactableID, informs players in the town
+   * that the player's interactableID has changed, and informs players in the town that the area has changed.
+   *
+   * Assumes that the player specified is a member of this town.
+   *
+   * @param player Player to add
+   */
+  public add(player: Player): void {
+    super.add(player);
+    this._viewingArea.add(player);
+  }
+
+  /**
+   * Removes a player from this interactable area.
+   *
+   * Removes the player from this area's occupants array, clears the player's interactableID, informs players in the town
+   * that the player's interactableID has changed, and informs players in the town that the area has changed
+   *
+   * Assumes that the player specified is an occupant of this interactable area
+   *
+   * @param player Player to remove
+   */
+  public remove(player: Player): void {
+    super.remove(player);
+    this._viewingArea.remove(player);
+  }
+
+  /**
+   * Given a list of players, adds all of the players that are within this interactable area
+   *
+   * @param allPlayers list of players to examine and potentially add to this interactable area
+   */
+  public addPlayersWithinBounds(allPlayers: Player[]) {
+    super.addPlayersWithinBounds(allPlayers);
+    this._viewingArea.addPlayersWithinBounds(allPlayers);
+  }
+
+  /**
+   * Creates a youtube video URL using the videoID property of the given song
+   *
+   * @param song to create URL for
+   * @returns formatted URL if there's a song, or empty string if song is undefined
+   */
+  private _formatSongURL(song: Song | undefined) {
+    const youtubeURL = 'https://www.youtube.com/watch?v=';
+
+    if (song) {
+      return `${youtubeURL}${song.videoId}`;
+    }
+
+    return '';
   }
 
   /**
