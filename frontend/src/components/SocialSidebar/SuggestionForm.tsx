@@ -27,14 +27,6 @@ type ResultsContainerProps = {
   onClickHandler: (song: Song) => void;
 };
 
-/* type ResultCardProps = {
-  song: Song;
-};
-
-function ResultCard({ song }: ResultCardProps) {
-  return <>{`Song: ${song.songName} \nArtist: ${song.artistName} \nVideoId: ${song.videoId}`}</>;
-} */
-
 function ResultsContainer({ songs, onClickHandler }: ResultsContainerProps): JSX.Element {
   if (songs.length === 0) {
     return <>no results!!!</>;
@@ -115,8 +107,8 @@ function SuggestionForm({ controller }: SuggestionFormProps): JSX.Element {
       />
       <ResultsContainer songs={results} onClickHandler={resultsClickHandler} />
       <Flex>
-        <Button onClick={searchEventHandler}>search</Button>
-        <Button onClick={queueEventHandler}>queue</Button>
+        <Button onClick={searchEventHandler}>Search</Button>
+        <Button onClick={queueEventHandler}>Add to Queue</Button>
       </Flex>
     </Container>
   );
@@ -132,7 +124,7 @@ export default function SuggestionFormWrapper({
     <Modal isOpen={showForm} onClose={handleClose} closeOnOverlayClick={false}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>{'Song Suggest'}</ModalHeader>
+        <ModalHeader>{'Suggest a song!'}</ModalHeader>
         <ModalCloseButton />
         <SuggestionForm controller={controller} />
       </ModalContent>
