@@ -20,5 +20,6 @@ function searchSong({songName, artistName} : {songName: string, artistName: stri
         data.items.map(result => {
           searchResults.push({songName: result.snippet.title, artistName: result.snippet.channelTitle, videoId: result.id.videoId});
         })
+        return searchResults;
     });
 }
