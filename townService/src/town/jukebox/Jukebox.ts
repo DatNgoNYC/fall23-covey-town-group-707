@@ -6,8 +6,6 @@ import {
   ViewingArea as ViewingAreaModel,
 } from '../../types/CoveyTownSocket';
 
-const YOUTUBE_URL = 'https://www.youtube.com/watch?v=';
-
 /**
  * Represents a Jukebox object, which has a current song that's playing, and a
  * queue of songs that will play next.
@@ -19,9 +17,6 @@ export default class Jukebox {
   // sorted queue of songs
   private _queue: SongQueueItem[];
 
-  // represents state of the video playing in the area
-  private _videoPlayer: ViewingAreaModel;
-
   /**
    * Creates a new Jukebox model with the provided parameters.
    *
@@ -31,41 +26,9 @@ export default class Jukebox {
    * @param curSong the current song playing in the Jukebox
    * @param queue the songs in the queue to play next
    */
-  constructor(
-    curSong?: Song | undefined,
-    queue: SongQueueItem[] = [],
-    viewingAreaModel?: ViewingAreaModel,
-  ) {
+  constructor(curSong?: Song | undefined, queue: SongQueueItem[] = []) {
     this._curSong = curSong;
     this._queue = queue;
-
-    if (viewingAreaModel) {
-      this._videoPlayer = viewingAreaModel;
-    } else {
-      // we don't need id, occupants
-      this._videoPlayer = {
-        type: 'ViewingArea',
-        id: '',
-        occupants: [],
-        video: this._formatSongURL(this._curSong),
-        isPlaying: this._curSong !== undefined,
-        elapsedTimeSec: 0,
-      };
-    }
-  }
-
-  /**
-   * Creates a youtube video URL using the videoID property of the given song
-   *
-   * @param song to create URL for
-   * @returns formatted URL if there's a song, or empty string if song is undefined
-   */
-  private _formatSongURL(song: Song | undefined) {
-    if (song) {
-      return `${YOUTUBE_URL}${song.videoId}`;
-    }
-
-    return '';
   }
 
   /**
