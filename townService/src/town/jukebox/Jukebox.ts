@@ -51,13 +51,6 @@ export default class Jukebox {
   }
 
   /**
-   * Gets the ViewingAreaModel for the video player of the jukebox.
-   */
-  public get videoPlayer(): ViewingAreaModel {
-    return this._videoPlayer;
-  }
-
-  /**
    * Adds the given song to the jukebox queue. The queue item is initialized
    * with 0 upvotes and 0 downvotes.
    *
