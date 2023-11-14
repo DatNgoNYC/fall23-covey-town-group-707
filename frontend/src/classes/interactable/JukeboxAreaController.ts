@@ -14,7 +14,14 @@ export type JukeboxAreaEvents = BaseInteractableEventMap &
   ViewingAreaEvents & {
     curSongChanged: (curSong: Song | undefined) => void;
     queueChanged: (queue: SongQueueItem[]) => void;
+    videoPlayerChanged: (videoPlayer: ViewingAreaController) => void;
   };
+
+export const noSongPlaying = {
+  songName: 'No song playing...',
+  artistName: 'No song playing...',
+  videoId: '',
+} as const;
 
 /**
  * This class is responsible for managing the state of the jukebox area, and for sending commands to the server
@@ -32,38 +39,10 @@ export default class JukeboxAreaController extends InteractableAreaController<
   /**
    * Constructor to create a JukeboxAreaController
    */
-  constructor(
-    id: string,
-    townController: TownController,
-    curSong?: Song,
-    queue: SongQueueItem[] = [],
-    model?: JukeboxAreaModel,
-  ) {
+  constructor(id: string, model: JukeboxAreaModel, townController: TownController) {
     super(id);
     this._townController = townController;
-
-    if (model) {
-      this._model = model;
-    } else {
-      // instantiates the viewing area model
-      const videoPlayer: ViewingAreaModel = {
-        id: this.id,
-        occupants: this.occupants.map(player => player.id),
-        type: 'ViewingArea',
-        video: undefined,
-        isPlaying: false,
-        elapsedTimeSec: 0,
-      };
-
-      this._model = {
-        id: this.id,
-        occupants: this.occupants.map(player => player.id),
-        type: 'JukeboxArea',
-        curSong,
-        queue,
-        videoPlayer,
-      };
-    }
+    this._model = model;
 
     this._viewingAreaController = new ViewingAreaController(this._model.videoPlayer);
   }
@@ -159,18 +138,31 @@ export default class JukeboxAreaController extends InteractableAreaController<
    *
    * @param newModel the model to update the controller
    */
-  protected _updateFrom(newModel: JukeboxAreaModel): void {
-    if (!this._isSongSame(this.curSong, newModel.curSong)) {
-      this.emit('curSongChanged', newModel.curSong);
+  protected _updateFrom(newModel: JukeboxAreaModel | ViewingAreaModel): void {
+    if (newModel.type === 'JukeboxArea') {
+      const newJukeboxModel = newModel as JukeboxAreaModel;
+
+      if (!this._isSongSame(this.curSong, newJukeboxModel.curSong)) {
+        this.emit('curSongChanged', newJukeboxModel.curSong);
+      }
+
+      if (!this._isQueueSame(this.queue, newJukeboxModel.queue)) {
+        this.emit('queueChanged', newJukeboxModel.queue);
+      }
+
+      this._viewingAreaController.updateFrom(newJukeboxModel.videoPlayer, this.occupants);
+
+      this._model = newJukeboxModel;
+    } else if (newModel.type === 'ViewingArea') {
+      const newViewingAreaModel = newModel as ViewingAreaModel;
+
+      this.occupants = this._model.occupants.map(id => this._townController.getPlayer(id));
+
+      this._viewingAreaController.updateFrom(newViewingAreaModel, this.occupants);
+      this._model.videoPlayer = newViewingAreaModel;
+
+      this.emit('videoPlayerChanged', this.viewingAreaController);
     }
-
-    if (!this._isQueueSame(this.queue, newModel.queue)) {
-      this.emit('queueChanged', newModel.queue);
-    }
-
-    this._viewingAreaController.updateFrom(newModel.videoPlayer, this.occupants);
-
-    this._model = newModel;
   }
 
   /**
@@ -206,11 +198,6 @@ export default class JukeboxAreaController extends InteractableAreaController<
  */
 export function useJukeboxAreaCurSong(controller: JukeboxAreaController): Song {
   const [curSong, setCurSong] = useState(controller.curSong);
-  const noSongPlaying: Song = {
-    songName: 'No song playing...',
-    artistName: 'No song playing...',
-    videoId: '',
-  };
 
   useEffect(() => {
     controller.addListener('curSongChanged', setCurSong);
@@ -244,4 +231,22 @@ export function useJukeboxAreaQueue(controller: JukeboxAreaController): SongQueu
   }, [controller]);
 
   return queue;
+}
+
+export function useJukeboxViewingAreaController(
+  controller: JukeboxAreaController,
+): ViewingAreaController {
+  const [viewingAreaController, setViewingAreaController] = useState(
+    controller.viewingAreaController,
+  );
+
+  useEffect(() => {
+    controller.addListener('videoPlayerChanged', setViewingAreaController);
+
+    return () => {
+      controller.removeListener('videoPlayerChanged', setViewingAreaController);
+    };
+  }, [controller]);
+
+  return viewingAreaController;
 }
