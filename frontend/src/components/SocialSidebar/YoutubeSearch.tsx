@@ -8,7 +8,7 @@ import { Song } from '../../../../shared/types/CoveyTownSocket';
  * @returns a list 10 songs which is the search result from the youtube api call
  */
 function searchSong({ songName, artistName }: { songName: string; artistName: string }) {
-  const youtubeApiKey = `AIzaSyAwJ9S1H92Mx9QqbEMBrDew49NxfMcar6w`;
+  const youtubeApiKey = process.env.YOUTUBE_API_KEY;
   const searchTerm = `${songName}+${artistName}`;
   const numResults = 10;
   let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=${numResults}&q=${searchTerm}&key=${youtubeApiKey}`;
