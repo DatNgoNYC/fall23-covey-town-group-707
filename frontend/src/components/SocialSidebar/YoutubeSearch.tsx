@@ -8,14 +8,11 @@ import { Song } from '../../../../shared/types/CoveyTownSocket';
  * @returns a list 10 songs which is the search result from the youtube api call
  */
 function searchSong({ songName, artistName }: { songName: string; artistName: string }) {
-  console.log('HERE');
-  const YOUTUBE_API_KEY = `AIzaSyAwJ9S1H92Mx9QqbEMBrDew49NxfMcar6w`;
-  console.log(YOUTUBE_API_KEY);
+  const youtubeApiKey = `AIzaSyAwJ9S1H92Mx9QqbEMBrDew49NxfMcar6w`;
   const searchTerm = `${songName}+${artistName}`;
   const numResults = 10;
-  let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=${numResults}&q=${searchTerm}&key=${YOUTUBE_API_KEY}`;
+  let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=${numResults}&q=${searchTerm}&key=${youtubeApiKey}`;
   url = encodeURI(url);
-  console.log(url);
 
   fetch(url)
     .then(response => response.json())
@@ -23,7 +20,7 @@ function searchSong({ songName, artistName }: { songName: string; artistName: st
       console.log(data.items);
       console.log(data.items[0].id.videoId);
       // console.log(data.items[1].id.videoId);
-      let searchResults: Song[] = [];
+      const searchResults: Song[] = [];
       data.items.map(result => {
         searchResults.push({
           songName: result.snippet.title,
