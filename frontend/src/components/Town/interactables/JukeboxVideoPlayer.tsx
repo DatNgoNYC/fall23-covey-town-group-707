@@ -9,6 +9,12 @@ import JukeboxAreaController, {
   useJukeboxViewingAreaController,
 } from '../../../classes/interactable/JukeboxAreaController';
 
+/**
+ *  The JukeboxVideoPlayer plays a song video, if the URL is set, using the ViewingAreaVideo component
+ *
+ * @param interactableID is the the ID of the Jukebox area
+ * @returns the video player component if there's a song playing
+ */
 function JukeboxVideoPlayer({ interactableID }: { interactableID: InteractableID }): JSX.Element {
   const jukeboxAreaController =
     useInteractableAreaController<JukeboxAreaController>(interactableID);
@@ -23,6 +29,10 @@ function JukeboxVideoPlayer({ interactableID }: { interactableID: InteractableID
   return <></>;
 }
 
+/**
+ * Wrapper component for displaying the song video, if there's a jukebox area
+ * @returns the video player component
+ */
 export function JukeboxVideoPlayerWrapper(): JSX.Element {
   const jukeboxArea = useInteractable<JukeboxArea>('jukeboxArea');
 

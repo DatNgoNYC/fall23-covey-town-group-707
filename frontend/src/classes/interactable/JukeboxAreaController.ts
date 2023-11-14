@@ -17,6 +17,7 @@ export type JukeboxAreaEvents = BaseInteractableEventMap &
     videoPlayerChanged: (videoPlayer: ViewingAreaController) => void;
   };
 
+// default song displayed when nothing is playing
 export const noSongPlaying = {
   songName: 'No song playing...',
   artistName: 'No song playing...',
@@ -75,6 +76,9 @@ export default class JukeboxAreaController extends InteractableAreaController<
     this._model.queue = [...queue];
   }
 
+  /**
+   * Get the viewing area controller of the jukebox area
+   */
   public get viewingAreaController() {
     return this._viewingAreaController;
   }
@@ -136,10 +140,15 @@ export default class JukeboxAreaController extends InteractableAreaController<
    * If the queue has changed, emits a 'queueChanged' event with true if it is our turn, and false otherwise.
    * If the queue has not changed, does not emit the event.
    *
+   * If the viewing area model has changed (and made updates to the underlying controller), emits a 'videoPlayerChanged' event
+   * with the new controller. If the controller has not changed, does not emit the event.
+   *
    * @param newModel the model to update the controller
    */
   protected _updateFrom(newModel: JukeboxAreaModel | ViewingAreaModel): void {
+    // handles updates based on the provided model
     if (newModel.type === 'JukeboxArea') {
+      // updates overall jukebox area
       const newJukeboxModel = newModel as JukeboxAreaModel;
 
       if (!this._isSongSame(this.curSong, newJukeboxModel.curSong)) {
@@ -150,15 +159,26 @@ export default class JukeboxAreaController extends InteractableAreaController<
         this.emit('queueChanged', newJukeboxModel.queue);
       }
 
+      // updates video player with the new video player provided in the new jukebox model
+      // updating is handled by the viewing area controller property
       this._viewingAreaController.updateFrom(newJukeboxModel.videoPlayer, this.occupants);
 
       this._model = newJukeboxModel;
     } else if (newModel.type === 'ViewingArea') {
+      // updates only the viewing area model
       const newViewingAreaModel = newModel as ViewingAreaModel;
 
+      // the jukebox model is used as the source of occupants of the area (the viewing area is
+      // not registered with the TownController, since we only want the functionality)
+
+      // gets the player controllers for the occupants stored in the model
+      // this undo-s the occupants set in the super (parent) function, which had used
+      // the new viewing area model to set the occupants
       this.occupants = this._model.occupants.map(id => this._townController.getPlayer(id));
 
+      //
       this._viewingAreaController.updateFrom(newViewingAreaModel, this.occupants);
+      // updates the viewing area model stored in the jukebox area
       this._model.videoPlayer = newViewingAreaModel;
 
       this.emit('videoPlayerChanged', this.viewingAreaController);
@@ -233,6 +253,14 @@ export function useJukeboxAreaQueue(controller: JukeboxAreaController): SongQueu
   return queue;
 }
 
+/**
+ * A react hook to retrieve the ViewingAreaController of a JukeboxAreaController.
+ *
+ * This hook will re-render any components that use it when the topic changes.
+ *
+ * @param controller the controller whose ViewingAreaController to use
+ * @returns the ViewingAreaController
+ */
 export function useJukeboxViewingAreaController(
   controller: JukeboxAreaController,
 ): ViewingAreaController {
