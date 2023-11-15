@@ -87,6 +87,7 @@ function SuggestionForm({ controller }: SuggestionFormProps): JSX.Element {
   return (
     <Container>
       <Input
+        id='songName'
         placeholder='Song Name'
         onChange={event => {
           setSongName(event.target.value);
@@ -97,6 +98,7 @@ function SuggestionForm({ controller }: SuggestionFormProps): JSX.Element {
         }}
       />
       <Input
+        id='artistName'
         placeholder='Artist Name'
         onChange={event => {
           setArtistName(event.target.value);
@@ -107,8 +109,12 @@ function SuggestionForm({ controller }: SuggestionFormProps): JSX.Element {
       />
       <ResultsContainer songs={results} onClickHandler={resultsClickHandler} />
       <Flex>
-        <Button onClick={searchEventHandler}>Search</Button>
-        <Button onClick={queueEventHandler}>Add to Queue</Button>
+        <Button id='search' onClick={searchEventHandler}>
+          Search
+        </Button>
+        <Button id='queue' onClick={queueEventHandler}>
+          Add to Queue
+        </Button>
       </Flex>
     </Container>
   );
