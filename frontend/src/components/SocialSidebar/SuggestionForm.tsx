@@ -2,6 +2,7 @@ import {
   Button,
   Container,
   Flex,
+  Image,
   Input,
   Modal,
   ModalCloseButton,
@@ -9,6 +10,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Stack,
+  useToast,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import JukeboxAreaController from '../../classes/interactable/JukeboxAreaController';
@@ -37,7 +39,11 @@ function ResultCard({ song, onClickHandler }: ResultCardProps): JSX.Element {
       onClick={() => {
         onClickHandler(song);
       }}>
-      <div className='thumbnail'>`create api for video thumbnail`</div>
+      <Image
+        className='thumbnail'
+        src={`https://img.youtube.com/vi/${song.videoId}/hqdefault.jpg`}
+        alt=''
+      />
       <div className='songInfo'>
         <div className='name'>{song.songName}</div>
         <div className='artist'>{song.artistName}</div>
@@ -72,16 +78,13 @@ export function SuggestionForm({ controller }: SuggestionFormProps): JSX.Element
   const [artistName, setArtistName] = React.useState('');
   const [results, setResults] = React.useState<Song[]>([]);
   const [song, setSong] = useState<Song>();
+  const toast = useToast();
 
   const resultsClickHandler = (result: Song) => {
     setSong(result);
   };
   const searchEventHandler = async () => {
     try {
-      if (!song) {
-        // error toast - we should disable the button later too though
-      }
-
       const mockYoutubeAPI = (mockSong: { songName: string; artistName: string }) => {
         return [{ songName: mockSong.songName, artistName: mockSong.artistName, videoId: 'null' }];
       };
@@ -89,17 +92,25 @@ export function SuggestionForm({ controller }: SuggestionFormProps): JSX.Element
       const songs: Song[] = mockYoutubeAPI({ songName, artistName });
       setResults(songs);
     } catch (error) {
-      // toast the error
+      toast({
+        title: 'Error searching for song',
+        description: (error as Error).toString(),
+        status: 'error',
+      });
     }
   };
   const queueEventHandler = async () => {
     try {
       if (song === undefined) {
-        return; //toast: "you need to pick a song first" also grey out the button when song not selected
+        return;
       }
       controller.queueSong(song);
     } catch (error) {
-      // toast the error
+      toast({
+        title: 'Error queueing song',
+        description: (error as Error).toString(),
+        status: 'error',
+      });
     }
   };
 
