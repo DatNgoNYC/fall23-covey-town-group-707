@@ -59,6 +59,5 @@ describe('Suggestion form', () => {
       // how do we actually render the component?
     });
     it('Should call the queue method once', () => {});
-    //fail
   });
 });
