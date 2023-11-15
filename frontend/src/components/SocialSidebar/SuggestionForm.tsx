@@ -26,28 +26,47 @@ type ResultsContainerProps = {
   songs: Song[];
   onClickHandler: (song: Song) => void;
 };
+type ResultCardProps = {
+  song: Song;
+  onClickHandler: (song: Song) => void;
+};
+
+function ResultCard({ song, onClickHandler }: ResultCardProps): JSX.Element {
+  return (
+    <div
+      onClick={() => {
+        onClickHandler(song);
+      }}>
+      <div className='thumbnail'>`create api for video thumbnail`</div>
+      <div className='songInfo'>
+        <div className='name'>{song.songName}</div>
+        <div className='artist'>{song.artistName}</div>
+      </div>
+    </div>
+  );
+}
 
 function ResultsContainer({ songs, onClickHandler }: ResultsContainerProps): JSX.Element {
   if (songs.length === 0) {
-    return <>no results!!!</>;
+    return <></>;
   }
 
   return (
     <Stack>
       {songs.map(song => {
-        <div
-          onClick={() => {
+        <ResultCard
+          song={song}
+          onClickHandler={() => {
             onClickHandler(song);
-          }}>
-          <>{`Song: ${song.songName} \nArtist: ${song.artistName} \nVideoId: ${song.videoId}`}</>
-        </div>;
+          }}
+        />;
       })}
     </Stack>
   );
 }
 
 /* This is the modal content and what the user sees and interacts with. */
-function SuggestionForm({ controller }: SuggestionFormProps): JSX.Element {
+export function SuggestionForm({ controller }: SuggestionFormProps): JSX.Element {
   // use controller.queueSong(song:Song) later when we send the song to backend
   const [songName, setSongName] = React.useState('');
   const [artistName, setArtistName] = React.useState('');
@@ -87,7 +106,7 @@ function SuggestionForm({ controller }: SuggestionFormProps): JSX.Element {
   return (
     <Container>
       <Input
-        id='songName'
+        aria-label='songName'
         placeholder='Song Name'
         onChange={event => {
           setSongName(event.target.value);
@@ -98,7 +117,7 @@ function SuggestionForm({ controller }: SuggestionFormProps): JSX.Element {
         }}
       />
       <Input
-        id='artistName'
+        aria-label='artistName'
         placeholder='Artist Name'
         onChange={event => {
           setArtistName(event.target.value);
@@ -109,10 +128,10 @@ function SuggestionForm({ controller }: SuggestionFormProps): JSX.Element {
       />
       <ResultsContainer songs={results} onClickHandler={resultsClickHandler} />
       <Flex>
-        <Button id='search' onClick={searchEventHandler}>
+        <Button aria-label='search' onClick={searchEventHandler}>
           Search
         </Button>
-        <Button id='queue' onClick={queueEventHandler}>
+        <Button aria-label='queue' onClick={queueEventHandler}>
           Add to Queue
         </Button>
       </Flex>
