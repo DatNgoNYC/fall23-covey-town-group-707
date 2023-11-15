@@ -17,9 +17,6 @@ function searchSong({ songName, artistName }: { songName: string; artistName: st
   fetch(url)
     .then(response => response.json())
     .then(data => {
-      console.log(data.items);
-      console.log(data.items[0].id.videoId);
-      // console.log(data.items[1].id.videoId);
       const searchResults: Song[] = [];
       data.items.map(result => {
         searchResults.push({
