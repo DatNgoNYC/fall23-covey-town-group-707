@@ -1,10 +1,5 @@
 import InvalidParametersError from '../../lib/InvalidParametersError';
-import {
-  JukeboxVote,
-  Song,
-  SongQueueItem,
-  ViewingArea as ViewingAreaModel,
-} from '../../types/CoveyTownSocket';
+import { JukeboxVote, Song, SongQueueItem } from '../../types/CoveyTownSocket';
 
 /**
  * Represents a Jukebox object, which has a current song that's playing, and a
