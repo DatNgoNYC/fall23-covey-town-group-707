@@ -10,6 +10,7 @@ import useScreenShareParticipant from '../../hooks/useScreenShareParticipant/use
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import Participant from '../Participant/Participant';
 import useSelectedParticipant from '../VideoProvider/useSelectedParticipant/useSelectedParticipant';
+import { JukeboxVideoPlayerWrapper } from '../../../../Town/interactables/JukeboxVideoPlayer';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -126,6 +127,7 @@ export default function ParticipantList() {
         slot={0}
       />
       <ViewingAreaVideo />
+      <JukeboxVideoPlayerWrapper />
 
       {participants
         .filter(p => nearbyPlayers.find(player => player.id == p.participant.identity))

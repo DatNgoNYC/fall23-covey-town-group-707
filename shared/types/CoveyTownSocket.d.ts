@@ -96,6 +96,7 @@ export interface ViewingArea extends Interactable {
 export interface JukeboxArea extends Interactable {
   curSong?: Song;
   queue: SongQueueItem[];
+  videoPlayer: ViewingArea;
 }
 
 export type GameStatus = 'IN_PROGRESS' | 'WAITING_TO_START' | 'OVER';
