@@ -183,9 +183,7 @@ export default class JukeboxArea extends InteractableArea {
     }
 
     if (command.type === 'ViewingAreaUpdate') {
-      const newViewingAreaModel: ViewingAreaModel | undefined = this._playNextSong(
-        this._viewingArea.toModel(),
-      );
+      const newViewingAreaModel: ViewingAreaModel | undefined = this._playNextSong(command.update);
 
       // if there is a next song to play, then we update the viewing area with
       // the model so that it can play the next song
