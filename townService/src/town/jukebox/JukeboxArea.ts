@@ -12,6 +12,7 @@ import InteractableArea from '../InteractableArea';
 import Jukebox from './Jukebox';
 import ViewingArea from '../ViewingArea';
 import Player from '../../lib/Player';
+import InvalidParametersError from '../../lib/InvalidParametersError';
 
 /**
  * Represents an interactable area on the map that contains a Jukebox.
@@ -105,16 +106,36 @@ export default class JukeboxArea extends InteractableArea {
    * Creates a youtube video URL using the videoID property of the given song
    *
    * @param song to create URL for
-   * @returns formatted URL if there's a song, or empty string if song is undefined
+   * @returns formatted URL if there's a song, or undefined if the provided song is undefined
    */
-  private _formatSongURL(song: Song | undefined) {
+  private _formatSongURL(song: Song | undefined): string | undefined {
     const youtubeURL = 'https://www.youtube.com/watch?v=';
 
     if (song) {
       return `${youtubeURL}${song.videoId}`;
     }
 
-    return '';
+    return undefined;
+  }
+
+  private _playNextSong(viewingAreaModel: ViewingAreaModel): ViewingAreaModel | undefined {
+    if (
+      (this._jukebox.curSong === undefined && this._jukebox.queue.length !== 0) ||
+      (!viewingAreaModel.isPlaying && viewingAreaModel.elapsedTimeSec !== 0)
+    ) {
+      this._jukebox.playNextSongInQueue();
+
+      return {
+        id: this.id,
+        occupants: this.occupantsByID,
+        type: 'ViewingArea',
+        video: this._formatSongURL(this._jukebox.curSong),
+        isPlaying: this._jukebox.curSong !== undefined,
+        elapsedTimeSec: 0,
+      };
+    }
+
+    return undefined;
   }
 
   /**
@@ -140,6 +161,15 @@ export default class JukeboxArea extends InteractableArea {
   ): InteractableCommandReturnType<CommandType> {
     if (command.type === 'AddSongToQueue') {
       this._jukebox.addSongToQueue(command.song);
+
+      const newViewingAreaModel: ViewingAreaModel | undefined = this._playNextSong(
+        this._viewingArea.toModel(),
+      );
+
+      if (newViewingAreaModel) {
+        this.updateModel(newViewingAreaModel);
+      }
+
       this._emitAreaChanged();
 
       return undefined as InteractableCommandReturnType<CommandType>;
@@ -152,9 +182,27 @@ export default class JukeboxArea extends InteractableArea {
       return undefined as InteractableCommandReturnType<CommandType>;
     }
 
-    // pass to viewing area's handle method if it's none of the jukebox commands
-    // if not a valid command, this will throw an error
-    return this._viewingArea.handleCommand(command);
+    if (command.type === 'ViewingAreaUpdate') {
+      const newViewingAreaModel: ViewingAreaModel | undefined = this._playNextSong(
+        this._viewingArea.toModel(),
+      );
+
+      // if there is a next song to play, then we update the viewing area with
+      // the model so that it can play the next song
+      if (newViewingAreaModel) {
+        this.updateModel(newViewingAreaModel);
+        this._emitAreaChanged();
+
+        return {} as InteractableCommandReturnType<CommandType>;
+      }
+
+      // pass to viewing area's handle method if it's none of the jukebox commands
+      // or a viewing area command
+      // if not a valid command, this will throw an error
+      return this._viewingArea.handleCommand(command);
+    }
+
+    throw new InvalidParametersError('Unknown command type');
   }
 
   /**
