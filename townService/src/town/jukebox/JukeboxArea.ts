@@ -118,6 +118,17 @@ export default class JukeboxArea extends InteractableArea {
     return undefined;
   }
 
+  /**
+   * Plays the next song in the Jukebox queue if:
+   *    - there is no song currently playing, and there's a song in the queue
+   *    OR
+   *    - the song video in the provided viewingAreaModel is not playing anymore, and has
+   *      played for more than 0 seconds (the song has 'ended')
+   *
+   * @param viewingAreaModel to check if the song playing has ended
+   * @returns a new viewing area model with the next song if there's an update, else undefined
+   *          if the next song is being played
+   */
   private _playNextSong(viewingAreaModel: ViewingAreaModel): ViewingAreaModel | undefined {
     if (
       (this._jukebox.curSong === undefined && this._jukebox.queue.length !== 0) ||
