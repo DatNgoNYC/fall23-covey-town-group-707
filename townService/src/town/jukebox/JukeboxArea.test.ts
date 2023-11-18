@@ -7,6 +7,7 @@ import {
   ViewingAreaUpdateCommand,
   VoteOnSongInQueueCommand,
   ViewingArea as ViewingAreaModel,
+  JoinGameCommand,
 } from '../../types/CoveyTownSocket';
 import JukeboxArea from './JukeboxArea';
 import ViewingArea from '../ViewingArea';
@@ -313,6 +314,16 @@ describe('JukeboxArea', () => {
           expect(jukeboxArea.toModel().videoPlayer).toEqual(expectedNewModel);
           expect(jukeboxArea.toModel().curSong).toEqual(undefined);
         });
+      });
+    });
+
+    describe('Invalid Command', () => {
+      it('should throw an error if the command is not supported', () => {
+        const invalidCommand: JoinGameCommand = { type: 'JoinGame' };
+
+        expect(() => jukeboxArea.handleCommand(invalidCommand)).toThrowError(
+          'Unknown command type',
+        );
       });
     });
   });
