@@ -60,6 +60,11 @@ export default class Jukebox {
     this._queue.push({ song, numUpvotes: 0, numDownvotes: 0 });
   }
 
+  public playNextSongInQueue() {
+    const nextSongInQueue = this.queue.shift();
+    this._curSong = nextSongInQueue?.song;
+  }
+
   /**
    * Adds the given vote to the song provided in the queue, and sorts the queue
    * to ensure that it remains sorted in descending order of net votes (upvotes - downvotes).
