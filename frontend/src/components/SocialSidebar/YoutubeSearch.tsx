@@ -1,6 +1,6 @@
 import { Song } from '../../../../shared/types/CoveyTownSocket';
 
-type ResultJSON = { snippet: { title: any; channelTitle: any }; id: { videoId: any } };
+type ResultJSON = { snippet: { title: string; channelTitle: string }; id: { videoId: string } };
 
 /**
  * A function to call the Youtube Data API to search for songs in the Youtube Catalogue using the song name and artist name given
@@ -16,7 +16,7 @@ export async function searchSong({
   songName: string;
   artistName: string;
 }): Promise<Song[]> {
-  const youtubeApiKey = process.env.YOUTUBE_API_KEY;
+  // const youtubeApiKey = process.env.YOUTUBE_API_KEY;
   const searchTerm = `${songName}+${artistName}`;
   const numResults = 10;
   let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=${numResults}&q=${searchTerm}&key=AIzaSyAwJ9S1H92Mx9QqbEMBrDew49NxfMcar6w`;

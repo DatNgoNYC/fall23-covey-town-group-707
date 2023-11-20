@@ -9,7 +9,8 @@
 // import { SuggestionForm } from './SuggestionForm';
 // import JukeboxAreaController from '../../classes/interactable/JukeboxAreaController';
 // import JukeboxArea from '../../../../townService/src/town/jukebox/JukeboxArea';
-// import { nanoid } from 'nanoid';
+import { nanoid } from 'nanoid';
+nanoid();
 // // import * as apiClient from './YoutubeSearch';
 // jest.mock('./YoutubeSearch', () => {
 //   return {
