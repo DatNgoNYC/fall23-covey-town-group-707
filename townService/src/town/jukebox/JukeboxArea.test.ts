@@ -15,6 +15,12 @@ import ViewingArea from '../ViewingArea';
 describe('JukeboxArea', () => {
   let jukeboxArea: JukeboxArea;
   let viewingArea: ViewingArea;
+  let song1: Song;
+  let song2: Song;
+  let song3: Song;
+  let song4: Song;
+  let song5: Song;
+  let song6: Song;
 
   beforeEach(() => {
     const id = nanoid();
@@ -30,27 +36,45 @@ describe('JukeboxArea', () => {
       mock<TownEmitter>(),
       viewingArea,
     );
+
+    song1 = {
+      songName: 'Sugar',
+      artistName: 'Maroon 5',
+      videoId: 'abc',
+    };
+    song2 = {
+      songName: 'Senorita',
+      artistName: 'Shawn Mendes',
+      videoId: 'def',
+    };
+    song3 = {
+      songName: 'Travel',
+      artistName: 'Mamamoo',
+      videoId: 'ghi',
+    };
+    song4 = {
+      songName: 'abcdefu',
+      artistName: 'Gayle',
+      videoId: 'jkl',
+    };
+    song5 = {
+      songName: 'Starry Nights',
+      artistName: 'Mamamoo',
+      videoId: 'mno',
+    };
+    song6 = {
+      songName: 'Blank Space',
+      artistName: 'Taylor Swift',
+      videoId: 'xyz',
+    };
   });
 
   describe('handleCommand', () => {
     describe('AddSongToQueue', () => {
-      let song1: Song;
-      let song2: Song;
       let command1: AddSongToQueueCommand;
       let command2: AddSongToQueueCommand;
 
       beforeEach(() => {
-        song1 = {
-          songName: 'Sugar',
-          artistName: 'Maroon 5',
-          videoId: 'abc',
-        };
-        song2 = {
-          songName: 'Senorita',
-          artistName: 'Shawn Mendes',
-          videoId: 'def',
-        };
-
         command1 = { type: 'AddSongToQueue', song: song1 };
         command2 = { type: 'AddSongToQueue', song: song2 };
       });
@@ -108,67 +132,48 @@ describe('JukeboxArea', () => {
     });
 
     describe('VoteOnSongInQueue', () => {
-      let song1: Song;
-      let song2: Song;
-      let song3: Song;
       let upvoteCommand: VoteOnSongInQueueCommand;
       let downvoteCommand: VoteOnSongInQueueCommand;
 
       beforeEach(() => {
-        song1 = {
-          songName: 'Travel',
-          artistName: 'Mamamoo',
-          videoId: 'abc',
-        };
-        song2 = {
-          songName: 'abcefu',
-          artistName: 'Gayle',
-          videoId: 'def',
-        };
-        song3 = {
-          songName: 'Starry Nights',
-          artistName: 'Mamamoo',
-          videoId: 'ghi',
-        };
-
         // add all the songs to the queue
-        // Note: song3 will be set as the currently playing song
+        // Note: song5 will be set as the currently playing song
+        jukeboxArea.handleCommand({ type: 'AddSongToQueue', song: song5 });
         jukeboxArea.handleCommand({ type: 'AddSongToQueue', song: song3 });
-        jukeboxArea.handleCommand({ type: 'AddSongToQueue', song: song1 });
-        jukeboxArea.handleCommand({ type: 'AddSongToQueue', song: song2 });
+        jukeboxArea.handleCommand({ type: 'AddSongToQueue', song: song4 });
         expect(jukeboxArea.toModel().queue.length).toEqual(2);
 
-        upvoteCommand = { type: 'VoteOnSongInQueue', song: song1, vote: 'Upvote' };
-        downvoteCommand = { type: 'VoteOnSongInQueue', song: song2, vote: 'Downvote' };
+        upvoteCommand = { type: 'VoteOnSongInQueue', song: song3, vote: 'Upvote' };
+        downvoteCommand = { type: 'VoteOnSongInQueue', song: song4, vote: 'Downvote' };
       });
 
       it('should add an upvote to the given song', () => {
-        expect(jukeboxArea.toModel().queue.find(e => e.song.videoId === song1.videoId)).toEqual({
-          song: song1,
+        expect(jukeboxArea.toModel().queue.find(e => e.song.videoId === song3.videoId)).toEqual({
+          song: song3,
           numUpvotes: 0,
           numDownvotes: 0,
         });
 
         jukeboxArea.handleCommand(upvoteCommand);
 
-        expect(jukeboxArea.toModel().queue.find(e => e.song.videoId === song1.videoId)).toEqual({
-          song: song1,
+        expect(jukeboxArea.toModel().queue.find(e => e.song.videoId === song3.videoId)).toEqual({
+          song: song3,
           numUpvotes: 1,
           numDownvotes: 0,
         });
       });
 
       it('should add a downvote to the given song', () => {
-        expect(jukeboxArea.toModel().queue.find(e => e.song.videoId === song2.videoId)).toEqual({
-          song: song2,
+        expect(jukeboxArea.toModel().queue.find(e => e.song.videoId === song4.videoId)).toEqual({
+          song: song4,
           numUpvotes: 0,
           numDownvotes: 0,
         });
 
         jukeboxArea.handleCommand(downvoteCommand);
 
-        expect(jukeboxArea.toModel().queue.find(e => e.song.videoId === song2.videoId)).toEqual({
-          song: song2,
+        expect(jukeboxArea.toModel().queue.find(e => e.song.videoId === song4.videoId)).toEqual({
+          song: song4,
           numUpvotes: 0,
           numDownvotes: 1,
         });
@@ -176,39 +181,19 @@ describe('JukeboxArea', () => {
     });
 
     describe('ViewingAreaUpdate', () => {
-      let song1: Song;
-      let song2: Song;
-      let song3: Song;
-
       beforeEach(() => {
-        song1 = {
-          songName: 'Travel',
-          artistName: 'Mamamoo',
-          videoId: 'abc',
-        };
-        song2 = {
-          songName: 'abcefu',
-          artistName: 'Gayle',
-          videoId: 'def',
-        };
-        song3 = {
-          songName: 'Starry Nights',
-          artistName: 'Mamamoo',
-          videoId: 'ghi',
-        };
-
         // Note: song1 will be set as the currently playing song
-        jukeboxArea.handleCommand({ type: 'AddSongToQueue', song: song1 });
+        jukeboxArea.handleCommand({ type: 'AddSongToQueue', song: song3 });
       });
 
       it('should update the viewing area if the song is still playing', () => {
-        jukeboxArea.handleCommand({ type: 'AddSongToQueue', song: song2 });
-        jukeboxArea.handleCommand({ type: 'AddSongToQueue', song: song3 });
+        jukeboxArea.handleCommand({ type: 'AddSongToQueue', song: song4 });
+        jukeboxArea.handleCommand({ type: 'AddSongToQueue', song: song5 });
         expect(jukeboxArea.toModel().queue.length).toEqual(2);
 
         expect(jukeboxArea.toModel().videoPlayer).toEqual({
           id: jukeboxArea.id,
-          video: 'https://www.youtube.com/watch?v=abc',
+          video: 'https://www.youtube.com/watch?v=ghi',
           isPlaying: true,
           elapsedTimeSec: 0,
           occupants: [],
@@ -238,13 +223,13 @@ describe('JukeboxArea', () => {
 
       describe('when the current song playing ends', () => {
         it('should update the viewing area with the next song in queue', () => {
-          jukeboxArea.handleCommand({ type: 'AddSongToQueue', song: song2 });
-          jukeboxArea.handleCommand({ type: 'AddSongToQueue', song: song3 });
+          jukeboxArea.handleCommand({ type: 'AddSongToQueue', song: song4 });
+          jukeboxArea.handleCommand({ type: 'AddSongToQueue', song: song5 });
           expect(jukeboxArea.toModel().queue.length).toEqual(2);
 
           expect(jukeboxArea.toModel().videoPlayer).toEqual({
             id: jukeboxArea.id,
-            video: 'https://www.youtube.com/watch?v=abc',
+            video: 'https://www.youtube.com/watch?v=ghi',
             isPlaying: true,
             elapsedTimeSec: 0,
             occupants: [],
@@ -263,7 +248,7 @@ describe('JukeboxArea', () => {
 
           const expectedNewModel: ViewingAreaModel = {
             id: jukeboxArea.id,
-            video: 'https://www.youtube.com/watch?v=def',
+            video: 'https://www.youtube.com/watch?v=jkl',
             isPlaying: true,
             elapsedTimeSec: 0,
             occupants: [],
@@ -278,9 +263,9 @@ describe('JukeboxArea', () => {
           jukeboxArea.handleCommand(updateCommand);
 
           expect(jukeboxArea.toModel().videoPlayer).toEqual(expectedNewModel);
-          expect(jukeboxArea.toModel().curSong).toEqual(song2);
+          expect(jukeboxArea.toModel().curSong).toEqual(song4);
           expect(jukeboxArea.toModel().queue).toEqual([
-            { song: song3, numUpvotes: 0, numDownvotes: 0 },
+            { song: song5, numUpvotes: 0, numDownvotes: 0 },
           ]);
         });
 
