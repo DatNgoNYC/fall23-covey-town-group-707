@@ -1,5 +1,7 @@
 import { Song } from '../../../../shared/types/CoveyTownSocket';
 
+type ResultJSON = { snippet: { title: any; channelTitle: any }; id: { videoId: any } };
+
 /**
  * A function to call the Youtube Data API to search for songs in the Youtube Catalogue using the song name and artist name given
  *
@@ -24,7 +26,7 @@ export async function searchSong({
   return fetch(url)
     .then(response => response.json())
     .then(data => {
-      data.items.map(result => {
+      data.items.map((result: ResultJSON) => {
         searchResults.push({
           songName: result.snippet.title,
           artistName: result.snippet.channelTitle,

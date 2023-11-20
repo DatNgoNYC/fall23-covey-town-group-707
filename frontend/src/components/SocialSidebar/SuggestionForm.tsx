@@ -36,20 +36,21 @@ type ResultCardProps = {
 
 function ResultCard({ song, onClickHandler }: ResultCardProps): JSX.Element {
   return (
-    <div
+    <Flex
       onClick={() => {
         onClickHandler(song);
       }}>
       <Image
+        flex={`1 1 0`}
         className='thumbnail'
         src={`https://img.youtube.com/vi/${song.videoId}/hqdefault.jpg`}
         alt=''
       />
-      <div className='songInfo'>
-        <div className='name'>{song.songName}</div>
-        <div className='artist'>{song.artistName}</div>
-      </div>
-    </div>
+      <Flex className='songInfo' flex={`1 1 0`} dir='vertical'>
+        <p className='name'>{song.songName}</p>
+        <p className='artist'>{song.artistName}</p>
+      </Flex>
+    </Flex>
   );
 }
 
