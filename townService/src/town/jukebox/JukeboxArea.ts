@@ -126,17 +126,16 @@ export default class JukeboxArea extends InteractableArea {
    *      played for more than 0 seconds (the song has 'ended')
    *
    * @param viewingAreaModel to check if the song playing has ended
-   * @returns a new viewing area model with the next song if there's an update, else undefined
-   *          if the next song is being played
+   * @returns whether the viewing area model was updated
    */
-  private _playNextSong(viewingAreaModel: ViewingAreaModel): ViewingAreaModel | undefined {
+  private _playNextSong(viewingAreaModel: ViewingAreaModel): boolean {
     if (
       (this._jukebox.curSong === undefined && this._jukebox.queue.length !== 0) ||
       (!viewingAreaModel.isPlaying && viewingAreaModel.elapsedTimeSec !== 0)
     ) {
       this._jukebox.playNextSongInQueue();
 
-      return {
+      const newViewingAreaModel: ViewingAreaModel = {
         id: this.id,
         occupants: this.occupantsByID,
         type: 'ViewingArea',
@@ -144,9 +143,13 @@ export default class JukeboxArea extends InteractableArea {
         isPlaying: this._jukebox.curSong !== undefined,
         elapsedTimeSec: 0,
       };
+
+      this.updateModel(newViewingAreaModel);
+
+      return true;
     }
 
-    return undefined;
+    return false;
   }
 
   /**
@@ -173,13 +176,8 @@ export default class JukeboxArea extends InteractableArea {
     if (command.type === 'AddSongToQueue') {
       this._jukebox.addSongToQueue(command.song);
 
-      const newViewingAreaModel: ViewingAreaModel | undefined = this._playNextSong(
-        this._viewingArea.toModel(),
-      );
-
-      if (newViewingAreaModel) {
-        this.updateModel(newViewingAreaModel);
-      }
+      // plays the song added to the queue, if there is no currently playing song
+      this._playNextSong(this._viewingArea.toModel());
 
       this._emitAreaChanged();
 
@@ -194,12 +192,11 @@ export default class JukeboxArea extends InteractableArea {
     }
 
     if (command.type === 'ViewingAreaUpdate') {
-      const newViewingAreaModel: ViewingAreaModel | undefined = this._playNextSong(command.update);
+      const updatedViewingAreaModel: boolean = this._playNextSong(command.update);
 
       // if there is a next song to play, then we update the viewing area with
       // the model so that it can play the next song
-      if (newViewingAreaModel) {
-        this.updateModel(newViewingAreaModel);
+      if (updatedViewingAreaModel) {
         this._emitAreaChanged();
 
         return {} as InteractableCommandReturnType<CommandType>;
