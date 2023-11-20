@@ -15,6 +15,7 @@ import {
 import React, { useState } from 'react';
 import JukeboxAreaController from '../../classes/interactable/JukeboxAreaController';
 import { Song } from '../../types/CoveyTownSocket';
+import { searchSong } from './YoutubeSearch';
 
 type SuggestionFormWrapperProps = {
   controller: JukeboxAreaController;
@@ -59,13 +60,16 @@ function ResultsContainer({ songs, onClickHandler }: ResultsContainerProps): JSX
 
   return (
     <Stack>
-      {songs.map(song => {
-        <ResultCard
-          song={song}
-          onClickHandler={() => {
-            onClickHandler(song);
-          }}
-        />;
+      {songs.map((song, index) => {
+        return (
+          <ResultCard
+            key={index}
+            song={song}
+            onClickHandler={() => {
+              onClickHandler(song);
+            }}
+          />
+        );
       })}
     </Stack>
   );
@@ -85,11 +89,7 @@ export function SuggestionForm({ controller }: SuggestionFormProps): JSX.Element
   };
   const searchEventHandler = async () => {
     try {
-      const mockYoutubeAPI = (mockSong: { songName: string; artistName: string }) => {
-        return [{ songName: mockSong.songName, artistName: mockSong.artistName, videoId: 'null' }];
-      };
-
-      const songs: Song[] = mockYoutubeAPI({ songName, artistName });
+      const songs: Song[] = await searchSong({ songName, artistName });
       setResults(songs);
     } catch (error) {
       toast({

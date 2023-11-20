@@ -7,17 +7,23 @@ import { Song } from '../../../../shared/types/CoveyTownSocket';
  * @param artistName the name of the artist of the song to search up
  * @returns a list 10 songs which is the search result from the youtube api call
  */
-function searchSong({ songName, artistName }: { songName: string; artistName: string }) {
+export async function searchSong({
+  songName,
+  artistName,
+}: {
+  songName: string;
+  artistName: string;
+}): Promise<Song[]> {
   const youtubeApiKey = process.env.YOUTUBE_API_KEY;
   const searchTerm = `${songName}+${artistName}`;
   const numResults = 10;
-  let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=${numResults}&q=${searchTerm}&key=${youtubeApiKey}`;
+  let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=${numResults}&q=${searchTerm}&key=AIzaSyAwJ9S1H92Mx9QqbEMBrDew49NxfMcar6w`;
   url = encodeURI(url);
+  const searchResults: Song[] = [];
 
-  fetch(url)
+  return fetch(url)
     .then(response => response.json())
     .then(data => {
-      const searchResults: Song[] = [];
       data.items.map(result => {
         searchResults.push({
           songName: result.snippet.title,
