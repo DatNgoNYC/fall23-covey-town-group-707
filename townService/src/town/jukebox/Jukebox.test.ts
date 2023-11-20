@@ -8,6 +8,7 @@ describe('Jukebox', () => {
   let song3: Song;
   let song4: Song;
   let song5: Song;
+  let song6: Song;
 
   beforeEach(() => {
     jukebox = new Jukebox();
@@ -37,20 +38,33 @@ describe('Jukebox', () => {
       artistName: 'Olivia Rodrigo',
       videoId: 'ghi',
     };
+    song6 = {
+      songName: 'Midnight',
+      artistName: 'Taylor Swift',
+      videoId: 'jkl',
+    };
   });
 
   describe('addSongToQueue', () => {
     it('should add the given song into the queue', () => {
-      const expectedSongQueueItem: SongQueueItem = {
-        song: song1,
-        numUpvotes: 0,
-        numDownvotes: 0,
-      };
+      const expectedSongQueue: SongQueueItem[] = [
+        {
+          song: song1,
+          numUpvotes: 0,
+          numDownvotes: 0,
+        },
+        {
+          song: song6,
+          numUpvotes: 0,
+          numDownvotes: 0,
+        },
+      ];
 
       jukebox.addSongToQueue(song1);
+      jukebox.addSongToQueue(song6);
 
-      expect(jukebox.queue.length).toEqual(1);
-      expect(jukebox.queue[0]).toEqual(expectedSongQueueItem);
+      expect(jukebox.queue.length).toEqual(2);
+      expect(jukebox.queue).toEqual(expectedSongQueue);
     });
     it('should throw an error if the song is already in queue', () => {
       jukebox.addSongToQueue(song1);
