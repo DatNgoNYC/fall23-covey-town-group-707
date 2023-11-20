@@ -120,10 +120,12 @@ export default class JukeboxArea extends InteractableArea {
 
   /**
    * Plays the next song in the Jukebox queue if:
-   *    - there is no song currently playing, and there's a song in the queue
+   *    - there is no song currently playing AND there's a song in the queue
    *    OR
-   *    - the song video in the provided viewingAreaModel is not playing anymore, and has
-   *      played for more than 0 seconds (the song has 'ended')
+   *    - the song has ended:
+   *        the video in the provided viewingAreaModel has stopped playing
+   *            AND
+   *        the video has played for some amount of time
    *
    * @param viewingAreaModel to check if the song playing has ended
    * @returns whether the viewing area model was updated

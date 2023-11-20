@@ -39,7 +39,7 @@ describe('Jukebox', () => {
       videoId: 'ghi',
     };
     song6 = {
-      songName: 'Midnight',
+      songName: 'Bejeweled',
       artistName: 'Taylor Swift',
       videoId: 'jkl',
     };
