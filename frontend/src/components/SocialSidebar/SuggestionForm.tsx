@@ -16,6 +16,7 @@ import React, { useState } from 'react';
 import JukeboxAreaController from '../../classes/interactable/JukeboxAreaController';
 import { Song } from '../../types/CoveyTownSocket';
 import { searchSong } from './YoutubeSearch';
+import assert from 'assert';
 
 type SuggestionFormWrapperProps = {
   controller: JukeboxAreaController;
@@ -61,14 +62,12 @@ function ResultsContainer({ songs, onClickHandler }: ResultsContainerProps): JSX
 
   return (
     <Stack>
-      {songs.map((song, index) => {
+      {songs.map((song) => {
         return (
           <ResultCard
-            key={index}
+            key={song.videoId}
             song={song}
-            onClickHandler={() => {
-              onClickHandler(song);
-            }}
+            onClickHandler={onClickHandler}
           />
         );
       })}
@@ -89,8 +88,10 @@ export function SuggestionForm({ controller }: SuggestionFormProps): JSX.Element
     setSong(result);
   };
   const searchEventHandler = async () => {
+    const youtubeApiKey = process.env.NEXT_PUBLIC_TOWN_YOUTUBE_API_KEY;
+    assert(youtubeApiKey, "NEXT_PUBLIC_TOWN_YOUTUBE_API_KEY must be defined");
     try {
-      const songs: Song[] = await searchSong({ songName, artistName });
+      const songs: Song[] = await searchSong({ songName, artistName, youtubeApiKey});
       setResults(songs);
     } catch (error) {
       toast({
@@ -103,7 +104,7 @@ export function SuggestionForm({ controller }: SuggestionFormProps): JSX.Element
   const queueEventHandler = async () => {
     try {
       if (song === undefined) {
-        return;
+        throw new Error("Song is not defined");
       }
       controller.queueSong(song);
     } catch (error) {
