@@ -59,7 +59,15 @@ export default class JukeboxArea extends InteractableArea {
    * @param viewingArea updated model
    */
   public updateModel(newViewingAreaModel: ViewingAreaModel) {
-    this._viewingArea.updateModel(newViewingAreaModel);
+    const updatedViewingAreaModel: boolean = this._playNextSong(newViewingAreaModel);
+
+    // if there is a next song to play, then we update the viewing area with
+    // the model so that it can play the next song
+    if (updatedViewingAreaModel) {
+      this._emitAreaChanged();
+    } else {
+      this._viewingArea.updateModel(newViewingAreaModel);
+    }
   }
 
   /**
@@ -193,24 +201,7 @@ export default class JukeboxArea extends InteractableArea {
       return undefined as InteractableCommandReturnType<CommandType>;
     }
 
-    if (command.type === 'ViewingAreaUpdate') {
-      const updatedViewingAreaModel: boolean = this._playNextSong(command.update);
-
-      // if there is a next song to play, then we update the viewing area with
-      // the model so that it can play the next song
-      if (updatedViewingAreaModel) {
-        this._emitAreaChanged();
-
-        return {} as InteractableCommandReturnType<CommandType>;
-      }
-
-      // pass to viewing area's handle method if it's none of the jukebox commands
-      // or a viewing area command
-      // if not a valid command, this will throw an error
-      return this._viewingArea.handleCommand(command);
-    }
-
-    throw new InvalidParametersError('Unknown command type');
+    return this._viewingArea.handleCommand(command);
   }
 
   /**
