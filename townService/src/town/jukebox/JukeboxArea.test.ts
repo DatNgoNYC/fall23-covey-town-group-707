@@ -1,15 +1,11 @@
 import { nanoid } from 'nanoid';
 import { mock } from 'jest-mock-extended';
-import { view } from 'ramda';
-import { ITiledMapObject } from '@jonbell/tiled-map-type-guard';
 import {
   AddSongToQueueCommand,
-  Song,
   TownEmitter,
   ViewingAreaUpdateCommand,
   VoteOnSongInQueueCommand,
   ViewingArea as ViewingAreaModel,
-  JukeboxArea as JukeboxAreaModel,
   JoinGameCommand,
 } from '../../types/CoveyTownSocket';
 import JukeboxArea from './JukeboxArea';
@@ -21,8 +17,8 @@ describe('JukeboxArea', () => {
   let viewingArea: ViewingArea;
 
   const song1 = {
-    songName: 'Sugar',
-    artistName: 'Maroon 5',
+    songName: 'Style',
+    artistName: 'Taylor Swift',
     videoId: 'abc',
   };
   const song2 = {
@@ -44,11 +40,6 @@ describe('JukeboxArea', () => {
     songName: 'Starry Nights',
     artistName: 'Mamamoo',
     videoId: 'mno',
-  };
-  const song6 = {
-    songName: 'Blank Space',
-    artistName: 'Taylor Swift',
-    videoId: 'xyz',
   };
 
   const townEmitter = mock<TownEmitter>();

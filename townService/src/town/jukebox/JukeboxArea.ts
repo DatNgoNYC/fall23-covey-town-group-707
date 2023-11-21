@@ -93,16 +93,6 @@ export default class JukeboxArea extends InteractableArea {
   }
 
   /**
-   * Given a list of players, adds all of the players that are within this interactable area
-   *
-   * @param allPlayers list of players to examine and potentially add to this interactable area
-   */
-  public addPlayersWithinBounds(allPlayers: Player[]) {
-    super.addPlayersWithinBounds(allPlayers);
-    this._viewingArea.addPlayersWithinBounds(allPlayers);
-  }
-
-  /**
    * Creates a youtube video URL using the videoID property of the given song
    *
    * @param song to create URL for
