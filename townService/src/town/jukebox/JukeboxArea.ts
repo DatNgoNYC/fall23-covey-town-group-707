@@ -12,7 +12,6 @@ import InteractableArea from '../InteractableArea';
 import Jukebox from './Jukebox';
 import ViewingArea from '../ViewingArea';
 import Player from '../../lib/Player';
-import InvalidParametersError from '../../lib/InvalidParametersError';
 
 /**
  * Represents an interactable area on the map that contains a Jukebox.
