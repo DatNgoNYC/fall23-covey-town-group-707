@@ -39,6 +39,7 @@ export function ViewingAreaVideo({
   controller: ViewingAreaController;
 }): JSX.Element {
   const [isPlaying, setPlaying] = useState<boolean>(controller.isPlaying);
+  const [video, setVideo] = useState(controller.video);
   const townController = useTownController();
 
   const reactPlayerRef = useRef<ReactPlayer>(null);
@@ -52,9 +53,11 @@ export function ViewingAreaVideo({
     };
     controller.addListener('progressChange', progressListener);
     controller.addListener('playbackChange', setPlaying);
+    controller.addListener('videoChange', setVideo);
     return () => {
       controller.removeListener('playbackChange', setPlaying);
       controller.removeListener('progressChange', progressListener);
+      controller.removeListener('videoChange', setVideo);
     };
   }, [controller]);
 
@@ -62,7 +65,7 @@ export function ViewingAreaVideo({
     <Container className='participant-wrapper'>
       Viewing Area: {controller.id}
       <ReactPlayer
-        url={controller.video}
+        url={video}
         ref={reactPlayerRef}
         config={{
           youtube: {

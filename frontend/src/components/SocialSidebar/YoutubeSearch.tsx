@@ -1,4 +1,3 @@
-import assert from 'assert';
 import { Song } from '../../../../shared/types/CoveyTownSocket';
 
 type ResultJSON = { snippet: { title: string; channelTitle: string }; id: { videoId: string } };
