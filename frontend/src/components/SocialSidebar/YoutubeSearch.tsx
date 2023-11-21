@@ -1,3 +1,4 @@
+import assert from 'assert';
 import { Song } from '../../../../shared/types/CoveyTownSocket';
 
 type ResultJSON = { snippet: { title: string; channelTitle: string }; id: { videoId: string } };
@@ -12,14 +13,15 @@ type ResultJSON = { snippet: { title: string; channelTitle: string }; id: { vide
 export async function searchSong({
   songName,
   artistName,
+  youtubeApiKey,
 }: {
   songName: string;
   artistName: string;
+  youtubeApiKey: string;
 }): Promise<Song[]> {
-  // const youtubeApiKey = process.env.YOUTUBE_API_KEY;
   const searchTerm = `${songName}+${artistName}`;
   const numResults = 10;
-  let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=${numResults}&q=${searchTerm}&key=AIzaSyAwJ9S1H92Mx9QqbEMBrDew49NxfMcar6w`;
+  let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=${numResults}&q=${searchTerm}&key=${youtubeApiKey}`;
   url = encodeURI(url);
   const searchResults: Song[] = [];
 
