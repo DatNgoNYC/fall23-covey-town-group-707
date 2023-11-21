@@ -4,10 +4,11 @@ import JukeboxAreaController, {
   useJukeboxAreaCurSong,
   useJukeboxAreaQueue,
 } from '../../classes/interactable/JukeboxAreaController';
-import React from 'react';
+import React, { useState } from 'react';
 import { JukeboxVote, Song, SongQueueItem } from '../../types/CoveyTownSocket';
 import PlayerController from '../../classes/PlayerController';
 import { useInteractableAreaOccupants } from '../../classes/interactable/InteractableAreaController';
+import SuggestionFormWrapper from './SuggestionForm';
 
 type JukeboxAreaViewProps = {
   controller: JukeboxAreaController;
@@ -66,6 +67,15 @@ function JukeboxDashboardView({ controller, ourPlayer }: JukeboxAreaViewProps): 
   const occupants = useInteractableAreaOccupants(controller);
   const song = useJukeboxAreaCurSong(controller);
   const queue = useJukeboxAreaQueue(controller);
+  const [showForm, setShowForm] = useState(false);
+
+  const handleSuggestSong = () => {
+    setShowForm(true);
+  };
+
+  const handleClose = () => {
+    setShowForm(false);
+  };
 
   if (occupants.filter(p => p === ourPlayer).length === 0) {
     return <></>;
@@ -95,7 +105,12 @@ function JukeboxDashboardView({ controller, ourPlayer }: JukeboxAreaViewProps): 
           );
         })}
       </OrderedList>
-      <Button>Suggest Song</Button>
+      <Button onClick={handleSuggestSong}>Suggest Song</Button>
+      <SuggestionFormWrapper
+        controller={controller}
+        showForm={showForm}
+        handleClose={handleClose}
+      />
     </Box>
   );
 }
