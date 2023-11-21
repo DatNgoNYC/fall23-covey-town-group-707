@@ -8,10 +8,7 @@ import {
   SongQueueItem,
 } from '../../types/CoveyTownSocket';
 import PlayerController from '../PlayerController';
-import JukeboxAreaController, {
-  useJukeboxAreaCurSong,
-  useJukeboxAreaQueue,
-} from './JukeboxAreaController';
+import JukeboxAreaController from './JukeboxAreaController';
 import TownController from '../TownController';
 import ViewingArea from '../../components/Town/interactables/ViewingArea';
 
@@ -196,7 +193,7 @@ describe('JukeboxAreaController', () => {
       if (curSongChangedCalled) expect(curSongChangedCalled[1]).toEqual(songs[1]);
       expect(controller.toInteractableAreaModel()).toEqual(model);
     });
-    it('emits chenge for queue if the queue has been changed', () => {
+    it('emits change for queue if the queue has been changed', () => {
       const controller = jukeboxControllerWithProp({
         occupants: [],
       });
