@@ -365,4 +365,41 @@ describe('JukeboxAreaController', () => {
       expect(controller.queue[1].numDownvotes).toEqual(6);
     });
   });
+  describe('Test queueSong', () => {
+    it('adds a song to queue', async () => {
+      const controller = jukeboxControllerWithProp({
+        occupants: [],
+        curSong: songs[0],
+        queue: [],
+      });
+
+      const model: JukeboxAreaModel = {
+        id: nanoid(),
+        occupants: [],
+        type: 'JukeboxArea',
+        curSong: songs[0],
+        queue: [queueItems[1]],
+        videoPlayer: {
+          id: controller.id,
+          occupants: [],
+          type: 'ViewingArea',
+          video: 'abc',
+          isPlaying: true,
+          elapsedTimeSec: 20,
+        },
+      };
+
+      expect(controller.queue).toEqual([]);
+      await controller.queueSong(songs[1]);
+
+      expect(mockTownController.sendInteractableCommand).toHaveBeenCalledWith(controller.id, {
+        type: 'AddSongToQueue',
+        song: songs[1],
+      });
+
+      controller.updateFrom(model, []);
+      expect(controller.queue).toEqual([queueItems[1]]);
+      expect(controller.toInteractableAreaModel()).toEqual(model);
+    });
+  });
 });
