@@ -13,6 +13,7 @@ import JukeboxAreaController, {
   useJukeboxAreaQueue,
 } from './JukeboxAreaController';
 import TownController from '../TownController';
+import ViewingArea from '../../components/Town/interactables/ViewingArea';
 
 describe('JukeboxAreaController', () => {
   const ourPlayer = new PlayerController(nanoid(), nanoid(), {
@@ -55,25 +56,35 @@ describe('JukeboxAreaController', () => {
     occupants,
     queue,
     curSong,
+    viewingArea,
     model,
   }: {
     _id?: string;
     occupants: string[];
     curSong?: Song;
     queue?: SongQueueItem[];
+    viewingArea?: ViewingArea;
     model?: JukeboxAreaModel;
   }) {
     const id = _id || nanoid();
-    model = model
+    const controllerModel: JukeboxAreaModel = model
       ? model
-      : {
+      : ({
           id: id,
           occupants: occupants,
           type: 'JukeboxArea',
           curSong: curSong,
           queue: queue || [],
-        };
-    const ret = new JukeboxAreaController(id, mockTownController, undefined, [], model);
+          videoPlayer: viewingArea || {
+            id: id,
+            occupants: occupants,
+            type: 'ViewingArea',
+            video: undefined,
+            isPlaying: false,
+            elapsedTimeSec: 0,
+          },
+        } as JukeboxAreaModel);
+    const ret = new JukeboxAreaController(id, controllerModel, mockTownController);
     return ret;
   }
 
@@ -107,6 +118,14 @@ describe('JukeboxAreaController', () => {
         type: 'JukeboxArea',
         curSong: undefined,
         queue: [],
+        videoPlayer: {
+          id: controller.id,
+          occupants: [],
+          type: 'ViewingArea',
+          video: undefined,
+          isPlaying: false,
+          elapsedTimeSec: 0,
+        },
       };
       expect(controller.toInteractableAreaModel()).toEqual(model);
     });
@@ -120,6 +139,14 @@ describe('JukeboxAreaController', () => {
         type: 'JukeboxArea',
         curSong: undefined,
         queue: [],
+        videoPlayer: {
+          id: controller.id,
+          occupants: [],
+          type: 'ViewingArea',
+          video: undefined,
+          isPlaying: false,
+          elapsedTimeSec: 0,
+        },
       };
       expect(controller.toInteractableAreaModel()).toEqual(model);
 
@@ -129,6 +156,14 @@ describe('JukeboxAreaController', () => {
         type: 'JukeboxArea',
         curSong: songs[0],
         queue: [queueItems[1], queueItems[2]],
+        videoPlayer: {
+          id: controller.id,
+          occupants: [],
+          type: 'ViewingArea',
+          video: 'abc',
+          isPlaying: true,
+          elapsedTimeSec: 15,
+        },
       };
       controller.updateFrom(modelChanged, players);
       expect(controller.toInteractableAreaModel()).toEqual(modelChanged);
@@ -146,6 +181,14 @@ describe('JukeboxAreaController', () => {
         type: 'JukeboxArea',
         curSong: songs[1],
         queue: [],
+        videoPlayer: {
+          id: controller.id,
+          occupants: [],
+          type: 'ViewingArea',
+          video: 'def',
+          isPlaying: true,
+          elapsedTimeSec: 20,
+        },
       };
       controller.updateFrom(model, []);
       const curSongChangedCalled = emitSpy.mock.calls.find(call => call[0] === 'curSongChanged');
@@ -164,6 +207,14 @@ describe('JukeboxAreaController', () => {
         type: 'JukeboxArea',
         curSong: undefined,
         queue: queueItems,
+        videoPlayer: {
+          id: controller.id,
+          occupants: [],
+          type: 'ViewingArea',
+          video: undefined,
+          isPlaying: false,
+          elapsedTimeSec: 0,
+        },
       };
       controller.updateFrom(model, []);
       const queueChangedCalled = emitSpy.mock.calls.find(call => call[0] === 'queueChanged');
@@ -184,6 +235,14 @@ describe('JukeboxAreaController', () => {
         type: 'JukeboxArea',
         curSong: undefined,
         queue: [],
+        videoPlayer: {
+          id: controller.id,
+          occupants: [],
+          type: 'ViewingArea',
+          video: undefined,
+          isPlaying: false,
+          elapsedTimeSec: 0,
+        },
       };
       controller.updateFrom(model, []);
       const noSongChangeCalled = emitSpy.mock.calls.find(call => call[0] === 'curSongChanged');
@@ -202,6 +261,14 @@ describe('JukeboxAreaController', () => {
         type: 'JukeboxArea',
         curSong: undefined,
         queue: [],
+        videoPlayer: {
+          id: controller.id,
+          occupants: [],
+          type: 'ViewingArea',
+          video: undefined,
+          isPlaying: false,
+          elapsedTimeSec: 0,
+        },
       };
       expect(controller.toInteractableAreaModel()).toEqual(model);
 
@@ -211,6 +278,14 @@ describe('JukeboxAreaController', () => {
         type: 'JukeboxArea',
         curSong: songs[0],
         queue: [queueItems[1], queueItems[2]],
+        videoPlayer: {
+          id: controller.id,
+          occupants: [],
+          type: 'ViewingArea',
+          video: 'abc',
+          isPlaying: true,
+          elapsedTimeSec: 15,
+        },
       };
       controller.updateFrom(modelChanged, players);
       expect(controller.toInteractableAreaModel()).toEqual(modelChanged);
@@ -230,6 +305,14 @@ describe('JukeboxAreaController', () => {
         type: 'JukeboxArea',
         curSong: undefined,
         queue: [{ song: songs[1], numUpvotes: 23, numDownvotes: 0 }, queueItems[2]],
+        videoPlayer: {
+          id: controller.id,
+          occupants: [],
+          type: 'ViewingArea',
+          video: undefined,
+          isPlaying: false,
+          elapsedTimeSec: 0,
+        },
       };
 
       expect(controller.queue[0].numUpvotes).toEqual(22);
@@ -258,6 +341,14 @@ describe('JukeboxAreaController', () => {
         type: 'JukeboxArea',
         curSong: songs[0],
         queue: [queueItems[1], { song: songs[2], numUpvotes: 6, numDownvotes: 6 }],
+        videoPlayer: {
+          id: controller.id,
+          occupants: [],
+          type: 'ViewingArea',
+          video: 'abc',
+          isPlaying: true,
+          elapsedTimeSec: 20,
+        },
       };
 
       expect(controller.queue[1].numDownvotes).toEqual(5);
