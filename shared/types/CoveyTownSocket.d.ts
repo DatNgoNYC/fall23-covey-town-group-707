@@ -293,8 +293,8 @@ export interface ServerToClientEvents {
 export interface ClientToServerEvents {
   chatMessage: (message: ChatMessage) => void;
   playerMovement: (movementData: PlayerLocation) => void;
-  playerEmotionChange: (emotion: Emotion) => void;
   playerDanceMoveChange: (danceMove: DanceMove | undefined) => void;
+  playerEmotionChange: (emotion: Emotion) => void;
   interactableUpdate: (update: Interactable) => void;
   interactableCommand: (
     command: InteractableCommand & InteractableCommandBase

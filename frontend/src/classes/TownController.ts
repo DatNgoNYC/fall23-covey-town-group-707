@@ -15,8 +15,8 @@ import useTownController from '../hooks/useTownController';
 import {
   ChatMessage,
   CoveyTownSocket,
-  Emotion,
   DanceMove,
+  Emotion,
   GameState,
   Interactable as InteractableAreaModel,
   InteractableCommand,
