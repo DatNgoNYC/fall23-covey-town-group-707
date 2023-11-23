@@ -42,6 +42,7 @@ export interface Player {
   location: PlayerLocation;
   emotion: Emotion;
   danceMove?: DanceMove;
+  emotion: Emotion;
 }
 
 export type XY = { x: number; y: number };

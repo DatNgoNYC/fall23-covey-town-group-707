@@ -40,6 +40,8 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
     // default emotion is neutral
     this._emotion = emotion ? emotion : 'NEUTRAL';
     this._danceMove = danceMove;
+    // default emotion is neutral
+    this._emotion = emotion ? emotion : 'NEUTRAL';
   }
 
   set location(newLocation: PlayerLocation) {
@@ -84,7 +86,7 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
       userName: this.userName,
       location: this.location, emotion: this.emotion,
       danceMove: this.danceMove,
-    };
+   , emotion: this.emotion };
   }
 
   private _updateGameComponentLocation() {
@@ -186,6 +188,8 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
       modelPlayer.emotion,
     ,
       modelPlayer.danceMove,
+    ,
+      modelPlayer.emotion,
     );
   }
 }
