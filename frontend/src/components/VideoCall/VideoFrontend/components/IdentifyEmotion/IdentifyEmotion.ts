@@ -6,14 +6,9 @@ import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { useEffect } from 'react';
 import AWS from 'aws-sdk';
 import TownController from '../../../../../classes/TownController';
+import assert from 'assert';
 
 const EMOTION_API_REQUEST_DELAY = 5000;
-const REGION = 'us-east-1';
-const credentials = new AWS.SharedIniFileCredentials({ profile: 'default' });
-AWS.config.credentials = credentials;
-AWS.config.update({ region: REGION });
-
-const client = new AWS.Rekognition();
 
 async function captureFrame(mediaStreamTrack: MediaStreamTrack): Promise<Buffer> {
   // TODO: fix the any typecasting
@@ -26,7 +21,7 @@ async function captureFrame(mediaStreamTrack: MediaStreamTrack): Promise<Buffer>
   return imageBuffer;
 }
 
-function emotionDetectionRequest(image: Buffer): Promise<AWS.Rekognition.EmotionName | undefined> {
+function emotionDetectionRequest(client: AWS.Rekognition, image: Buffer): Promise<AWS.Rekognition.EmotionName | undefined> {
   // const image: Buffer = fs.readFileSync('IMG_9555.jpg');
 
   const params = {
@@ -62,6 +57,8 @@ function emotionDetectionRequest(image: Buffer): Promise<AWS.Rekognition.Emotion
 }
 
 export function IdentifyEmotion() {
+  const debugAWS = process.env.NEXT_PUBLIC_TOWN_AWS_DEV_MODE;
+  
   const townController: TownController = useTownController();
 
   const { localTracks } = useVideoContext();
@@ -71,19 +68,41 @@ export function IdentifyEmotion() {
   ) as LocalVideoTrack | undefined;
   const mediaStreamTrack: MediaStreamTrack | undefined = useMediaStreamTrack(localVideoTrack);
 
+  assert(process.env.NEXT_PUBLIC_TOWN_AWS_ACCESS_KEY_ID, "AWS Access Key must be defined");
+  assert(process.env.NEXT_PUBLIC_TOWN_AWS_SECRET_ACCESS_KEY, "AWS Secret Key must be defined");
+
+  AWS.config.update({
+    region: process.env.NEXT_PUBLIC_TOWN_AWS_REGION,
+    credentials: {
+      accessKeyId: process.env.NEXT_PUBLIC_TOWN_AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.NEXT_PUBLIC_TOWN_AWS_SECRET_ACCESS_KEY,
+    },
+  });
+
+  const client: AWS.Rekognition = new AWS.Rekognition();
+
   useEffect(() => {
     let timeout: NodeJS.Timeout;
 
     const detectUserEmotion = async () => {
-      let userEmotion: Emotion;
+      let userEmotion: Emotion = 'NEUTRAL';
 
       try {
         if (mediaStreamTrack) {
+          console.log(mediaStreamTrack);
           const imageBuffer = await captureFrame(mediaStreamTrack);
+          console.log(imageBuffer)
+          let detectedAWSEmotion:
+          | AWS.Rekognition.EmotionName
+          | undefined;
 
-          const detectedAWSEmotion:
-            | AWS.Rekognition.EmotionName
-            | undefined = await emotionDetectionRequest(imageBuffer);
+          if (debugAWS && debugAWS.toLowerCase() === 'true') {
+            const emo: AWS.Rekognition.EmotionName[] = ['HAPPY', 'SAD', 'ANGRY', 'SURPRISED', 'FEAR', 'NEUTRAL'];
+
+            detectedAWSEmotion = emo[Math.floor(Math.random() * emo.length)];
+          } else {
+            detectedAWSEmotion = await emotionDetectionRequest(client, imageBuffer);
+          }
 
           switch (detectedAWSEmotion) {
             case 'HAPPY':
@@ -109,7 +128,8 @@ export function IdentifyEmotion() {
       } catch (error) {
         console.error('Error detecting emotions:', error);
       } finally {
-        // emit userEmotion here
+        console.log(userEmotion);
+        townController.emitEmotionChange(userEmotion);
         timeout = setTimeout(detectUserEmotion, EMOTION_API_REQUEST_DELAY);
       }
     };
@@ -117,5 +137,5 @@ export function IdentifyEmotion() {
     detectUserEmotion();
 
     return () => clearTimeout(timeout);
-  }, []);
+  }, [mediaStreamTrack]);
 }
