@@ -15,6 +15,7 @@ import useTownController from '../hooks/useTownController';
 import {
   ChatMessage,
   CoveyTownSocket,
+  Emotion,
   GameState,
   Interactable as InteractableAreaModel,
   InteractableCommand,
@@ -81,6 +82,11 @@ export type TownEvents = {
    * the new location can be found on the PlayerController.
    */
   playerMoved: (movedPlayer: PlayerController) => void;
+  /**
+   * An event that indicates that a player's emotion has changed. This event is dispatched after updating the player's emotion -
+   * the new emotion can be found on the PlayerController.
+   */
+  playerEmotionChanged: (newEmotionPlayer: PlayerController) => void;
 
   /**
    * An event that indicates that the set of active interactable areas has changed. This event is dispatched
@@ -480,6 +486,15 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     assert(ourPlayer);
     ourPlayer.location = newLocation;
     this.emit('playerMoved', ourPlayer);
+  }
+
+  public emitEmotionChange(newEmotion: Emotion) {
+    this._socket.emit('playerEmotionChange', newEmotion);
+    const ourPlayer = this._ourPlayer;
+    assert(ourPlayer);
+    ourPlayer.emotion = newEmotion;
+    console.log('ourPlayer emotion changed ', ourPlayer.emotion);
+    this.emit('playerEmotionChanged', ourPlayer);
   }
 
   /**

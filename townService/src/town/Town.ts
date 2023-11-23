@@ -10,6 +10,7 @@ import {
   ChatMessage,
   ConversationArea as ConversationAreaModel,
   CoveyTownSocket,
+  Emotion,
   Interactable,
   InteractableCommand,
   InteractableCommandBase,
@@ -145,6 +146,13 @@ export default class Town {
       this._updatePlayerLocation(newPlayer, movementData);
     });
 
+    // Register an event listener for the client socket: if the client updates their
+    // player emotion, inform the CoveyTownController
+    socket.on('playerEmotionChange', (emotion: Emotion) => {
+      console.log('backend emotion change', emotion);
+      this._updatePlayerEmotion(newPlayer, emotion);
+    });
+
     // Set up a listener to process updates to interactables.
     // Currently only knows how to process updates for ViewingArea's, and
     // ignores any other updates for any other kind of interactable.
@@ -255,6 +263,14 @@ export default class Town {
     player.location = location;
 
     this._broadcastEmitter.emit('playerMoved', player.toPlayerModel());
+  }
+
+  private _updatePlayerEmotion(player: Player, emotion: Emotion): void {
+    // do we need to do anything other than set the new emotion?
+    player.emotion = emotion;
+    // probably don't need to emit back to frontend - this info will be lagging behind
+    // this function is just to keep the player model consistent
+    // this._broadcastEmitter.emit('playerEmotionChanged', player.toPlayerModel());
   }
 
   /**
