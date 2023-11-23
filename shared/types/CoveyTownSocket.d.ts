@@ -36,9 +36,12 @@ export interface Player {
   id: PlayerID;
   userName: string;
   location: PlayerLocation;
+  emotion: Emotion;
 }
 
 export type XY = { x: number; y: number };
+
+export type Emotion = 'NEUTRAL' | 'HAPPY' | 'SAD' | 'SURPRISED' | 'ANGRY' | 'FEAR';
 
 // Represents a song, which has a name,
 // artist, and a unique videoID

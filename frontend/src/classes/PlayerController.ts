@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import TypedEmitter from 'typed-emitter';
-import { Player as PlayerModel, PlayerLocation } from '../types/CoveyTownSocket';
+import { Player as PlayerModel, PlayerLocation, Emotion } from '../types/CoveyTownSocket';
 export const MOVEMENT_SPEED = 175;
 
 export type PlayerEvents = {
@@ -15,17 +15,21 @@ export type PlayerGameObjects = {
 export default class PlayerController extends (EventEmitter as new () => TypedEmitter<PlayerEvents>) {
   private _location: PlayerLocation;
 
+  private _emotion: Emotion;
+
   private readonly _id: string;
 
   private readonly _userName: string;
 
   public gameObjects?: PlayerGameObjects;
 
-  constructor(id: string, userName: string, location: PlayerLocation) {
+  constructor(id: string, userName: string, location: PlayerLocation, emotion?: Emotion) {
     super();
     this._id = id;
     this._userName = userName;
     this._location = location;
+    // default emotion is neutral
+    this._emotion = emotion ? emotion : 'NEUTRAL';
   }
 
   set location(newLocation: PlayerLocation) {
@@ -38,6 +42,16 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
     return this._location;
   }
 
+  set emotion(newEmotion: Emotion) {
+    this._emotion = newEmotion;
+    // this._updateSpriteEmotion();
+    // should there be a this.emit?
+  }
+
+  get emotion(): Emotion {
+    return this._emotion;
+  }
+
   get userName(): string {
     return this._userName;
   }
@@ -47,7 +61,7 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
   }
 
   toPlayerModel(): PlayerModel {
-    return { id: this.id, userName: this.userName, location: this.location };
+    return { id: this.id, userName: this.userName, location: this.location, emotion: this.emotion };
   }
 
   private _updateGameComponentLocation() {
@@ -84,6 +98,11 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
   }
 
   static fromPlayerModel(modelPlayer: PlayerModel): PlayerController {
-    return new PlayerController(modelPlayer.id, modelPlayer.userName, modelPlayer.location);
+    return new PlayerController(
+      modelPlayer.id,
+      modelPlayer.userName,
+      modelPlayer.location,
+      modelPlayer.emotion,
+    );
   }
 }
