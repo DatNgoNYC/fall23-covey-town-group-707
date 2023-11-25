@@ -2,12 +2,12 @@ import React from 'react';
 import { ViewingAreaVideo } from './ViewingAreaVideo';
 import { useInteractable, useInteractableAreaController } from '../../../classes/TownController';
 import JukeboxArea from './JukeboxArea';
-import { InteractableID } from '../../../types/CoveyTownSocket';
 import JukeboxAreaController, {
   noSongPlaying,
   useJukeboxAreaCurSong,
   useJukeboxViewingAreaController,
 } from '../../../classes/interactable/JukeboxAreaController';
+import useTownController from '../../../hooks/useTownController';
 
 /**
  *  The JukeboxVideoPlayer plays a song video, if the URL is set, using the ViewingAreaVideo component
@@ -15,15 +15,21 @@ import JukeboxAreaController, {
  * @param interactableID is the the ID of the Jukebox area
  * @returns the video player component if there's a song playing
  */
-function JukeboxVideoPlayer({ interactableID }: { interactableID: InteractableID }): JSX.Element {
-  const jukeboxAreaController =
-    useInteractableAreaController<JukeboxAreaController>(interactableID);
+function JukeboxVideoPlayer({ jukeboxArea }: { jukeboxArea: JukeboxArea }): JSX.Element {
+  const townController = useTownController();
+  const jukeboxAreaController = useInteractableAreaController<JukeboxAreaController>(
+    jukeboxArea.name,
+  );
   const viewingAreaController = useJukeboxViewingAreaController(jukeboxAreaController);
 
   const curSong = useJukeboxAreaCurSong(jukeboxAreaController);
 
   if (curSong.videoId !== noSongPlaying.videoId) {
     return <ViewingAreaVideo controller={viewingAreaController} />;
+  } else {
+    // forces game to emit "jukeboxArea" event again so that
+    // re-interacting with the area works as expected
+    townController.interactEnd(jukeboxArea);
   }
 
   return <></>;
@@ -37,7 +43,7 @@ export function JukeboxVideoPlayerWrapper(): JSX.Element {
   const jukeboxArea = useInteractable<JukeboxArea>('jukeboxArea');
 
   if (jukeboxArea) {
-    return <JukeboxVideoPlayer interactableID={jukeboxArea.name} />;
+    return <JukeboxVideoPlayer jukeboxArea={jukeboxArea} />;
   }
 
   return <></>;
