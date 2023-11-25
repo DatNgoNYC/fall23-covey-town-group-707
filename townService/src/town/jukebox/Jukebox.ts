@@ -68,12 +68,19 @@ export default class Jukebox {
   /**
    * Adds the given vote to the song provided in the queue, and sorts the queue
    * to ensure that it remains sorted in descending order of net votes (upvotes - downvotes).
+   * Filters out any songs that have downvotes from over 50% of the occupants.
+   * Does not do anything if the vote cast is the same as the player's previous vote on the song.
    *
    * @param song represents the song the user casts a vote on
-   * @param vote represents the type of the vote - either upvote or downvote (JukeboxVote)
+   * @param vote represents the type of the vote
    * @throws InvalidParametersError if the song specified is not in the queue
    */
-  public voteOnSongInQueue(song: Song, vote: JukeboxVote) {
+  public voteOnSongInQueue(
+    song: Song,
+    vote: JukeboxVote,
+    prevVote: JukeboxVote,
+    numOccupants: number,
+  ) {
     const songInQueue: SongQueueItem | undefined = this.queue.find(
       queueItem => queueItem.song.videoId === song.videoId,
     );
@@ -82,14 +89,27 @@ export default class Jukebox {
       throw new InvalidParametersError('Song not in queue.');
     }
 
-    if (vote === 'Upvote') {
-      songInQueue.numUpvotes += 1;
-    } else if (vote === 'Downvote') {
-      songInQueue.numDownvotes += 1;
-    }
+    if (vote !== prevVote) {
+      switch (vote) {
+        case 'Upvote': {
+          songInQueue.numUpvotes += 1;
+          songInQueue.numDownvotes -= prevVote === 'None' ? 0 : 1;
 
-    this._queue = this._queue.sort(
-      (a, b) => b.numUpvotes - b.numDownvotes - (a.numUpvotes - a.numDownvotes),
-    );
+          break;
+        }
+        case 'Downvote':
+          songInQueue.numDownvotes += 1;
+          songInQueue.numUpvotes -= prevVote === 'None' ? 0 : 1;
+
+          break;
+        case 'None':
+        default:
+          break;
+      }
+
+      this._queue = this._queue
+        .filter(songQueueItem => songQueueItem.numDownvotes <= 0.5 * numOccupants)
+        .sort((a, b) => b.numUpvotes - b.numDownvotes - (a.numUpvotes - a.numDownvotes));
+    }
   }
 }

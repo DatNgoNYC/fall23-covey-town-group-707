@@ -184,7 +184,12 @@ export default class JukeboxArea extends InteractableArea {
     }
 
     if (command.type === 'VoteOnSongInQueue') {
-      this._jukebox.voteOnSongInQueue(command.song, command.vote);
+      this._jukebox.voteOnSongInQueue(
+        command.song,
+        command.vote,
+        command.prevVote,
+        this.occupants.length,
+      );
       this._emitAreaChanged();
 
       return undefined as InteractableCommandReturnType<CommandType>;

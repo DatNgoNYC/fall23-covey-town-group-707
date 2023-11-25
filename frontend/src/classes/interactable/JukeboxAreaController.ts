@@ -198,11 +198,12 @@ export default class JukeboxAreaController extends InteractableAreaController<
    * @param jukeboxVote Whether it is a upvote or downvote
    * @param song The song to vote on
    */
-  public async vote(jukeboxVote: JukeboxVote, song: Song) {
+  public async vote(jukeboxVote: JukeboxVote, song: Song, prevVote: JukeboxVote) {
     await this._townController.sendInteractableCommand(this.id, {
       type: 'VoteOnSongInQueue',
       song: song,
       vote: jukeboxVote,
+      prevVote,
     });
   }
 

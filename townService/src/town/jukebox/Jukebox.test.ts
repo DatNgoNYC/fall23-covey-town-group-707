@@ -77,7 +77,9 @@ describe('Jukebox', () => {
 
   describe('voteOnSongInQueue', () => {
     it('should error if the provided song is not in the queue', () => {
-      expect(() => jukebox.voteOnSongInQueue(song4, 'Upvote')).toThrowError('Song not in queue.');
+      expect(() => jukebox.voteOnSongInQueue(song4, 'Upvote', 'None', 2)).toThrowError(
+        'Song not in queue.',
+      );
     });
     it('should add an upvote to the provided song', () => {
       const expectedSongQueueItem: SongQueueItem = {
@@ -88,7 +90,7 @@ describe('Jukebox', () => {
 
       jukebox.addSongToQueue(song4);
 
-      jukebox.voteOnSongInQueue(song4, 'Upvote');
+      jukebox.voteOnSongInQueue(song4, 'Upvote', 'None', 3);
       expect(jukebox.queue[0]).toEqual(expectedSongQueueItem);
     });
     it('should add an upvote to the correct provided song and sorts', () => {
@@ -114,7 +116,7 @@ describe('Jukebox', () => {
       jukebox.addSongToQueue(song2);
       jukebox.addSongToQueue(song3);
 
-      jukebox.voteOnSongInQueue(song2, 'Upvote');
+      jukebox.voteOnSongInQueue(song2, 'Upvote', 'None', 3);
       expect(jukebox.queue).toEqual(expectedSongQueue);
     });
     it('should add a downvote to the provided song', () => {
@@ -126,7 +128,7 @@ describe('Jukebox', () => {
 
       jukebox.addSongToQueue(song5);
 
-      jukebox.voteOnSongInQueue(song5, 'Downvote');
+      jukebox.voteOnSongInQueue(song5, 'Downvote', 'None', 3);
       expect(jukebox.queue[0]).toEqual(expectedSongQueueItem);
     });
     it('should add an downvote to the correct provided song and sorts', () => {
@@ -152,8 +154,101 @@ describe('Jukebox', () => {
       jukebox.addSongToQueue(song5);
       jukebox.addSongToQueue(song3);
 
-      jukebox.voteOnSongInQueue(song5, 'Downvote');
+      jukebox.voteOnSongInQueue(song5, 'Downvote', 'None', 3);
       expect(jukebox.queue).toEqual(expectedSongQueue);
+    });
+    it('should not change anything if the vote is None', () => {
+      const expectedSongQueueItem: SongQueueItem = {
+        song: song4,
+        numUpvotes: 1,
+        numDownvotes: 0,
+      };
+
+      jukebox.addSongToQueue(song4);
+      jukebox.voteOnSongInQueue(song4, 'Upvote', 'None', 3);
+
+      jukebox.voteOnSongInQueue(song4, 'None', 'Upvote', 3);
+      expect(jukebox.queue[0]).toEqual(expectedSongQueueItem);
+    });
+    it('should not change anything if the previous and new votes are the same', () => {
+      const expectedSongQueueItem: SongQueueItem = {
+        song: song4,
+        numUpvotes: 0,
+        numDownvotes: 0,
+      };
+
+      jukebox.addSongToQueue(song4);
+
+      jukebox.voteOnSongInQueue(song4, 'Upvote', 'Upvote', 3);
+      expect(jukebox.queue[0]).toEqual(expectedSongQueueItem);
+
+      jukebox.voteOnSongInQueue(song4, 'Downvote', 'Downvote', 3);
+      expect(jukebox.queue[0]).toEqual(expectedSongQueueItem);
+
+      jukebox.voteOnSongInQueue(song4, 'None', 'None', 3);
+      expect(jukebox.queue[0]).toEqual(expectedSongQueueItem);
+    });
+    it('should remove songs with >50% downvotes', () => {
+      const expectedSongQueue: SongQueueItem[] = [
+        {
+          song: song1,
+          numUpvotes: 0,
+          numDownvotes: 0,
+        },
+        {
+          song: song3,
+          numUpvotes: 0,
+          numDownvotes: 0,
+        },
+      ];
+
+      jukebox.addSongToQueue(song1);
+      jukebox.addSongToQueue(song5);
+      jukebox.addSongToQueue(song3);
+
+      jukebox.voteOnSongInQueue(song5, 'Downvote', 'None', 3);
+      jukebox.voteOnSongInQueue(song5, 'Downvote', 'None', 3);
+      expect(jukebox.queue).toEqual(expectedSongQueue);
+    });
+    it('should change the previous upvote to downvote', () => {
+      const intermediateSongQueueItem: SongQueueItem = {
+        song: song4,
+        numUpvotes: 1,
+        numDownvotes: 0,
+      };
+      const expectedSongQueueItem: SongQueueItem = {
+        song: song4,
+        numUpvotes: 0,
+        numDownvotes: 1,
+      };
+
+      jukebox.addSongToQueue(song4);
+
+      jukebox.voteOnSongInQueue(song4, 'Upvote', 'None', 3);
+      expect(jukebox.queue[0]).toEqual(intermediateSongQueueItem);
+
+      jukebox.voteOnSongInQueue(song4, 'Downvote', 'Upvote', 3);
+      expect(jukebox.queue[0]).toEqual(expectedSongQueueItem);
+    });
+    it('should change the previous downvote to upvote', () => {
+      const intermediateSongQueueItem: SongQueueItem = {
+        song: song4,
+        numUpvotes: 0,
+        numDownvotes: 1,
+      };
+      const expectedSongQueueItem: SongQueueItem = {
+        song: song4,
+        numUpvotes: 1,
+        numDownvotes: 0,
+      };
+
+      jukebox.addSongToQueue(song4);
+
+      jukebox.voteOnSongInQueue(song4, 'Downvote', 'None', 3);
+      expect(jukebox.queue[0]).toEqual(intermediateSongQueueItem);
+
+      jukebox.voteOnSongInQueue(song4, 'Upvote', 'Downvote', 3);
+      expect(jukebox.queue[0]).toEqual(expectedSongQueueItem);
     });
   });
 
