@@ -2,7 +2,6 @@ import { nanoid } from 'nanoid';
 import { mock } from 'jest-mock-extended';
 import {
   AddSongToQueueCommand,
-  Song,
   TownEmitter,
   ViewingAreaUpdateCommand,
   VoteOnSongInQueueCommand,
@@ -11,16 +10,42 @@ import {
 } from '../../types/CoveyTownSocket';
 import JukeboxArea from './JukeboxArea';
 import ViewingArea from '../ViewingArea';
+import Player from '../../lib/Player';
 
 describe('JukeboxArea', () => {
   let jukeboxArea: JukeboxArea;
   let viewingArea: ViewingArea;
-  let song1: Song;
-  let song2: Song;
-  let song3: Song;
-  let song4: Song;
-  let song5: Song;
-  let song6: Song;
+
+  const song1 = {
+    songName: 'Style',
+    artistName: 'Taylor Swift',
+    videoId: 'abc',
+  };
+  const song2 = {
+    songName: 'Senorita',
+    artistName: 'Shawn Mendes',
+    videoId: 'def',
+  };
+  const song3 = {
+    songName: 'Travel',
+    artistName: 'Mamamoo',
+    videoId: 'ghi',
+  };
+  const song4 = {
+    songName: 'abcdefu',
+    artistName: 'Gayle',
+    videoId: 'jkl',
+  };
+  const song5 = {
+    songName: 'Starry Nights',
+    artistName: 'Mamamoo',
+    videoId: 'mno',
+  };
+
+  const townEmitter = mock<TownEmitter>();
+
+  const player1: Player = new Player('player1', townEmitter);
+  const player2: Player = new Player('player2', townEmitter);
 
   beforeEach(() => {
     const id = nanoid();
@@ -36,41 +61,165 @@ describe('JukeboxArea', () => {
       mock<TownEmitter>(),
       viewingArea,
     );
-
-    song1 = {
-      songName: 'Sugar',
-      artistName: 'Maroon 5',
-      videoId: 'abc',
-    };
-    song2 = {
-      songName: 'Senorita',
-      artistName: 'Shawn Mendes',
-      videoId: 'def',
-    };
-    song3 = {
-      songName: 'Travel',
-      artistName: 'Mamamoo',
-      videoId: 'ghi',
-    };
-    song4 = {
-      songName: 'abcdefu',
-      artistName: 'Gayle',
-      videoId: 'jkl',
-    };
-    song5 = {
-      songName: 'Starry Nights',
-      artistName: 'Mamamoo',
-      videoId: 'mno',
-    };
-    song6 = {
-      songName: 'Blank Space',
-      artistName: 'Taylor Swift',
-      videoId: 'xyz',
-    };
   });
 
-  describe('handleCommand', () => {
-    describe('AddSongToQueue', () => {
+  describe('Test toModel', () => {
+    it('creates the correct jukebox area model', () => {
+      const model = {
+        id: jukeboxArea.id,
+        occupants: [],
+        type: 'JukeboxArea',
+        curSong: undefined,
+        queue: [],
+        videoPlayer: viewingArea.toModel(),
+      };
+      expect(jukeboxArea.toModel()).toEqual(model);
+    });
+  });
+  describe('Test updateModel', () => {
+    it('updates the viewing area with the one passed in', () => {
+      const model = {
+        id: jukeboxArea.id,
+        occupants: [],
+        type: 'JukeboxArea',
+        curSong: undefined,
+        queue: [],
+        videoPlayer: viewingArea.toModel(),
+      };
+      const newViewingAreaModel: ViewingAreaModel = {
+        id: jukeboxArea.id,
+        occupants: [],
+        type: 'ViewingArea',
+        video: `https://www.youtube.com/watch?v=${song1.videoId}`,
+        isPlaying: true,
+        elapsedTimeSec: 0,
+      };
+      const newModel = {
+        id: jukeboxArea.id,
+        occupants: [],
+        type: 'JukeboxArea',
+        curSong: undefined,
+        queue: [],
+        videoPlayer: newViewingAreaModel,
+      };
+
+      expect(jukeboxArea.toModel()).toEqual(model);
+      jukeboxArea.updateModel(newViewingAreaModel);
+      expect(jukeboxArea.toModel()).toEqual(newModel);
+    });
+  });
+  describe('Test add', () => {
+    it('adds a player to the interactable area', () => {
+      const model = {
+        id: jukeboxArea.id,
+        occupants: [],
+        type: 'JukeboxArea',
+        curSong: undefined,
+        queue: [],
+        videoPlayer: viewingArea.toModel(),
+      };
+      const newViewingAreaModel: ViewingAreaModel = {
+        id: jukeboxArea.id,
+        occupants: [player1.id],
+        type: 'ViewingArea',
+        video: undefined,
+        isPlaying: false,
+        elapsedTimeSec: 0,
+      };
+      const newModel = {
+        id: jukeboxArea.id,
+        occupants: [player1.id],
+        type: 'JukeboxArea',
+        curSong: undefined,
+        queue: [],
+        videoPlayer: newViewingAreaModel,
+      };
+
+      expect(jukeboxArea.toModel()).toEqual(model);
+      jukeboxArea.add(player1);
+      expect(jukeboxArea.toModel()).toEqual(newModel);
+      expect(jukeboxArea.occupants).toEqual([player1]);
+
+      jukeboxArea.add(player2);
+      expect(jukeboxArea.occupants).toEqual([player1, player2]);
+    });
+  });
+  describe('Test remove', () => {
+    it('removes a player from the interactable area', () => {
+      const model = {
+        id: jukeboxArea.id,
+        occupants: [],
+        type: 'JukeboxArea',
+        curSong: undefined,
+        queue: [],
+        videoPlayer: viewingArea.toModel(),
+      };
+      const newViewingAreaModel: ViewingAreaModel = {
+        id: jukeboxArea.id,
+        occupants: [player2.id],
+        type: 'ViewingArea',
+        video: undefined,
+        isPlaying: false,
+        elapsedTimeSec: 0,
+      };
+      const newModel = {
+        id: jukeboxArea.id,
+        occupants: [player2.id],
+        type: 'JukeboxArea',
+        curSong: undefined,
+        queue: [],
+        videoPlayer: newViewingAreaModel,
+      };
+
+      expect(jukeboxArea.toModel()).toEqual(model);
+      jukeboxArea.add(player1);
+      jukeboxArea.add(player2);
+      expect(jukeboxArea.occupants).toEqual([player1, player2]);
+
+      jukeboxArea.remove(player1);
+      expect(jukeboxArea.occupants).toEqual([player2]);
+      expect(jukeboxArea.toModel()).toEqual(newModel);
+
+      jukeboxArea.remove(player2);
+      expect(jukeboxArea.occupants).toEqual([]);
+      expect(jukeboxArea.toModel()).toEqual(model);
+    });
+  });
+  describe('Test addPlayersWithinBounds', () => {
+    it('adds all players passed in the given array', () => {
+      const model = {
+        id: jukeboxArea.id,
+        occupants: [],
+        type: 'JukeboxArea',
+        curSong: undefined,
+        queue: [],
+        videoPlayer: viewingArea.toModel(),
+      };
+      const newViewingAreaModel: ViewingAreaModel = {
+        id: jukeboxArea.id,
+        occupants: [player1.id, player2.id],
+        type: 'ViewingArea',
+        video: undefined,
+        isPlaying: false,
+        elapsedTimeSec: 0,
+      };
+      const newModel = {
+        id: jukeboxArea.id,
+        occupants: [player1.id, player2.id],
+        type: 'JukeboxArea',
+        curSong: undefined,
+        queue: [],
+        videoPlayer: newViewingAreaModel,
+      };
+
+      expect(jukeboxArea.toModel()).toEqual(model);
+      jukeboxArea.addPlayersWithinBounds([player1, player2]);
+      expect(jukeboxArea.occupants).toEqual([player1, player2]);
+      expect(jukeboxArea.toModel()).toEqual(newModel);
+    });
+  });
+  describe('Test handleCommand', () => {
+    describe('test command AddSongToQueue', () => {
       let command1: AddSongToQueueCommand;
       let command2: AddSongToQueueCommand;
 
@@ -131,7 +280,7 @@ describe('JukeboxArea', () => {
       });
     });
 
-    describe('VoteOnSongInQueue', () => {
+    describe('test command VoteOnSongInQueue', () => {
       let upvoteCommand: VoteOnSongInQueueCommand;
       let downvoteCommand: VoteOnSongInQueueCommand;
 
@@ -147,7 +296,7 @@ describe('JukeboxArea', () => {
         downvoteCommand = { type: 'VoteOnSongInQueue', song: song4, vote: 'Downvote' };
       });
 
-      it('should add an upvote to the given song', () => {
+      it('should add an upvote to the given song when given an upvote', () => {
         expect(jukeboxArea.toModel().queue.find(e => e.song.videoId === song3.videoId)).toEqual({
           song: song3,
           numUpvotes: 0,
@@ -163,7 +312,7 @@ describe('JukeboxArea', () => {
         });
       });
 
-      it('should add a downvote to the given song', () => {
+      it('should add a downvote to the given song when given a downvote', () => {
         expect(jukeboxArea.toModel().queue.find(e => e.song.videoId === song4.videoId)).toEqual({
           song: song4,
           numUpvotes: 0,
@@ -180,7 +329,7 @@ describe('JukeboxArea', () => {
       });
     });
 
-    describe('ViewingAreaUpdate', () => {
+    describe('test command ViewingAreaUpdate', () => {
       beforeEach(() => {
         // Note: song1 will be set as the currently playing song
         jukeboxArea.handleCommand({ type: 'AddSongToQueue', song: song3 });
@@ -222,7 +371,7 @@ describe('JukeboxArea', () => {
       });
     });
 
-    describe('Invalid Command', () => {
+    describe('when given an invalid command', () => {
       it('should throw an error if the command is not supported', () => {
         const invalidCommand: JoinGameCommand = { type: 'JoinGame' };
 
