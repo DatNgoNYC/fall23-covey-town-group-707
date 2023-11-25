@@ -130,6 +130,7 @@ export default class TownGameScene extends Phaser.Scene {
       '16_Grocery_store_32x32',
       this._resourcePathPrefix + '/assets/tilesets/16_Grocery_store_32x32.png',
     );
+    this.load.image('Jukebox-1', this._resourcePathPrefix + '/assets/tilesets/Jukebox-1.png');
     this.load.tilemapTiledJSON('map', this._resourcePathPrefix + '/assets/tilemaps/indoors.json');
     this.load.atlas(
       'atlas',
@@ -334,6 +335,7 @@ export default class TownGameScene extends Phaser.Scene {
       '13_Conference_Hall_32x32',
       '14_Basement_32x32',
       '16_Grocery_store_32x32',
+      'Jukebox-1',
     ].map(v => {
       const ret = this.map.addTilesetImage(v);
       assert(ret);
