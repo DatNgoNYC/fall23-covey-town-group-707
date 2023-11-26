@@ -268,6 +268,7 @@ export type InteractableCommandResponse<MessageType> = {
 
 export interface ServerToClientEvents {
   playerMoved: (movedPlayer: Player) => void;
+  playerEmotionChanged: (changedEmotionPlayer: Player) => void;
   playerDisconnect: (disconnectedPlayer: Player) => void;
   playerJoined: (newPlayer: Player) => void;
   initialize: (initialData: TownJoinResponse) => void;

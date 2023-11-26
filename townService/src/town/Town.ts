@@ -268,9 +268,7 @@ export default class Town {
   private _updatePlayerEmotion(player: Player, emotion: Emotion): void {
     // do we need to do anything other than set the new emotion?
     player.emotion = emotion;
-    // probably don't need to emit back to frontend - this info will be lagging behind
-    // this function is just to keep the player model consistent
-    // this._broadcastEmitter.emit('playerEmotionChanged', player.toPlayerModel());
+    this._broadcastEmitter.emit('playerEmotionChanged', player.toPlayerModel());
   }
 
   /**
