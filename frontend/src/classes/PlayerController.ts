@@ -1,13 +1,17 @@
 import EventEmitter from 'events';
 import TypedEmitter from 'typed-emitter';
-import { Player as PlayerModel, PlayerLocation, Emotion, DanceMove } from '../types/CoveyTownSocket';
+import {
+  Player as PlayerModel,
+  PlayerLocation,
+  Emotion,
+  DanceMove,
+} from '../types/CoveyTownSocket';
 export const MOVEMENT_SPEED = 175;
 
 export type PlayerEvents = {
   movement: (newLocation: PlayerLocation) => void;
   emotion: (newEmotion: Emotion) => void;
   dance: (newDanceMove: DanceMove) => void;
-  emotion: (newEmotion: Emotion) => void;
 };
 
 export type PlayerGameObjects = {
@@ -31,7 +35,8 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
   constructor(
     id: string,
     userName: string,
-    location: PlayerLocation, emotion?: Emotion,
+    location: PlayerLocation,
+    emotion?: Emotion,
     danceMove?: DanceMove | undefined,
   ) {
     super();
@@ -41,8 +46,6 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
     // default emotion is neutral
     this._emotion = emotion ? emotion : 'NEUTRAL';
     this._danceMove = danceMove;
-    // default emotion is neutral
-    this._emotion = emotion ? emotion : 'NEUTRAL';
   }
 
   set location(newLocation: PlayerLocation) {
@@ -85,9 +88,10 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
     return {
       id: this.id,
       userName: this.userName,
-      location: this.location, emotion: this.emotion,
+      location: this.location,
+      emotion: this.emotion,
       danceMove: this.danceMove,
-   , emotion: this.emotion };
+    };
   }
 
   private _updateGameComponentLocation() {
@@ -180,17 +184,11 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
 
   static fromPlayerModel(modelPlayer: PlayerModel): PlayerController {
     return new PlayerController(
-      
       modelPlayer.id,
-     
       modelPlayer.userName,
-     
       modelPlayer.location,
       modelPlayer.emotion,
-    ,
       modelPlayer.danceMove,
-    ,
-      modelPlayer.emotion,
     );
   }
 }

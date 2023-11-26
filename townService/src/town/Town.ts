@@ -150,7 +150,6 @@ export default class Town {
     // Register an event listener for the client socket: if the client updates their
     // player emotion, inform the CoveyTownController
     socket.on('playerEmotionChange', (emotion: Emotion) => {
-      console.log('backend emotion change', emotion);
       this._updatePlayerEmotion(newPlayer, emotion);
     });
 
