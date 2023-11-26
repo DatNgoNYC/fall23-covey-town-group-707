@@ -4,6 +4,7 @@ import {
   PlayerLocation,
   TownEmitter,
   Emotion,
+  DanceMove,
 } from '../types/CoveyTownSocket';
 
 /**
@@ -14,6 +15,8 @@ export default class Player {
   public location: PlayerLocation;
 
   public emotion: Emotion;
+
+  public danceMove: DanceMove | undefined;
 
   /** The unique identifier for this player * */
   private readonly _id: string;
@@ -42,6 +45,7 @@ export default class Player {
     this._sessionToken = nanoid();
     this.townEmitter = townEmitter;
     this.emotion = 'NEUTRAL';
+    this.danceMove = undefined;
   }
 
   get userName(): string {
@@ -70,6 +74,7 @@ export default class Player {
       location: this.location,
       userName: this._userName,
       emotion: this.emotion,
+      danceMove: this.danceMove,
     };
   }
 }

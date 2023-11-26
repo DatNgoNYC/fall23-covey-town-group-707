@@ -2,7 +2,7 @@ import assert from 'assert';
 import Phaser from 'phaser';
 import PlayerController, { MOVEMENT_SPEED } from '../../classes/PlayerController';
 import TownController from '../../classes/TownController';
-import { PlayerLocation } from '../../types/CoveyTownSocket';
+import { DanceMove, PlayerLocation } from '../../types/CoveyTownSocket';
 import { Callback } from '../VideoCall/VideoFrontend/types';
 import Interactable from './Interactable';
 import ConversationArea from './interactables/ConversationArea';
@@ -54,6 +54,8 @@ export default class TownGameScene extends Phaser.Scene {
   private _previouslyCapturedKeys: number[] = [];
 
   private _lastLocation?: PlayerLocation;
+
+  private _lastDanceMove?: DanceMove;
 
   private _ready = false;
 
@@ -176,6 +178,22 @@ export default class TownGameScene extends Phaser.Scene {
     return undefined;
   }
 
+  getNewDanceMove() {
+    if (this._cursors.find(keySet => keySet.one?.isDown)) {
+      return 'DanceOne';
+    }
+    if (this._cursors.find(keySet => keySet.two?.isDown)) {
+      return 'DanceTwo';
+    }
+    if (this._cursors.find(keySet => keySet.three?.isDown)) {
+      return 'DanceThree';
+    }
+    if (this._cursors.find(keySet => keySet.four?.isDown)) {
+      return 'DanceFour';
+    }
+    return undefined;
+  }
+
   moveOurPlayerTo(destination: Partial<PlayerLocation>) {
     const gameObjects = this.coveyTownController.ourPlayer.gameObjects;
     if (!gameObjects) {
@@ -205,6 +223,7 @@ export default class TownGameScene extends Phaser.Scene {
     if (this._paused) {
       return;
     }
+    const ourPlayer = this.coveyTownController.ourPlayer;
     const gameObjects = this.coveyTownController.ourPlayer.gameObjects;
     if (gameObjects && this._cursors) {
       const prevVelocity = gameObjects.sprite.body.velocity.clone();
@@ -285,12 +304,53 @@ export default class TownGameScene extends Phaser.Scene {
         this.coveyTownController.emitMovement(this._lastLocation);
       }
 
-      //Update the location for the labels of all of the other players
+      // Update the location for the labels of all of the other players
       for (const player of this._players) {
         if (player.gameObjects?.label && player.gameObjects?.sprite.body) {
           player.gameObjects.label.setX(player.gameObjects.sprite.body.x);
           player.gameObjects.label.setY(player.gameObjects.sprite.body.y - 20);
         }
+      }
+
+      // Update dance move
+      const prevDanceMove = ourPlayer.danceMove;
+      // console.log(prevDanceMove);
+
+      const danceMove = this.getNewDanceMove();
+      // console.log('danceMove');
+      // console.log(danceMove);
+      switch (danceMove) {
+        case 'DanceOne':
+          // console.log('ONE');
+          gameObjects.sprite.anims.play('misa-left-walk', true);
+          break;
+        case 'DanceTwo':
+          gameObjects.sprite.anims.play('misa-right-walk', true);
+          break;
+        case 'DanceThree':
+          gameObjects.sprite.anims.play('misa-front-walk', true);
+          break;
+        case 'DanceFour':
+          gameObjects.sprite.anims.play('misa-back-walk', true);
+          break;
+        default:
+          // Not moving
+          gameObjects.sprite.anims.stop();
+          // If we were dancing, pick and idle frame to use
+          if (prevDanceMove !== undefined) {
+            gameObjects.sprite.setTexture('atlas', 'misa-front');
+          }
+          break;
+      }
+
+      // if avatar changed dance move, started dancing, or stopped dancing
+      // console.log('last dance move')
+      // console.log(this._lastDanceMove);
+      if (danceMove !== this._lastDanceMove) {
+        console.log('HERE');
+        console.log(danceMove);
+        this._lastDanceMove = danceMove;
+        this.coveyTownController.emitDanceMoveChange(this._lastDanceMove);
       }
     }
   }
@@ -371,10 +431,10 @@ export default class TownGameScene extends Phaser.Scene {
 
     // Object layers in Tiled let you embed extra info into a map - like a spawn point or custom
     // collision shapes. In the tmx file, there's an object layer with a point named "Spawn Point"
-    const spawnPoint = this.map.findObject(
+    const spawnPoint = (this.map.findObject(
       'Objects',
       obj => obj.name === 'Spawn Point',
-    ) as unknown as Phaser.GameObjects.Components.Transform;
+    ) as unknown) as Phaser.GameObjects.Components.Transform;
 
     const labels = this.map.filterObjects('Objects', obj => obj.name === 'label');
     labels?.forEach(label => {
@@ -395,6 +455,10 @@ export default class TownGameScene extends Phaser.Scene {
           down: Phaser.Input.Keyboard.KeyCodes.S,
           left: Phaser.Input.Keyboard.KeyCodes.A,
           right: Phaser.Input.Keyboard.KeyCodes.D,
+          one: Phaser.Input.Keyboard.KeyCodes.ONE,
+          two: Phaser.Input.Keyboard.KeyCodes.TWO,
+          three: Phaser.Input.Keyboard.KeyCodes.THREE,
+          four: Phaser.Input.Keyboard.KeyCodes.FOUR,
         },
         false,
       ) as Phaser.Types.Input.Keyboard.CursorKeys,
@@ -406,6 +470,10 @@ export default class TownGameScene extends Phaser.Scene {
           down: Phaser.Input.Keyboard.KeyCodes.J,
           left: Phaser.Input.Keyboard.KeyCodes.K,
           right: Phaser.Input.Keyboard.KeyCodes.L,
+          one: Phaser.Input.Keyboard.KeyCodes.ONE,
+          two: Phaser.Input.Keyboard.KeyCodes.TWO,
+          three: Phaser.Input.Keyboard.KeyCodes.THREE,
+          four: Phaser.Input.Keyboard.KeyCodes.FOUR,
         },
         false,
       ) as Phaser.Types.Input.Keyboard.CursorKeys,
@@ -484,6 +552,28 @@ export default class TownGameScene extends Phaser.Scene {
       key: 'misa-back-walk',
       frames: anims.generateFrameNames('atlas', {
         prefix: 'misa-back-walk.',
+        start: 0,
+        end: 3,
+        zeroPad: 3,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    anims.create({
+      key: 'misa-one-dance',
+      frames: anims.generateFrameNames('atlas', {
+        prefix: 'misa-one-dance.',
+        start: 0,
+        end: 1,
+        zeroPad: 3,
+      }),
+      frameRate: 3,
+      repeat: -1,
+    });
+    anims.create({
+      key: 'misa-spin',
+      frames: anims.generateFrameNames('atlas', {
+        prefix: 'misa-spin.',
         start: 0,
         end: 3,
         zeroPad: 3,

@@ -37,6 +37,7 @@ export interface Player {
   userName: string;
   location: PlayerLocation;
   emotion: Emotion;
+  danceMove?: DanceMove;
 }
 
 export type XY = { x: number; y: number };
@@ -72,6 +73,9 @@ export interface PlayerLocation {
   moving: boolean;
   interactableID?: string;
 }
+
+export type DanceMove = 'DanceOne' | 'DanceTwo' | 'DanceThree' | 'DanceFour';
+
 export type ChatMessage = {
   author: string;
   sid: string;
@@ -269,6 +273,7 @@ export type InteractableCommandResponse<MessageType> = {
 export interface ServerToClientEvents {
   playerMoved: (movedPlayer: Player) => void;
   playerEmotionChanged: (changedEmotionPlayer: Player) => void;
+  playerDanced: (dancedPlayer: Player) => void;
   playerDisconnect: (disconnectedPlayer: Player) => void;
   playerJoined: (newPlayer: Player) => void;
   initialize: (initialData: TownJoinResponse) => void;
@@ -283,6 +288,7 @@ export interface ClientToServerEvents {
   chatMessage: (message: ChatMessage) => void;
   playerMovement: (movementData: PlayerLocation) => void;
   playerEmotionChange: (emotion: Emotion) => void;
+  playerDanceMoveChange: (danceMove: DanceMove | undefined) => void;
   interactableUpdate: (update: Interactable) => void;
   interactableCommand: (command: InteractableCommand & InteractableCommandBase) => void;
 }
