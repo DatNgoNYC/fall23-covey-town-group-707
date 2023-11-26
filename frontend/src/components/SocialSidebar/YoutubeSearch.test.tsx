@@ -54,11 +54,11 @@ describe('test searchSong', () => {
   });
 
   it('should fetch using the correctly formatted URL', async () => {
-    expect(global.fetch).toBeCalledWith(
-      `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${encodeURI(
-        songName1 + '+' + artistName1,
-      )}&key=${apiKey}`,
-    );
+    const numResults = 10;
+    const searchTerm = encodeURI(`${songName1}+${artistName1}`);
+    const expectedURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=${numResults}&q=${searchTerm}&key=${apiKey}`;
+
+    expect(global.fetch).toBeCalledWith(expectedURL);
   });
   it('should return a list of correctly formatted songs', async () => {
     const expectedResult: Song[] = [
