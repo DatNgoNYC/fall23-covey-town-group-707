@@ -251,16 +251,26 @@ export default class TownGameScene extends Phaser.Scene {
           gameObjects.sprite.anims.play('misa-back-walk', true);
           break;
         default:
-          // Not moving
-          gameObjects.sprite.anims.stop();
+          // if (prevVelocity.x !== 0 && prevVelocity.y !== 0) {
+          //   gameObjects.sprite.anims.stop();
+          // }
           // If we were moving, pick and idle frame to use
           if (prevVelocity.x < 0) {
+            console.log('left default');
+            gameObjects.sprite.anims.stop();
             gameObjects.sprite.setTexture('atlas', 'misa-left');
           } else if (prevVelocity.x > 0) {
+            console.log('right default');
+            gameObjects.sprite.anims.stop();
             gameObjects.sprite.setTexture('atlas', 'misa-right');
           } else if (prevVelocity.y < 0) {
+            console.log('back default');
+            gameObjects.sprite.anims.stop();
             gameObjects.sprite.setTexture('atlas', 'misa-back');
-          } else if (prevVelocity.y > 0) gameObjects.sprite.setTexture('atlas', 'misa-front');
+          } else if (prevVelocity.y > 0) {
+            console.log('front default');
+            gameObjects.sprite.anims.stop();
+            gameObjects.sprite.setTexture('atlas', 'misa-front')};
           break;
       }
 
@@ -322,22 +332,22 @@ export default class TownGameScene extends Phaser.Scene {
       switch (danceMove) {
         case 'DanceOne':
           // console.log('ONE');
-          gameObjects.sprite.anims.play('misa-left-walk', true);
+          gameObjects.sprite.anims.play('misa-one-dance', true);
           break;
         case 'DanceTwo':
-          gameObjects.sprite.anims.play('misa-right-walk', true);
+          gameObjects.sprite.anims.play('misa-two-dance', true);
           break;
         case 'DanceThree':
-          gameObjects.sprite.anims.play('misa-front-walk', true);
+          gameObjects.sprite.anims.play('misa-three-dance', true);
           break;
         case 'DanceFour':
-          gameObjects.sprite.anims.play('misa-back-walk', true);
+          gameObjects.sprite.anims.play('misa-four-dance', true);
           break;
         default:
-          // Not moving
-          gameObjects.sprite.anims.stop();
           // If we were dancing, pick and idle frame to use
           if (prevDanceMove !== undefined) {
+            console.log('dance default');
+            gameObjects.sprite.anims.stop();
             gameObjects.sprite.setTexture('atlas', 'misa-front');
           }
           break;
@@ -347,8 +357,8 @@ export default class TownGameScene extends Phaser.Scene {
       // console.log('last dance move')
       // console.log(this._lastDanceMove);
       if (danceMove !== this._lastDanceMove) {
-        console.log('HERE');
-        console.log(danceMove);
+        // console.log('HERE');
+        // console.log(danceMove);
         this._lastDanceMove = danceMove;
         this.coveyTownController.emitDanceMoveChange(this._lastDanceMove);
       }
@@ -571,14 +581,36 @@ export default class TownGameScene extends Phaser.Scene {
       repeat: -1,
     });
     anims.create({
-      key: 'misa-spin',
+      key: 'misa-two-dance',
       frames: anims.generateFrameNames('atlas', {
-        prefix: 'misa-spin.',
+        prefix: 'misa-two-dance.',
+        start: 0,
+        end: 1,
+        zeroPad: 3,
+      }),
+      frameRate: 3,
+      repeat: -1,
+    });
+    anims.create({
+      key: 'misa-three-dance',
+      frames: anims.generateFrameNames('atlas', {
+        prefix: 'misa-three-dance.',
+        start: 0,
+        end: 4,
+        zeroPad: 3,
+      }),
+      frameRate: 3,
+      repeat: -1,
+    });
+    anims.create({
+      key: 'misa-four-dance',
+      frames: anims.generateFrameNames('atlas', {
+        prefix: 'misa-four-dance.',
         start: 0,
         end: 3,
         zeroPad: 3,
       }),
-      frameRate: 10,
+      frameRate: 3,
       repeat: -1,
     });
 

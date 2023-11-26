@@ -450,7 +450,7 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
      * When a player moves, update local state and emit an event to the controller's event listeners
      */
     this._socket.on('playerDanced', dancedPlayer => {
-      console.log('danceSocket');
+      // console.log('danceSocket');
       const playerToUpdate = this.players.find(eachPlayer => eachPlayer.id === dancedPlayer.id);
       if (playerToUpdate) {
         if (playerToUpdate === this._ourPlayer) {
@@ -458,9 +458,9 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
            * If we are told that WE moved, we shouldn't update our x,y because it's probably lagging behind
            * real time. However: we SHOULD update our interactable ID, because its value is managed by the server
            */
-          console.log('ourplayer');
+          // console.log('ourplayer');
         } else {
-          console.log('hi there');
+          // console.log('hi there');
           playerToUpdate.danceMove = dancedPlayer.danceMove;
         }
         this.emit('playerDanced', playerToUpdate);
@@ -512,7 +512,7 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
   }
 
   public emitDanceMoveChange(newDanceMove: DanceMove | undefined) {
-    console.log('HIIII');
+    // console.log('HIIII');
     this._socket.emit('playerDanceMoveChange', newDanceMove);
     const ourPlayer = this._ourPlayer;
     assert(ourPlayer);
