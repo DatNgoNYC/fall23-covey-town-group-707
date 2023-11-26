@@ -867,7 +867,7 @@ export function useInteractableAreaController<T>(interactableAreaID: string): T 
   if (!interactableAreaController) {
     throw new Error(`Requested interactable area ${interactableAreaID} does not exist`);
   }
-  return (interactableAreaController as unknown) as T;
+  return interactableAreaController as unknown as T;
 }
 
 /**
