@@ -17,7 +17,11 @@ export type TownJoinResponse = {
   interactables: TypedInteractable[];
 };
 
-export type InteractableType = 'ConversationArea' | 'ViewingArea' | 'TicTacToeArea' | 'JukeboxArea';
+export type InteractableType =
+  | "ConversationArea"
+  | "ViewingArea"
+  | "TicTacToeArea"
+  | "JukeboxArea";
 export interface Interactable {
   type: InteractableType;
   id: InteractableID;
@@ -29,7 +33,7 @@ export type TownSettingsUpdate = {
   isPubliclyListed?: boolean;
 };
 
-export type Direction = 'front' | 'back' | 'left' | 'right';
+export type Direction = "front" | "back" | "left" | "right";
 
 export type PlayerID = string;
 export interface Player {
@@ -58,7 +62,7 @@ export type SongQueueItem = {
 };
 
 // Represents the types of votes a user can make
-export type JukeboxVote = 'Upvote' | 'Downvote';
+export type JukeboxVote = "Upvote" | "Downvote";
 
 export interface PlayerLocation {
   /* The CENTER x coordinate of this player's location */
@@ -71,7 +75,7 @@ export interface PlayerLocation {
   interactableID?: string;
 }
 
-export type DanceMove = 'DanceOne' | 'DanceTwo' | 'DanceThree' | 'DanceFour';
+export type DanceMove = "DanceOne" | "DanceTwo" | "DanceThree" | "DanceFour";
 
 export type ChatMessage = {
   author: string;
@@ -103,7 +107,7 @@ export interface JukeboxArea extends Interactable {
   videoPlayer: ViewingArea;
 }
 
-export type GameStatus = 'IN_PROGRESS' | 'WAITING_TO_START' | 'OVER';
+export type GameStatus = "IN_PROGRESS" | "WAITING_TO_START" | "OVER";
 /**
  * Base type for the state of a game
  */
@@ -133,7 +137,7 @@ export type TicTacToeGridPosition = 0 | 1 | 2;
  * Type for a move in TicTacToe
  */
 export interface TicTacToeMove {
-  gamePiece: 'X' | 'O';
+  gamePiece: "X" | "O";
   row: TicTacToeGridPosition;
   col: TicTacToeGridPosition;
 }
@@ -212,53 +216,54 @@ export type InteractableCommand =
   | AddSongToQueueCommand
   | VoteOnSongInQueueCommand;
 export interface ViewingAreaUpdateCommand {
-  type: 'ViewingAreaUpdate';
+  type: "ViewingAreaUpdate";
   update: ViewingArea;
 }
 
 export interface JoinGameCommand {
-  type: 'JoinGame';
+  type: "JoinGame";
 }
 
 export interface LeaveGameCommand {
-  type: 'LeaveGame';
+  type: "LeaveGame";
   gameID: GameInstanceID;
 }
 
 export interface GameMoveCommand<MoveType> {
-  type: 'GameMove';
+  type: "GameMove";
   gameID: GameInstanceID;
   move: MoveType;
 }
 
 // command to tell jukebox area backend to add the given song to queue
 export interface AddSongToQueueCommand {
-  type: 'AddSongToQueue';
+  type: "AddSongToQueue";
   song: Song;
 }
 
 // command to tell jukebox area backend to cast the given vote
 // on the provided song in queue
 export interface VoteOnSongInQueueCommand {
-  type: 'VoteOnSongInQueue';
+  type: "VoteOnSongInQueue";
   song: Song;
   vote: JukeboxVote;
 }
 
-export type InteractableCommandReturnType<CommandType extends InteractableCommand> =
-  CommandType extends JoinGameCommand
-    ? { gameID: string }
-    : CommandType extends ViewingAreaUpdateCommand
-    ? undefined
-    : CommandType extends GameMoveCommand<TicTacToeMove>
-    ? undefined
-    : CommandType extends LeaveGameCommand
-    ? undefined
-    : CommandType extends AddSongToQueueCommand
-    ? undefined
-    : CommandType extends VoteOnSongInQueueCommand
-    ? undefined
-    : never;
+export type InteractableCommandReturnType<
+  CommandType extends InteractableCommand
+> = CommandType extends JoinGameCommand
+  ? { gameID: string }
+  : CommandType extends ViewingAreaUpdateCommand
+  ? undefined
+  : CommandType extends GameMoveCommand<TicTacToeMove>
+  ? undefined
+  : CommandType extends LeaveGameCommand
+  ? undefined
+  : CommandType extends AddSongToQueueCommand
+  ? undefined
+  : CommandType extends VoteOnSongInQueueCommand
+  ? undefined
+  : never;
 
 export type InteractableCommandResponse<MessageType> = {
   commandID: CommandID;
@@ -285,5 +290,7 @@ export interface ClientToServerEvents {
   playerMovement: (movementData: PlayerLocation) => void;
   playerDanceMoveChange: (danceMove: DanceMove | undefined) => void;
   interactableUpdate: (update: Interactable) => void;
-  interactableCommand: (command: InteractableCommand & InteractableCommandBase) => void;
+  interactableCommand: (
+    command: InteractableCommand & InteractableCommandBase
+  ) => void;
 }
