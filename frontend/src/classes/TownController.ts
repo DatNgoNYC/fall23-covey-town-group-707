@@ -15,6 +15,7 @@ import useTownController from '../hooks/useTownController';
 import {
   ChatMessage,
   CoveyTownSocket,
+  DanceMove,
   GameState,
   Interactable as InteractableAreaModel,
   InteractableCommand,
@@ -81,6 +82,11 @@ export type TownEvents = {
    * the new location can be found on the PlayerController.
    */
   playerMoved: (movedPlayer: PlayerController) => void;
+  /**
+   * An event that indicates that a player's dance move has changed. This event is dispatched after updating the player's dance move -
+   * the new dance move can be found on the PlayerController.
+   */
+  playerDanced: (newDanceMovePlayer: PlayerController) => void;
 
   /**
    * An event that indicates that the set of active interactable areas has changed. This event is dispatched
@@ -439,6 +445,22 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     });
 
     /**
+     * When a player moves, update local state and emit an event to the controller's event listeners
+     */
+    this._socket.on('playerDanced', dancedPlayer => {
+      const playerToUpdate = this.players.find(eachPlayer => eachPlayer.id === dancedPlayer.id);
+      if (playerToUpdate) {
+        if (playerToUpdate !== this._ourPlayer) {
+          /*
+           * We shouldn't update our dance move because it's probably lagging behind real time.
+           */
+          playerToUpdate.danceMove = dancedPlayer.danceMove;
+        }
+        this.emit('playerDanced', playerToUpdate);
+      }
+    });
+
+    /**
      * When an interactable's state changes, push that update into the relevant controller
      *
      * If an interactable area transitions from active to inactive (or inactive to active), this handler will emit
@@ -480,6 +502,14 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     assert(ourPlayer);
     ourPlayer.location = newLocation;
     this.emit('playerMoved', ourPlayer);
+  }
+
+  public emitDanceMoveChange(newDanceMove: DanceMove | undefined) {
+    this._socket.emit('playerDanceMoveChange', newDanceMove);
+    const ourPlayer = this._ourPlayer;
+    assert(ourPlayer);
+    ourPlayer.danceMove = newDanceMove;
+    this.emit('playerDanced', ourPlayer);
   }
 
   /**
