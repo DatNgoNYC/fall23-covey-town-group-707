@@ -513,7 +513,6 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     const ourPlayer = this._ourPlayer;
     assert(ourPlayer);
     ourPlayer.emotion = newEmotion;
-    console.log('ourPlayer emotion changed ', ourPlayer.emotion);
     this.emit('playerEmotionChanged', ourPlayer);
   }
 

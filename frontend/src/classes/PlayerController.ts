@@ -5,6 +5,7 @@ export const MOVEMENT_SPEED = 175;
 
 export type PlayerEvents = {
   movement: (newLocation: PlayerLocation) => void;
+  emotion: (newEmotion: Emotion) => void;
 };
 
 export type PlayerGameObjects = {
@@ -44,8 +45,7 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
 
   set emotion(newEmotion: Emotion) {
     this._emotion = newEmotion;
-    // this._updateSpriteEmotion();
-    // should there be a this.emit?
+    this._updateSpriteEmotion();
   }
 
   get emotion(): Emotion {
@@ -94,6 +94,34 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
       }
       label.setX(sprite.body.x);
       label.setY(sprite.body.y - 20);
+    }
+  }
+
+  private _updateSpriteEmotion() {
+    if (this.gameObjects && !this.gameObjects.locationManagedByGameScene) {
+      const { sprite } = this.gameObjects;
+
+      switch (this.emotion) {
+        case 'HAPPY':
+          sprite.setTexture('atlas', 'misa-happy');
+          break;
+        case 'ANGRY':
+          sprite.setTexture('atlas', 'misa-angry');
+          break;
+        case 'FEAR':
+          sprite.setTexture('atlas', 'misa-fear');
+          break;
+        case 'SAD':
+          sprite.setTexture('atlas', 'misa-sad');
+          break;
+        case 'SURPRISED':
+          sprite.setTexture('atlas', 'misa-surprised');
+          break;
+        case 'NEUTRAL':
+        default:
+          sprite.setTexture('atlas', 'misa-front');
+          break;
+      }
     }
   }
 
