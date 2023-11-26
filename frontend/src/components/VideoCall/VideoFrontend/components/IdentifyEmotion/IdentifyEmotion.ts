@@ -46,7 +46,6 @@ function emotionDetectionRequest(client: AWS.Rekognition, image: Buffer): Promis
               firstFaceEmotions[0].Type;
 
             resolve(topEmotionPrediction);
-            // console.log('Detected faces:', response.FaceDetails[0].Emotions);}
           }
         }
       }
@@ -89,9 +88,7 @@ export function IdentifyEmotion() {
 
       try {
         if (mediaStreamTrack) {
-          console.log(mediaStreamTrack);
           const imageBuffer = await captureFrame(mediaStreamTrack);
-          console.log(imageBuffer)
           let detectedAWSEmotion:
           | AWS.Rekognition.EmotionName
           | undefined;
@@ -128,7 +125,6 @@ export function IdentifyEmotion() {
       } catch (error) {
         console.error('Error detecting emotions:', error);
       } finally {
-        console.log(userEmotion);
         townController.emitEmotionChange(userEmotion);
         timeout = setTimeout(detectUserEmotion, EMOTION_API_REQUEST_DELAY);
       }
