@@ -7,6 +7,7 @@ export type PlayerEvents = {
   movement: (newLocation: PlayerLocation) => void;
   emotion: (newEmotion: Emotion) => void;
   dance: (newDanceMove: DanceMove) => void;
+  emotion: (newEmotion: Emotion) => void;
 };
 
 export type PlayerGameObjects = {
