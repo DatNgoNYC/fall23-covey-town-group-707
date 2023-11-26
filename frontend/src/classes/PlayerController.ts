@@ -38,14 +38,12 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
   }
 
   set location(newLocation: PlayerLocation) {
-    // console.log('location');
     this._location = newLocation;
     this._updateGameComponentLocation();
     this.emit('movement', newLocation);
   }
 
   set danceMove(newDanceMove: DanceMove | undefined) {
-    // console.log('PLAYER CONTROLLER');
     this._danceMove = newDanceMove;
     this._updateSpriteDanceMove();
   }
@@ -76,20 +74,13 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
   }
 
   private _updateGameComponentLocation() {
-    // console.log('_updateGameComponentLocation');
-    // if (this.gameObjects) {
-      // console.log(this.gameObjects.locationManagedByGameScene);
-    // }
     if (this.gameObjects && !this.gameObjects.locationManagedByGameScene) {
       const { sprite, label } = this.gameObjects;
       if (!sprite.anims) return;
       sprite.setX(this.location.x);
       sprite.setY(this.location.y);
       if (this.location.moving) {
-        // console.log('moving');
-        // console.log(this.location.rotation);
         sprite.anims.play(`misa-${this.location.rotation}-walk`, true);
-        // sprite.anims.play(`misa-spin`, true);
         switch (this.location.rotation) {
           case 'front':
             sprite.body.setVelocity(0, MOVEMENT_SPEED);
@@ -106,7 +97,6 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
         }
         sprite.body.velocity.normalize().scale(175);
       } else {
-        // console.log('stopped walking');
         sprite.body.setVelocity(0, 0);
         sprite.anims.stop();
         sprite.setTexture('atlas', `misa-${this.location.rotation}`);
@@ -117,37 +107,26 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
   }
 
   private _updateSpriteDanceMove() {
-    console.log('_updateSpriteDanceMove!!');
-    // console.log('??');
-    // console.log(this.gameObjects);
     if (this.gameObjects && !this.gameObjects.locationManagedByGameScene) {
-      // console.log('if statement');
       const { sprite, label } = this.gameObjects;
       if (!sprite.anims) return;
       // when avatar is dancing
       if (this.danceMove) {
-        console.log('switch statement');
-        console.log(this.danceMove);
         switch (this.danceMove) {
           case 'DanceOne':
-            // console.log('One');
             sprite.anims.play('misa-one-dance', true);
             break;
           case 'DanceTwo':
-            // console.log('Two');
             sprite.anims.play('misa-two-dance', true);
             break;
           case 'DanceThree':
-            // console.log('Three');
             sprite.anims.play('misa-three-dance', true);
             break;
           case 'DanceFour':
-            // console.log('Four');
             sprite.anims.play('misa-four-dance', true);
             break;
         }
       } else {
-        console.log('avatar stopped dancing');
         sprite.anims.stop();
         sprite.setTexture('atlas', `misa-front`);
       }

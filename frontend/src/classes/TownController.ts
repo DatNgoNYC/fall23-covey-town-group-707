@@ -429,7 +429,6 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
      * When a player moves, update local state and emit an event to the controller's event listeners
      */
     this._socket.on('playerMoved', movedPlayer => {
-      // console.log('socket');
       const playerToUpdate = this.players.find(eachPlayer => eachPlayer.id === movedPlayer.id);
       if (playerToUpdate) {
         if (playerToUpdate === this._ourPlayer) {
@@ -439,7 +438,6 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
            */
           playerToUpdate.location.interactableID = movedPlayer.location.interactableID;
         } else {
-          // console.log('hi there');
           playerToUpdate.location = movedPlayer.location;
         }
         this.emit('playerMoved', playerToUpdate);
@@ -450,17 +448,12 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
      * When a player moves, update local state and emit an event to the controller's event listeners
      */
     this._socket.on('playerDanced', dancedPlayer => {
-      // console.log('danceSocket');
       const playerToUpdate = this.players.find(eachPlayer => eachPlayer.id === dancedPlayer.id);
       if (playerToUpdate) {
-        if (playerToUpdate === this._ourPlayer) {
+        if (playerToUpdate !== this._ourPlayer) {
           /*
-           * If we are told that WE moved, we shouldn't update our x,y because it's probably lagging behind
-           * real time. However: we SHOULD update our interactable ID, because its value is managed by the server
+           * We shouldn't update our dance move because it's probably lagging behind real time.
            */
-          // console.log('ourplayer');
-        } else {
-          // console.log('hi there');
           playerToUpdate.danceMove = dancedPlayer.danceMove;
         }
         this.emit('playerDanced', playerToUpdate);
@@ -512,7 +505,6 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
   }
 
   public emitDanceMoveChange(newDanceMove: DanceMove | undefined) {
-    // console.log('HIIII');
     this._socket.emit('playerDanceMoveChange', newDanceMove);
     const ourPlayer = this._ourPlayer;
     assert(ourPlayer);
@@ -841,7 +833,7 @@ export function useInteractableAreaController<T>(interactableAreaID: string): T 
   if (!interactableAreaController) {
     throw new Error(`Requested interactable area ${interactableAreaID} does not exist`);
   }
-  return interactableAreaController as unknown as T;
+  return (interactableAreaController as unknown) as T;
 }
 
 /**
@@ -948,11 +940,9 @@ export function usePlayersInVideoCall(): PlayerController[] {
     let lastRecalculatedNearbyPlayers = 0;
     let prevNearbyPlayers: PlayerController[] = [];
     const updatePlayersInCall = () => {
-      // console.log('updatePlayersInCall');
       const now = Date.now();
       // To reduce re-renders, only recalculate the nearby players every so often
       if (now - lastRecalculatedNearbyPlayers > CALCULATE_NEARBY_PLAYERS_DELAY_MS) {
-        // console.log('rerendering');
         lastRecalculatedNearbyPlayers = now;
         const nearbyPlayers = townController.nearbyPlayers();
         if (!samePlayers(nearbyPlayers, prevNearbyPlayers)) {
