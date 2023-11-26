@@ -180,16 +180,16 @@ export default class TownGameScene extends Phaser.Scene {
 
   getNewDanceMove() {
     if (this._cursors.find(keySet => keySet.one?.isDown)) {
-      return 'DanceOne';
+      return 'Disco';
     }
     if (this._cursors.find(keySet => keySet.two?.isDown)) {
-      return 'DanceTwo';
+      return 'Bob';
     }
     if (this._cursors.find(keySet => keySet.three?.isDown)) {
-      return 'DanceThree';
+      return 'Beyonce';
     }
     if (this._cursors.find(keySet => keySet.four?.isDown)) {
-      return 'DanceFour';
+      return 'Spin';
     }
     return undefined;
   }
@@ -321,17 +321,17 @@ export default class TownGameScene extends Phaser.Scene {
       const danceMove = this.getNewDanceMove();
 
       switch (danceMove) {
-        case 'DanceOne':
-          gameObjects.sprite.anims.play('misa-one-dance', true);
+        case 'Disco':
+          gameObjects.sprite.anims.play('misa-disco', true);
           break;
-        case 'DanceTwo':
-          gameObjects.sprite.anims.play('misa-two-dance', true);
+        case 'Bob':
+          gameObjects.sprite.anims.play('misa-bob', true);
           break;
-        case 'DanceThree':
-          gameObjects.sprite.anims.play('misa-three-dance', true);
+        case 'Beyonce':
+          gameObjects.sprite.anims.play('misa-beyonce', true);
           break;
-        case 'DanceFour':
-          gameObjects.sprite.anims.play('misa-four-dance', true);
+        case 'Spin':
+          gameObjects.sprite.anims.play('misa-spin', true);
           break;
         default:
           // If we were dancing, pick and idle frame to use
@@ -426,10 +426,10 @@ export default class TownGameScene extends Phaser.Scene {
 
     // Object layers in Tiled let you embed extra info into a map - like a spawn point or custom
     // collision shapes. In the tmx file, there's an object layer with a point named "Spawn Point"
-    const spawnPoint = (this.map.findObject(
+    const spawnPoint = this.map.findObject(
       'Objects',
       obj => obj.name === 'Spawn Point',
-    ) as unknown) as Phaser.GameObjects.Components.Transform;
+    ) as unknown as Phaser.GameObjects.Components.Transform;
 
     const labels = this.map.filterObjects('Objects', obj => obj.name === 'label');
     labels?.forEach(label => {
@@ -555,9 +555,9 @@ export default class TownGameScene extends Phaser.Scene {
       repeat: -1,
     });
     anims.create({
-      key: 'misa-one-dance',
+      key: 'misa-disco',
       frames: anims.generateFrameNames('atlas', {
-        prefix: 'misa-one-dance.',
+        prefix: 'misa-disco.',
         start: 0,
         end: 1,
         zeroPad: 3,
@@ -566,9 +566,9 @@ export default class TownGameScene extends Phaser.Scene {
       repeat: -1,
     });
     anims.create({
-      key: 'misa-two-dance',
+      key: 'misa-bob',
       frames: anims.generateFrameNames('atlas', {
-        prefix: 'misa-two-dance.',
+        prefix: 'misa-bob.',
         start: 0,
         end: 1,
         zeroPad: 3,
@@ -577,9 +577,9 @@ export default class TownGameScene extends Phaser.Scene {
       repeat: -1,
     });
     anims.create({
-      key: 'misa-three-dance',
+      key: 'misa-beyonce',
       frames: anims.generateFrameNames('atlas', {
-        prefix: 'misa-three-dance.',
+        prefix: 'misa-beyonce.',
         start: 0,
         end: 4,
         zeroPad: 3,
@@ -588,9 +588,9 @@ export default class TownGameScene extends Phaser.Scene {
       repeat: -1,
     });
     anims.create({
-      key: 'misa-four-dance',
+      key: 'misa-spin',
       frames: anims.generateFrameNames('atlas', {
-        prefix: 'misa-four-dance.',
+        prefix: 'misa-spin.',
         start: 0,
         end: 3,
         zeroPad: 3,

@@ -264,11 +264,14 @@ export default class Town {
     this._broadcastEmitter.emit('playerMoved', player.toPlayerModel());
   }
 
+  /**
+   * Updates the dance move of a player within the town
+   *
+   * @param player Player to update dance move for
+   * @param location New dance move for this player
+   */
   private _updatePlayerDanceMove(player: Player, danceMove: DanceMove | undefined): void {
-    // do we need to do anything other than set the new emotion?
     player.danceMove = danceMove;
-    // probably don't need to emit back to frontend - this info will be lagging behind
-    // this function is just to keep the player model consistent
     this._broadcastEmitter.emit('playerDanced', player.toPlayerModel());
   }
 

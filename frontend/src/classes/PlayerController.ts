@@ -43,13 +43,17 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
     this.emit('movement', newLocation);
   }
 
+  get location(): PlayerLocation {
+    return this._location;
+  }
+
   set danceMove(newDanceMove: DanceMove | undefined) {
     this._danceMove = newDanceMove;
     this._updateSpriteDanceMove();
   }
 
-  get location(): PlayerLocation {
-    return this._location;
+  get danceMove(): DanceMove | undefined {
+    return this._danceMove;
   }
 
   get userName(): string {
@@ -58,10 +62,6 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
 
   get id(): string {
     return this._id;
-  }
-
-  get danceMove(): DanceMove | undefined {
-    return this._danceMove;
   }
 
   toPlayerModel(): PlayerModel {
@@ -108,22 +108,22 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
 
   private _updateSpriteDanceMove() {
     if (this.gameObjects && !this.gameObjects.locationManagedByGameScene) {
-      const { sprite, label } = this.gameObjects;
+      const { sprite } = this.gameObjects;
       if (!sprite.anims) return;
       // when avatar is dancing
       if (this.danceMove) {
         switch (this.danceMove) {
-          case 'DanceOne':
-            sprite.anims.play('misa-one-dance', true);
+          case 'Disco':
+            sprite.anims.play('misa-disco', true);
             break;
-          case 'DanceTwo':
-            sprite.anims.play('misa-two-dance', true);
+          case 'Bob':
+            sprite.anims.play('misa-bob', true);
             break;
-          case 'DanceThree':
-            sprite.anims.play('misa-three-dance', true);
+          case 'Beyonce':
+            sprite.anims.play('misa-beyonce', true);
             break;
-          case 'DanceFour':
-            sprite.anims.play('misa-four-dance', true);
+          case 'Spin':
+            sprite.anims.play('misa-spin', true);
             break;
         }
       } else {

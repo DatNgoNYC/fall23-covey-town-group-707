@@ -75,7 +75,7 @@ export interface PlayerLocation {
   interactableID?: string;
 }
 
-export type DanceMove = "DanceOne" | "DanceTwo" | "DanceThree" | "DanceFour";
+export type DanceMove = "Disco" | "Bob" | "Beyonce" | "Spin";
 
 export type ChatMessage = {
   author: string;

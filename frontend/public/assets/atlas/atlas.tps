@@ -173,31 +173,47 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
+            <key type="filename">tuxemon-misa/misa-angry.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>6,8,11,16</rect>
+                <key>scale9Paddings</key>
+                <rect>6,8,11,16</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">tuxemon-misa/misa-back-walk.000.png</key>
             <key type="filename">tuxemon-misa/misa-back-walk.001.png</key>
             <key type="filename">tuxemon-misa/misa-back-walk.002.png</key>
             <key type="filename">tuxemon-misa/misa-back-walk.003.png</key>
             <key type="filename">tuxemon-misa/misa-back.png</key>
+            <key type="filename">tuxemon-misa/misa-confused.png</key>
+            <key type="filename">tuxemon-misa/misa-disgusted.png</key>
+            <key type="filename">tuxemon-misa/misa-fear.png</key>
             <key type="filename">tuxemon-misa/misa-front-walk.000.png</key>
             <key type="filename">tuxemon-misa/misa-front-walk.001.png</key>
             <key type="filename">tuxemon-misa/misa-front-walk.002.png</key>
             <key type="filename">tuxemon-misa/misa-front-walk.003.png</key>
             <key type="filename">tuxemon-misa/misa-front.png</key>
+            <key type="filename">tuxemon-misa/misa-happy.png</key>
             <key type="filename">tuxemon-misa/misa-left-walk.000.png</key>
             <key type="filename">tuxemon-misa/misa-left-walk.001.png</key>
             <key type="filename">tuxemon-misa/misa-left-walk.002.png</key>
             <key type="filename">tuxemon-misa/misa-left-walk.003.png</key>
             <key type="filename">tuxemon-misa/misa-left.png</key>
-            <key type="filename">tuxemon-misa/misa-one-dance.001.png</key>
             <key type="filename">tuxemon-misa/misa-right-walk.000.png</key>
             <key type="filename">tuxemon-misa/misa-right-walk.001.png</key>
             <key type="filename">tuxemon-misa/misa-right-walk.002.png</key>
             <key type="filename">tuxemon-misa/misa-right-walk.003.png</key>
             <key type="filename">tuxemon-misa/misa-right.png</key>
-            <key type="filename">tuxemon-misa/misa-spin.000.png</key>
-            <key type="filename">tuxemon-misa/misa-spin.001.png</key>
-            <key type="filename">tuxemon-misa/misa-spin.002.png</key>
-            <key type="filename">tuxemon-misa/misa-spin.003.png</key>
+            <key type="filename">tuxemon-misa/misa-sad.png</key>
+            <key type="filename">tuxemon-misa/misa-suprised.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -212,7 +228,9 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">tuxemon-misa/misa-one-dance.000.png</key>
+            <key type="filename">tuxemon-misa/misa-beyonce.000.png</key>
+            <key type="filename">tuxemon-misa/misa-beyonce.002.png</key>
+            <key type="filename">tuxemon-misa/misa-beyonce.004.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -221,9 +239,89 @@
                 <key>scale9Enabled</key>
                 <false/>
                 <key>scale9Borders</key>
-                <rect>4,5,7,10</rect>
+                <rect>5,8,10,17</rect>
                 <key>scale9Paddings</key>
-                <rect>4,5,7,10</rect>
+                <rect>5,8,10,17</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">tuxemon-misa/misa-beyonce.001.png</key>
+            <key type="filename">tuxemon-misa/misa-beyonce.003.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>5,8,10,15</rect>
+                <key>scale9Paddings</key>
+                <rect>5,8,10,15</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">tuxemon-misa/misa-bob.000.png</key>
+            <key type="filename">tuxemon-misa/misa-spin.000.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>4,8,8,17</rect>
+                <key>scale9Paddings</key>
+                <rect>4,8,8,17</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">tuxemon-misa/misa-bob.001.png</key>
+            <key type="filename">tuxemon-misa/misa-spin.001.png</key>
+            <key type="filename">tuxemon-misa/misa-spin.003.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>4,8,8,15</rect>
+                <key>scale9Paddings</key>
+                <rect>4,8,8,15</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">tuxemon-misa/misa-disco.000.png</key>
+            <key type="filename">tuxemon-misa/misa-disco.001.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>4,8,9,17</rect>
+                <key>scale9Paddings</key>
+                <rect>4,8,9,17</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">tuxemon-misa/misa-spin.002.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>5,8,9,16</rect>
+                <key>scale9Paddings</key>
+                <rect>5,8,9,16</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
