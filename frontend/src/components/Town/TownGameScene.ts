@@ -251,26 +251,19 @@ export default class TownGameScene extends Phaser.Scene {
           gameObjects.sprite.anims.play('misa-back-walk', true);
           break;
         default:
-          // if (prevVelocity.x !== 0 && prevVelocity.y !== 0) {
-          //   gameObjects.sprite.anims.stop();
-          // }
-          // If we were moving, pick and idle frame to use
           if (prevVelocity.x < 0) {
-            console.log('left default');
             gameObjects.sprite.anims.stop();
             gameObjects.sprite.setTexture('atlas', 'misa-left');
           } else if (prevVelocity.x > 0) {
-            console.log('right default');
             gameObjects.sprite.anims.stop();
             gameObjects.sprite.setTexture('atlas', 'misa-right');
           } else if (prevVelocity.y < 0) {
-            console.log('back default');
             gameObjects.sprite.anims.stop();
             gameObjects.sprite.setTexture('atlas', 'misa-back');
           } else if (prevVelocity.y > 0) {
-            console.log('front default');
             gameObjects.sprite.anims.stop();
-            gameObjects.sprite.setTexture('atlas', 'misa-front')};
+            gameObjects.sprite.setTexture('atlas', 'misa-front');
+          }
           break;
       }
 
@@ -324,14 +317,11 @@ export default class TownGameScene extends Phaser.Scene {
 
       // Update dance move
       const prevDanceMove = ourPlayer.danceMove;
-      // console.log(prevDanceMove);
 
       const danceMove = this.getNewDanceMove();
-      // console.log('danceMove');
-      // console.log(danceMove);
+
       switch (danceMove) {
         case 'DanceOne':
-          // console.log('ONE');
           gameObjects.sprite.anims.play('misa-one-dance', true);
           break;
         case 'DanceTwo':
@@ -346,7 +336,6 @@ export default class TownGameScene extends Phaser.Scene {
         default:
           // If we were dancing, pick and idle frame to use
           if (prevDanceMove !== undefined) {
-            console.log('dance default');
             gameObjects.sprite.anims.stop();
             gameObjects.sprite.setTexture('atlas', 'misa-front');
           }
@@ -354,11 +343,7 @@ export default class TownGameScene extends Phaser.Scene {
       }
 
       // if avatar changed dance move, started dancing, or stopped dancing
-      // console.log('last dance move')
-      // console.log(this._lastDanceMove);
       if (danceMove !== this._lastDanceMove) {
-        // console.log('HERE');
-        // console.log(danceMove);
         this._lastDanceMove = danceMove;
         this.coveyTownController.emitDanceMoveChange(this._lastDanceMove);
       }
