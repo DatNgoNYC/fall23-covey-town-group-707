@@ -55,7 +55,7 @@ describe('test searchSong', () => {
 
   it('should fetch using the correctly formatted URL', async () => {
     const numResults = 10;
-    const searchTerm = encodeURI(`${songName1}+${artistName1}`);
+    const searchTerm = 'Blank%20Space+Taylor%20Swift';
     const expectedURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=${numResults}&q=${searchTerm}&key=${apiKey}`;
 
     expect(global.fetch).toBeCalledWith(expectedURL);
