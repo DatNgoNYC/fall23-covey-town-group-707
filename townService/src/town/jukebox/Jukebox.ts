@@ -36,6 +36,10 @@ export default class Jukebox {
     return this._curSong;
   }
 
+  public set curSong(song: Song | undefined) {
+    this._curSong = song;
+  }
+
   /**
    * Gets the list of songs in the jukebox queue.
    *
@@ -43,6 +47,10 @@ export default class Jukebox {
    */
   public get queue(): SongQueueItem[] {
     return this._queue;
+  }
+
+  public set queue(queue: SongQueueItem[]) {
+    this._queue = queue;
   }
 
   /**

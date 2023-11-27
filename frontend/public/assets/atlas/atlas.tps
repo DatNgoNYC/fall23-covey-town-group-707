@@ -2,11 +2,9 @@
 <data version="1.0">
     <struct type="Settings">
         <key>fileFormatVersion</key>
-        <int>4</int>
+        <int>6</int>
         <key>texturePackerVersion</key>
-        <string>4.3.3</string>
-        <key>fileName</key>
-        <string>C:/Users/mikewesthad/Documents/GitHub/phaser-3-tilemap-blog-posts/code/assets/atlas/atlas.tps</string>
+        <string>7.1.0</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -39,24 +37,18 @@
         <filename></filename>
         <key>flipPVR</key>
         <false/>
-        <key>pvrCompressionQuality</key>
-        <enum type="SettingsBase::PvrCompressionQuality">PVR_QUALITY_NORMAL</enum>
-        <key>atfCompressData</key>
-        <false/>
-        <key>mipMapMinSize</key>
-        <uint>32768</uint>
-        <key>etc1CompressionQuality</key>
-        <enum type="SettingsBase::Etc1CompressionQuality">ETC1_QUALITY_LOW_PERCEPTUAL</enum>
-        <key>etc2CompressionQuality</key>
-        <enum type="SettingsBase::Etc2CompressionQuality">ETC2_QUALITY_LOW_PERCEPTUAL</enum>
+        <key>pvrQualityLevel</key>
+        <uint>3</uint>
+        <key>astcQualityLevel</key>
+        <uint>2</uint>
+        <key>basisUniversalQualityLevel</key>
+        <uint>2</uint>
+        <key>etc1QualityLevel</key>
+        <uint>40</uint>
+        <key>etc2QualityLevel</key>
+        <uint>40</uint>
         <key>dxtCompressionMode</key>
         <enum type="SettingsBase::DxtCompressionMode">DXT_PERCEPTUAL</enum>
-        <key>jxrColorFormat</key>
-        <enum type="SettingsBase::JpegXrColorMode">JXR_YUV444</enum>
-        <key>jxrTrimFlexBits</key>
-        <uint>0</uint>
-        <key>jxrCompressionLevel</key>
-        <uint>0</uint>
         <key>ditherType</key>
         <enum type="SettingsBase::DitherType">NearestNeighbour</enum>
         <key>backgroundColor</key>
@@ -80,8 +72,6 @@
         <key>webpQualityLevel</key>
         <uint>101</uint>
         <key>textureSubPath</key>
-        <string></string>
-        <key>atfFormats</key>
         <string></string>
         <key>textureFormat</key>
         <enum type="SettingsBase::TextureFormat">png</enum>
@@ -129,22 +119,6 @@
                 <uint>1</uint>
             </struct>
         </struct>
-        <key>andEngine</key>
-        <struct type="AndEngine">
-            <key>minFilter</key>
-            <enum type="AndEngine::MinFilter">Linear</enum>
-            <key>packageName</key>
-            <string>Texture</string>
-            <key>wrap</key>
-            <struct type="AndEngineWrap">
-                <key>s</key>
-                <enum type="AndEngineWrap::Wrap">Clamp</enum>
-                <key>t</key>
-                <enum type="AndEngineWrap::Wrap">Clamp</enum>
-            </struct>
-            <key>magFilter</key>
-            <enum type="AndEngine::MagFilter">MagLinear</enum>
-        </struct>
         <key>dataFileNames</key>
         <map type="GFileNameMap">
             <key>data</key>
@@ -153,8 +127,8 @@
                 <filename>atlas.json</filename>
             </struct>
         </map>
-        <key>multiPack</key>
-        <false/>
+        <key>multiPackMode</key>
+        <enum type="SettingsBase::MultiPackMode">MultiPackOff</enum>
         <key>forceIdenticalLayout</key>
         <false/>
         <key>outputFormat</key>
@@ -172,6 +146,8 @@
         <true/>
         <key>prependSmartFolderName</key>
         <false/>
+        <key>autodetectAnimations</key>
+        <true/>
         <key>globalSpriteSettings</key>
         <struct type="SpriteSettings">
             <key>scale</key>
@@ -197,16 +173,35 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
+            <key type="filename">tuxemon-misa/misa-angry.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>6,8,11,16</rect>
+                <key>scale9Paddings</key>
+                <rect>6,8,11,16</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
             <key type="filename">tuxemon-misa/misa-back-walk.000.png</key>
             <key type="filename">tuxemon-misa/misa-back-walk.001.png</key>
             <key type="filename">tuxemon-misa/misa-back-walk.002.png</key>
             <key type="filename">tuxemon-misa/misa-back-walk.003.png</key>
             <key type="filename">tuxemon-misa/misa-back.png</key>
+            <key type="filename">tuxemon-misa/misa-confused.png</key>
+            <key type="filename">tuxemon-misa/misa-disgusted.png</key>
+            <key type="filename">tuxemon-misa/misa-fear.png</key>
             <key type="filename">tuxemon-misa/misa-front-walk.000.png</key>
             <key type="filename">tuxemon-misa/misa-front-walk.001.png</key>
             <key type="filename">tuxemon-misa/misa-front-walk.002.png</key>
             <key type="filename">tuxemon-misa/misa-front-walk.003.png</key>
             <key type="filename">tuxemon-misa/misa-front.png</key>
+            <key type="filename">tuxemon-misa/misa-happy.png</key>
             <key type="filename">tuxemon-misa/misa-left-walk.000.png</key>
             <key type="filename">tuxemon-misa/misa-left-walk.001.png</key>
             <key type="filename">tuxemon-misa/misa-left-walk.002.png</key>
@@ -217,9 +212,13 @@
             <key type="filename">tuxemon-misa/misa-right-walk.002.png</key>
             <key type="filename">tuxemon-misa/misa-right-walk.003.png</key>
             <key type="filename">tuxemon-misa/misa-right.png</key>
+            <key type="filename">tuxemon-misa/misa-sad.png</key>
+            <key type="filename">tuxemon-misa/misa-suprised.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
                 <key>scale9Enabled</key>
                 <false/>
                 <key>scale9Borders</key>
@@ -229,11 +228,114 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">tuxemon-misa/misa-beyonce.000.png</key>
+            <key type="filename">tuxemon-misa/misa-beyonce.002.png</key>
+            <key type="filename">tuxemon-misa/misa-beyonce.004.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>5,8,10,17</rect>
+                <key>scale9Paddings</key>
+                <rect>5,8,10,17</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">tuxemon-misa/misa-beyonce.001.png</key>
+            <key type="filename">tuxemon-misa/misa-beyonce.003.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>5,8,10,15</rect>
+                <key>scale9Paddings</key>
+                <rect>5,8,10,15</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">tuxemon-misa/misa-bob.000.png</key>
+            <key type="filename">tuxemon-misa/misa-spin.000.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>4,8,8,17</rect>
+                <key>scale9Paddings</key>
+                <rect>4,8,8,17</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">tuxemon-misa/misa-bob.001.png</key>
+            <key type="filename">tuxemon-misa/misa-spin.001.png</key>
+            <key type="filename">tuxemon-misa/misa-spin.003.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>4,8,8,15</rect>
+                <key>scale9Paddings</key>
+                <rect>4,8,8,15</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">tuxemon-misa/misa-disco.000.png</key>
+            <key type="filename">tuxemon-misa/misa-disco.001.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>4,8,9,17</rect>
+                <key>scale9Paddings</key>
+                <rect>4,8,9,17</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">tuxemon-misa/misa-spin.002.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>5,8,9,16</rect>
+                <key>scale9Paddings</key>
+                <rect>5,8,9,16</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
         </map>
-        <key>fileList</key>
-        <array>
-            <filename>tuxemon-misa</filename>
-        </array>
+        <key>fileLists</key>
+        <map type="SpriteSheetMap">
+            <key>default</key>
+            <struct type="SpriteSheet">
+                <key>files</key>
+                <array>
+                    <filename>tuxemon-misa</filename>
+                </array>
+            </struct>
+        </map>
         <key>ignoreFileList</key>
         <array/>
         <key>replaceList</key>

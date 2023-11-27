@@ -10,6 +10,7 @@ import {
   ChatMessage,
   ConversationArea as ConversationAreaModel,
   CoveyTownSocket,
+  DanceMove,
   Interactable,
   InteractableCommand,
   InteractableCommandBase,
@@ -145,6 +146,12 @@ export default class Town {
       this._updatePlayerLocation(newPlayer, movementData);
     });
 
+    // Register an event listener for the client socket: if the client updates their
+    // player dance move, inform the CoveyTownController
+    socket.on('playerDanceMoveChange', (danceMove: DanceMove | undefined) => {
+      this._updatePlayerDanceMove(newPlayer, danceMove);
+    });
+
     // Set up a listener to process updates to interactables.
     // Currently only knows how to process updates for ViewingArea's, and
     // ignores any other updates for any other kind of interactable.
@@ -255,6 +262,17 @@ export default class Town {
     player.location = location;
 
     this._broadcastEmitter.emit('playerMoved', player.toPlayerModel());
+  }
+
+  /**
+   * Updates the dance move of a player within the town
+   *
+   * @param player Player to update dance move for
+   * @param location New dance move for this player
+   */
+  private _updatePlayerDanceMove(player: Player, danceMove: DanceMove | undefined): void {
+    player.danceMove = danceMove;
+    this._broadcastEmitter.emit('playerDanced', player.toPlayerModel());
   }
 
   /**

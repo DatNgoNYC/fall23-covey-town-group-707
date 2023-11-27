@@ -1,10 +1,11 @@
 import EventEmitter from 'events';
 import TypedEmitter from 'typed-emitter';
-import { Player as PlayerModel, PlayerLocation } from '../types/CoveyTownSocket';
+import { Player as PlayerModel, PlayerLocation, DanceMove } from '../types/CoveyTownSocket';
 export const MOVEMENT_SPEED = 175;
 
 export type PlayerEvents = {
   movement: (newLocation: PlayerLocation) => void;
+  dance: (newDanceMove: DanceMove) => void;
 };
 
 export type PlayerGameObjects = {
@@ -15,17 +16,25 @@ export type PlayerGameObjects = {
 export default class PlayerController extends (EventEmitter as new () => TypedEmitter<PlayerEvents>) {
   private _location: PlayerLocation;
 
+  private _danceMove: DanceMove | undefined;
+
   private readonly _id: string;
 
   private readonly _userName: string;
 
   public gameObjects?: PlayerGameObjects;
 
-  constructor(id: string, userName: string, location: PlayerLocation) {
+  constructor(
+    id: string,
+    userName: string,
+    location: PlayerLocation,
+    danceMove?: DanceMove | undefined,
+  ) {
     super();
     this._id = id;
     this._userName = userName;
     this._location = location;
+    this._danceMove = danceMove;
   }
 
   set location(newLocation: PlayerLocation) {
@@ -38,6 +47,15 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
     return this._location;
   }
 
+  set danceMove(newDanceMove: DanceMove | undefined) {
+    this._danceMove = newDanceMove;
+    this._updateSpriteDanceMove();
+  }
+
+  get danceMove(): DanceMove | undefined {
+    return this._danceMove;
+  }
+
   get userName(): string {
     return this._userName;
   }
@@ -47,7 +65,12 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
   }
 
   toPlayerModel(): PlayerModel {
-    return { id: this.id, userName: this.userName, location: this.location };
+    return {
+      id: this.id,
+      userName: this.userName,
+      location: this.location,
+      danceMove: this.danceMove,
+    };
   }
 
   private _updateGameComponentLocation() {
@@ -83,7 +106,39 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
     }
   }
 
+  private _updateSpriteDanceMove() {
+    if (this.gameObjects && !this.gameObjects.locationManagedByGameScene) {
+      const { sprite } = this.gameObjects;
+      if (!sprite.anims) return;
+      // when avatar is dancing
+      if (this.danceMove) {
+        switch (this.danceMove) {
+          case 'Disco':
+            sprite.anims.play('misa-disco', true);
+            break;
+          case 'Bob':
+            sprite.anims.play('misa-bob', true);
+            break;
+          case 'Beyonce':
+            sprite.anims.play('misa-beyonce', true);
+            break;
+          case 'Spin':
+            sprite.anims.play('misa-spin', true);
+            break;
+        }
+      } else {
+        sprite.anims.stop();
+        sprite.setTexture('atlas', `misa-front`);
+      }
+    }
+  }
+
   static fromPlayerModel(modelPlayer: PlayerModel): PlayerController {
-    return new PlayerController(modelPlayer.id, modelPlayer.userName, modelPlayer.location);
+    return new PlayerController(
+      modelPlayer.id,
+      modelPlayer.userName,
+      modelPlayer.location,
+      modelPlayer.danceMove,
+    );
   }
 }

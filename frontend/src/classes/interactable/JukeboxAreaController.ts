@@ -161,7 +161,8 @@ export default class JukeboxAreaController extends InteractableAreaController<
 
       // updates video player with the new video player provided in the new jukebox model
       // updating is handled by the viewing area controller property
-      this._viewingAreaController.updateFrom(newJukeboxModel.videoPlayer, this.occupants);
+      this.viewingAreaController.updateFrom(newJukeboxModel.videoPlayer, this.occupants);
+      this.emit('videoPlayerChanged', this.viewingAreaController);
 
       this._model = newJukeboxModel;
     } else if (newModel.type === 'ViewingArea') {
