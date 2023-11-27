@@ -6,11 +6,14 @@ import {
   JukeboxVote,
   Song,
   SongQueueItem,
+  Interactable as InteractableAreaModel,
 } from '../../types/CoveyTownSocket';
 import PlayerController from '../PlayerController';
 import JukeboxAreaController from './JukeboxAreaController';
 import TownController from '../TownController';
 import ViewingArea from '../../components/Town/interactables/ViewingArea';
+import InteractableAreaController from './InteractableAreaController';
+import InteractableModelType from './InteractableAreaController';
 
 describe('JukeboxAreaController', () => {
   const ourPlayer = new PlayerController(nanoid(), nanoid(), {
@@ -220,6 +223,74 @@ describe('JukeboxAreaController', () => {
         expect(queueChangedCalled[1]).toEqual(queueItems);
       }
       expect(controller.toInteractableAreaModel()).toEqual(model);
+    });
+    it('emits a change if viewing area has changed', () => {
+      const controller = jukeboxControllerWithProp({
+        occupants: [],
+      });
+      const emitSpy = jest.spyOn(controller, 'emit');
+      const model: JukeboxAreaModel = {
+        id: controller.id,
+        occupants: [],
+        type: 'JukeboxArea',
+        curSong: songs[1],
+        queue: [],
+        videoPlayer: {
+          id: controller.id,
+          occupants: [],
+          type: 'ViewingArea',
+          video: undefined,
+          isPlaying: false,
+          elapsedTimeSec: 0,
+        },
+      };
+
+      controller.updateFrom(model, []);
+      const curSongChangedCalled = emitSpy.mock.calls.find(call => call[0] === 'curSongChanged');
+      expect(curSongChangedCalled).toBeDefined();
+      if (curSongChangedCalled) {
+        expect(curSongChangedCalled[1]).toEqual(songs[1]);
+      }
+      expect(controller.toInteractableAreaModel()).toEqual(model);
+
+      const emitSpy2 = jest.spyOn(controller, 'emit');
+      const modelViewChanged: JukeboxAreaModel = {
+        id: controller.id,
+        occupants: [],
+        type: 'JukeboxArea',
+        curSong: songs[1],
+        queue: [],
+        videoPlayer: {
+          id: controller.id,
+          occupants: [],
+          type: 'ViewingArea',
+          video: songs[1].videoId,
+          isPlaying: true,
+          elapsedTimeSec: 20,
+        },
+      };
+
+      controller.updateFrom(modelViewChanged, []);
+      const videoPlayerChangedCalled = emitSpy2.mock.calls.find(
+        call => call[0] === 'videoPlayerChanged',
+      );
+      expect(videoPlayerChangedCalled).toBeDefined();
+      if (videoPlayerChangedCalled) {
+        expect(videoPlayerChangedCalled[1]).toEqual({
+          _id: controller.id,
+          _listeners: new Map(),
+          _model: {
+            id: controller.id,
+            occupants: [],
+            type: 'ViewingArea',
+            video: songs[1].videoId,
+            isPlaying: true,
+            elapsedTimeSec: 20,
+          },
+          _occupants: [],
+        });
+      }
+      expect(controller.toInteractableAreaModel()).toEqual(modelViewChanged);
     });
     test('model does not change if no change has occured', () => {
       const controller = jukeboxControllerWithProp({
