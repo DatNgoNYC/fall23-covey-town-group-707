@@ -101,13 +101,25 @@ export default class Jukebox {
       switch (vote) {
         case 'Upvote': {
           songInQueue.numUpvotes += 1;
-          songInQueue.numDownvotes -= prevVote === 'None' ? 0 : 1;
+
+          if (prevVote === 'None') {
+            songInQueue.numDownvotes -= 0;
+          } else {
+            // remove previous downvote, it has been converted to upvote
+            songInQueue.numDownvotes -= 1;
+          }
 
           break;
         }
         case 'Downvote':
           songInQueue.numDownvotes += 1;
-          songInQueue.numUpvotes -= prevVote === 'None' ? 0 : 1;
+
+          if (prevVote === 'None') {
+            songInQueue.numUpvotes -= 0;
+          } else {
+            // remove previous upvote, it has been converted to downvote
+            songInQueue.numUpvotes -= 1;
+          }
 
           break;
         case 'None':
