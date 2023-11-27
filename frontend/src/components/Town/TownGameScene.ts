@@ -29,6 +29,25 @@ function interactableTypeForObjectType(type: string): any {
   }
 }
 
+interface CustomCursorKeys extends Phaser.Types.Input.Keyboard.CursorKeys {
+  /**
+   * A Key object mapping to the 1 (number) key.
+   */
+  one: Phaser.Input.Keyboard.Key;
+  /**
+   * A Key object mapping to the 2 (number) key.
+   */
+  two: Phaser.Input.Keyboard.Key;
+  /**
+   * A Key object mapping to the 3 (number) key.
+   */
+  three: Phaser.Input.Keyboard.Key;
+  /**
+   * A Key object mapping to the 4 (number) key.
+   */
+  four: Phaser.Input.Keyboard.Key;
+}
+
 // Original inspiration and code from:
 // https://medium.com/@michaelwesthadley/modular-game-worlds-in-phaser-3-tilemaps-1-958fc7e6bbd6
 export default class TownGameScene extends Phaser.Scene {
@@ -42,9 +61,9 @@ export default class TownGameScene extends Phaser.Scene {
 
   private _interactables: Interactable[] = [];
 
-  private _cursors: Phaser.Types.Input.Keyboard.CursorKeys[] = [];
+  private _cursors: CustomCursorKeys[] = [];
 
-  private _cursorKeys?: Phaser.Types.Input.Keyboard.CursorKeys;
+  private _cursorKeys?: CustomCursorKeys;
 
   /*
    * A "captured" key doesn't send events to the browser - they are trapped by Phaser
@@ -441,7 +460,14 @@ export default class TownGameScene extends Phaser.Scene {
       }
     });
     assert(this.input.keyboard);
-    this._cursorKeys = this.input.keyboard.createCursorKeys();
+    this._cursorKeys = {
+      // use the generated hot keys, and add on number inputs
+      ...this.input.keyboard.createCursorKeys(),
+      one: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ONE),
+      two: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.TWO),
+      three: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.THREE),
+      four: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.FOUR),
+    };
     this._cursors.push(this._cursorKeys);
     this._cursors.push(
       this.input.keyboard.addKeys(
@@ -456,7 +482,7 @@ export default class TownGameScene extends Phaser.Scene {
           four: Phaser.Input.Keyboard.KeyCodes.FOUR,
         },
         false,
-      ) as Phaser.Types.Input.Keyboard.CursorKeys,
+      ) as CustomCursorKeys,
     );
     this._cursors.push(
       this.input.keyboard.addKeys(
@@ -471,7 +497,7 @@ export default class TownGameScene extends Phaser.Scene {
           four: Phaser.Input.Keyboard.KeyCodes.FOUR,
         },
         false,
-      ) as Phaser.Types.Input.Keyboard.CursorKeys,
+      ) as CustomCursorKeys,
     );
 
     // Create a sprite with physics enabled via the physics system. The image used for the sprite
