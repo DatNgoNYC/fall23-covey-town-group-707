@@ -6,14 +6,11 @@ import {
   JukeboxVote,
   Song,
   SongQueueItem,
-  Interactable as InteractableAreaModel,
 } from '../../types/CoveyTownSocket';
 import PlayerController from '../PlayerController';
 import JukeboxAreaController from './JukeboxAreaController';
 import TownController from '../TownController';
 import ViewingArea from '../../components/Town/interactables/ViewingArea';
-import InteractableAreaController from './InteractableAreaController';
-import InteractableModelType from './InteractableAreaController';
 
 describe('JukeboxAreaController', () => {
   const ourPlayer = new PlayerController(nanoid(), nanoid(), {
