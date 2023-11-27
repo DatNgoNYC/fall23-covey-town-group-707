@@ -206,8 +206,9 @@ describe('Jukebox', () => {
       jukebox.addSongToQueue(song5);
       jukebox.addSongToQueue(song3);
 
-      jukebox.voteOnSongInQueue(song5, 'Downvote', 'None', 3);
-      jukebox.voteOnSongInQueue(song5, 'Downvote', 'None', 3);
+      jukebox.voteOnSongInQueue(song5, 'Downvote', 'None', 4);
+      jukebox.voteOnSongInQueue(song5, 'Downvote', 'None', 4);
+      jukebox.voteOnSongInQueue(song5, 'Downvote', 'None', 4);
       expect(jukebox.queue).toEqual(expectedSongQueue);
     });
     it('should change the previous upvote to downvote', () => {
