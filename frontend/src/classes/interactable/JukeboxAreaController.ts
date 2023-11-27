@@ -6,7 +6,7 @@ import {
   SongQueueItem,
   ViewingArea as ViewingAreaModel,
 } from '../../types/CoveyTownSocket';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import TownController from '../TownController';
 import ViewingAreaController, { ViewingAreaEvents } from './ViewingAreaController';
 
@@ -288,4 +288,22 @@ export function useJukeboxViewingAreaController(
   }, [controller]);
 
   return viewingAreaController;
+}
+
+interface UseSuggestionFormModalResult {
+  isOpen: boolean;
+  toggleModal: () => void;
+}
+
+export function useSuggestionFormModal(): UseSuggestionFormModalResult {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleModal = () => {
+    setIsOpen(!isOpen);
+  };
+
+  return {
+    isOpen,
+    toggleModal,
+  };
 }
