@@ -12,19 +12,21 @@ import {
   Stack,
   useToast,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
-import JukeboxAreaController from '../../classes/interactable/JukeboxAreaController';
+import React, { useEffect, useState } from 'react';
+import JukeboxAreaController, {
+  useSuggestionFormModal,
+} from '../../classes/interactable/JukeboxAreaController';
 import { Song } from '../../types/CoveyTownSocket';
 import { searchSong } from './YoutubeSearch';
 import assert from 'assert';
+import useTownController from '../../hooks/useTownController';
 
 type SuggestionFormWrapperProps = {
-  controller: JukeboxAreaController;
-  showForm: boolean;
+  isOpen: boolean;
   handleClose: () => void;
 };
 type SuggestionFormProps = {
-  controller: JukeboxAreaController;
+  handleQueueSong: (song: Song) => Promise<void>;
 };
 type ResultsContainerProps = {
   songs: Song[];
@@ -70,7 +72,8 @@ function ResultsContainer({ songs, onClickHandler }: ResultsContainerProps): JSX
 }
 
 /* This is the modal content and what the user sees and interacts with. */
-export function SuggestionForm({ controller }: SuggestionFormProps): JSX.Element {
+export function SuggestionForm(/* { handleQueueSong }: SuggestionFormProps */): JSX.Element {
+  const townController = useTownController();
   // use controller.queueSong(song:Song) later when we send the song to backend
   const [songName, setSongName] = React.useState('');
   const [artistName, setArtistName] = React.useState('');
@@ -100,7 +103,18 @@ export function SuggestionForm({ controller }: SuggestionFormProps): JSX.Element
       if (song === undefined) {
         throw new Error('Song is not defined');
       }
-      controller.queueSong(song);
+
+      const controller = townController.jukeboxAreas.find(jukeboxAreaController => {
+        if (jukeboxAreaController.occupantsByID.includes(townController.ourPlayer.id)) {
+          return jukeboxAreaController;
+        }
+      });
+
+      if (controller === undefined) {
+        throw new Error('Area does not exist');
+      } else {
+        controller.queueSong(song);
+      }
     } catch (error) {
       toast({
         title: 'Error queueing song',
@@ -148,18 +162,35 @@ export function SuggestionForm({ controller }: SuggestionFormProps): JSX.Element
 
 /* This is the wrapper for our form. It returns the modal component containing the main component implementing the suggestion features. */
 export default function SuggestionFormWrapper({
-  controller,
-  showForm,
+  isOpen,
   handleClose,
 }: SuggestionFormWrapperProps): JSX.Element {
+  useEffect(() => {
+    // This code runs when the component mounts
+    console.log('suggestionformwrapper is mounting, showform:', isOpen);
+
+    return () => {
+      // This code runs when the component is about to unmount
+      console.log('suggestionformwrapper is unmounting, showform:', isOpen);
+    };
+  }, []);
+
   return (
-    <Modal isOpen={showForm} onClose={handleClose} closeOnOverlayClick={false}>
+    <Modal isOpen={isOpen} onClose={handleClose} closeOnOverlayClick={false}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{'Suggest a song!'}</ModalHeader>
         <ModalCloseButton />
-        <SuggestionForm controller={controller} />
+        <SuggestionForm /* handleQueueSong={handleQueueSong}  */ />
       </ModalContent>
     </Modal>
   );
 }
+
+// function areEqual(prevProps: SuggestionFormWrapperProps, nextProps: SuggestionFormWrapperProps) {
+//   console.log('isrunning');
+//   return (
+//     prevProps.handleQueueSong === nextProps.handleQueueSong &&
+//     prevProps.showForm === nextProps.showForm
+//   );
+// }
