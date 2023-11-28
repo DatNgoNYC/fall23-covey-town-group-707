@@ -39,7 +39,16 @@ The backend will automatically restart if you change any of the files in the `to
 
 ### Configuring the frontend
 
-Create a `.env` file in the `frontend` directory, with the line: `NEXT_PUBLIC_TOWNS_SERVICE_URL=http://localhost:8081` (if you deploy the towns service to another location, put that location here instead)
+Create a `.env` file in the `frontend` directory, with the line: `NEXT_PUBLIC_TOWNS_SERVICE_URL=http://localhost:8081` (if you deploy the towns service to another location, put that location here instead).
+
+You will also need an Youtube Data API key. 
+1. Make sure you have a Google account. If you don't have one yet, you will have to create one.\
+2. Log in to to [Google Cloud Console](https://console.cloud.google.com/getting-started
+) with your Google account.
+3. On the sidebar, click on "APIs & Services".
+4. You should be brought to the page "Enabled APIs & services", and on the page there is "CREATE PROJECT" button, click on that.
+5. Give it a project name like "Covey.town" and leave the Location as "No organization"
+
 
 For ease of debugging, you might also set the environmental variable `NEXT_PUBLIC_TOWN_DEV_MODE=true`. When set to `true`, the frontend will
 automatically connect to the town with the friendly name "DEBUG_TOWN" (creating one if needed), and will *not* try to connect to the Twilio API. This is useful if you want to quickly test changes to the frontend (reloading the page and re-acquiring video devices can be much slower than re-loading without Twilio).
