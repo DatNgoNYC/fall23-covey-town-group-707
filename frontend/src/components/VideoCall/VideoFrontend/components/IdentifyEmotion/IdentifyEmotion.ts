@@ -8,7 +8,7 @@ import AWS from 'aws-sdk';
 import TownController from '../../../../../classes/TownController';
 import assert from 'assert';
 
-const EMOTION_API_REQUEST_DELAY = 5000;
+const EMOTION_API_REQUEST_DELAY = 3000;
 
 async function captureFrame(mediaStreamTrack: MediaStreamTrack): Promise<Buffer> {
   // TODO: fix the any typecasting
