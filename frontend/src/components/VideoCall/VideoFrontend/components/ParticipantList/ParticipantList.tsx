@@ -83,7 +83,7 @@ export default function ParticipantList() {
   const isRemoteParticipantScreenSharing =
     screenShareParticipant && screenShareParticipant !== localParticipant;
 
-  IdentifyEmotion();
+  // IdentifyEmotion();
 
   const classes = useStyles('fullwidth');
   // if (participants.length === 0) return null; // Don't render this component if there are no remote participants.
