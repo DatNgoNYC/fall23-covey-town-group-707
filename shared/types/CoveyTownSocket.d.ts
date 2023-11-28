@@ -62,7 +62,7 @@ export type SongQueueItem = {
 };
 
 // Represents the types of votes a user can make
-export type JukeboxVote = "Upvote" | "Downvote";
+export type JukeboxVote = 'Upvote' | 'Downvote' | 'None';
 
 export interface PlayerLocation {
   /* The CENTER x coordinate of this player's location */
@@ -247,6 +247,7 @@ export interface VoteOnSongInQueueCommand {
   type: "VoteOnSongInQueue";
   song: Song;
   vote: JukeboxVote;
+  prevVote: JukeboxVote;
 }
 
 export type InteractableCommandReturnType<

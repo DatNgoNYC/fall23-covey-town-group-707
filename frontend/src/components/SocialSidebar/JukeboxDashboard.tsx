@@ -17,7 +17,7 @@ type JukeboxAreaViewProps = {
 
 type SongQueueItemDisplayProps = {
   songQueueItem: SongQueueItem;
-  handleVote: (jukeboxVote: JukeboxVote, song: Song) => void;
+  handleVote: (jukeboxVote: JukeboxVote, song: Song, prevVote: JukeboxVote) => void;
 };
 
 /**
@@ -43,15 +43,29 @@ function SongQueueItemDisplay({
   songQueueItem,
   handleVote,
 }: SongQueueItemDisplayProps): JSX.Element {
+  const [prevVote, setPrevVote] = useState<JukeboxVote>('None');
+
+  const handleUpvote = () => {
+    handleVote('Upvote', songQueueItem.song, prevVote);
+    setPrevVote('Upvote');
+  };
+
+  const handleDownvote = () => {
+    handleVote('Downvote', songQueueItem.song, prevVote);
+    setPrevVote('Downvote');
+  };
+
   return (
     <HStack>
       <SongDisplay song={songQueueItem.song} />
-      <Button onClick={() => handleVote('Upvote', songQueueItem.song)} aria-label='Upvote'>
+      <Button onClick={handleUpvote} aria-label='Upvote' isDisabled={prevVote === 'Upvote'}>
         Upvote
       </Button>
-      <Button onClick={() => handleVote('Downvote', songQueueItem.song)} aria-label='Downvote'>
+      <Text>{songQueueItem.numUpvotes}</Text>
+      <Button onClick={handleDownvote} aria-label='Downvote' isDisabled={prevVote === 'Downvote'}>
         Downvote
       </Button>
+      <Text>{songQueueItem.numDownvotes}</Text>
     </HStack>
   );
 }
@@ -99,7 +113,9 @@ function JukeboxDashboardView({ controller, ourPlayer }: JukeboxAreaViewProps): 
             <ListItem key={queueItem.song.videoId}>
               <SongQueueItemDisplay
                 songQueueItem={queueItem}
-                handleVote={(vote, songVotedOn) => controller.vote(vote, songVotedOn)}
+                handleVote={(vote, songVotedOn, prevVote) =>
+                  controller.vote(vote, songVotedOn, prevVote)
+                }
               />
             </ListItem>
           );

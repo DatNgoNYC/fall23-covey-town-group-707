@@ -382,12 +382,14 @@ describe('JukeboxAreaController', () => {
 
       expect(controller.queue[0].numUpvotes).toEqual(22);
       const vote: JukeboxVote = 'Upvote';
-      await controller.vote(vote, songs[0]);
+      const prevVote: JukeboxVote = 'None';
+      await controller.vote(vote, songs[0], prevVote);
 
       expect(mockTownController.sendInteractableCommand).toHaveBeenCalledWith(controller.id, {
         type: 'VoteOnSongInQueue',
         song: songs[0],
         vote: vote,
+        prevVote: prevVote,
       });
 
       controller.updateFrom(model, []);
@@ -418,16 +420,56 @@ describe('JukeboxAreaController', () => {
 
       expect(controller.queue[1].numDownvotes).toEqual(5);
       const vote: JukeboxVote = 'Downvote';
-      await controller.vote(vote, songs[2]);
+      const prevVote: JukeboxVote = 'None';
+      await controller.vote(vote, songs[2], prevVote);
 
       expect(mockTownController.sendInteractableCommand).toHaveBeenCalledWith(controller.id, {
         type: 'VoteOnSongInQueue',
         song: songs[2],
         vote: vote,
+        prevVote: prevVote,
       });
 
       controller.updateFrom(model, []);
       expect(controller.queue[1].numDownvotes).toEqual(6);
+    });
+    it('does not change votes for a song when given a none vote', async () => {
+      const controller = jukeboxControllerWithProp({
+        occupants: [],
+        curSong: songs[0],
+        queue: [queueItems[1], queueItems[2]],
+      });
+
+      const model: JukeboxAreaModel = {
+        id: nanoid(),
+        occupants: [],
+        type: 'JukeboxArea',
+        curSong: songs[0],
+        queue: [queueItems[1]],
+        videoPlayer: {
+          id: controller.id,
+          occupants: [],
+          type: 'ViewingArea',
+          video: 'abc',
+          isPlaying: true,
+          elapsedTimeSec: 20,
+        },
+      };
+
+      expect(controller.queue[1].numDownvotes).toEqual(5);
+      const vote: JukeboxVote = 'None';
+      const prevVote: JukeboxVote = 'None';
+      await controller.vote(vote, songs[2], prevVote);
+
+      expect(mockTownController.sendInteractableCommand).toHaveBeenCalledWith(controller.id, {
+        type: 'VoteOnSongInQueue',
+        song: songs[2],
+        vote: vote,
+        prevVote: prevVote,
+      });
+
+      controller.updateFrom(model, []);
+      expect(controller.queue).toEqual([{ song: songs[1], numUpvotes: 22, numDownvotes: 0 }]);
     });
   });
   describe('Test queueSong', () => {
