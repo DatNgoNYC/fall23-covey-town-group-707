@@ -23,7 +23,7 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
   private _location: PlayerLocation;
 
   private _emotion: Emotion;
-  
+
   private _danceMove: DanceMove | undefined;
 
   private readonly _id: string;
@@ -75,7 +75,7 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
   get emotion(): Emotion {
     return this._emotion;
   }
-  
+
   get userName(): string {
     return this._userName;
   }

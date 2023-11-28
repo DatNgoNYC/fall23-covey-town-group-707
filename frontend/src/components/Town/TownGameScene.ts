@@ -304,7 +304,7 @@ export default class TownGameScene extends Phaser.Scene {
             gameObjects.sprite.setTexture('atlas', 'misa-back');
           } else if (prevVelocity.y > 0) {
             gameObjects.sprite.anims.stop();
-            
+
             const playerEmotionSprite = this.getPlayerEmotion(ourPlayer);
             gameObjects.sprite.setTexture('atlas', playerEmotionSprite);
           }
