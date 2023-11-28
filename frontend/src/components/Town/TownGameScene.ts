@@ -206,6 +206,10 @@ export default class TownGameScene extends Phaser.Scene {
         return 'misa-sad';
       case 'SURPRISED':
         return 'misa-surprised';
+      case 'CONFUSED':
+        return 'misa-confused';
+      case 'DISGUSTED':
+        return 'misa-disgusted';
       case 'NEUTRAL':
       default:
         return 'misa-front';

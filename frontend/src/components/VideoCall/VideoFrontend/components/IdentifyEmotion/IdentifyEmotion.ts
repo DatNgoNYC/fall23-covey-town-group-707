@@ -21,14 +21,15 @@ async function captureFrame(mediaStreamTrack: MediaStreamTrack): Promise<Buffer>
   return imageBuffer;
 }
 
-function emotionDetectionRequest(client: AWS.Rekognition, image: Buffer): Promise<AWS.Rekognition.EmotionName | undefined> {
-  // const image: Buffer = fs.readFileSync('IMG_9555.jpg');
-
+function emotionDetectionRequest(
+  client: AWS.Rekognition,
+  image: Buffer,
+): Promise<AWS.Rekognition.EmotionName | undefined> {
   const params = {
     Image: {
       Bytes: image,
     },
-    Attributes: ['ALL'], // 'EMOTIONS'
+    Attributes: ['ALL'],
   };
 
   return new Promise((resolve, reject) => {
@@ -57,7 +58,7 @@ function emotionDetectionRequest(client: AWS.Rekognition, image: Buffer): Promis
 
 export function IdentifyEmotion() {
   const debugAWS = process.env.NEXT_PUBLIC_TOWN_AWS_DEV_MODE;
-  
+
   const townController: TownController = useTownController();
 
   const { localTracks } = useVideoContext();
@@ -67,8 +68,8 @@ export function IdentifyEmotion() {
   ) as LocalVideoTrack | undefined;
   const mediaStreamTrack: MediaStreamTrack | undefined = useMediaStreamTrack(localVideoTrack);
 
-  assert(process.env.NEXT_PUBLIC_TOWN_AWS_ACCESS_KEY_ID, "AWS Access Key must be defined");
-  assert(process.env.NEXT_PUBLIC_TOWN_AWS_SECRET_ACCESS_KEY, "AWS Secret Key must be defined");
+  assert(process.env.NEXT_PUBLIC_TOWN_AWS_ACCESS_KEY_ID, 'AWS Access Key must be defined');
+  assert(process.env.NEXT_PUBLIC_TOWN_AWS_SECRET_ACCESS_KEY, 'AWS Secret Key must be defined');
 
   AWS.config.update({
     region: process.env.NEXT_PUBLIC_TOWN_AWS_REGION,
@@ -89,12 +90,19 @@ export function IdentifyEmotion() {
       try {
         if (mediaStreamTrack) {
           const imageBuffer = await captureFrame(mediaStreamTrack);
-          let detectedAWSEmotion:
-          | AWS.Rekognition.EmotionName
-          | undefined;
+          let detectedAWSEmotion: AWS.Rekognition.EmotionName | undefined;
 
           if (debugAWS && debugAWS.toLowerCase() === 'true') {
-            const emo: AWS.Rekognition.EmotionName[] = ['HAPPY', 'SAD', 'ANGRY', 'SURPRISED', 'FEAR', 'NEUTRAL'];
+            const emo: AWS.Rekognition.EmotionName[] = [
+              'NEUTRAL',
+              'HAPPY',
+              'SAD',
+              'SURPRISED',
+              'ANGRY',
+              'FEAR',
+              'CONFUSED',
+              'DISGUSTED',
+            ];
 
             detectedAWSEmotion = emo[Math.floor(Math.random() * emo.length)];
           } else {
@@ -116,6 +124,12 @@ export function IdentifyEmotion() {
               break;
             case 'FEAR':
               userEmotion = 'FEAR';
+              break;
+            case 'CONFUSED':
+              userEmotion = 'CONFUSED';
+              break;
+            case 'DISGUSTED':
+              userEmotion = 'DISGUSTED';
               break;
             default:
               userEmotion = 'NEUTRAL';

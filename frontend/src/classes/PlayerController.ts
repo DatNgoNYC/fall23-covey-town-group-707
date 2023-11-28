@@ -174,6 +174,12 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
         case 'SURPRISED':
           sprite.setTexture('atlas', 'misa-surprised');
           break;
+        case 'CONFUSED':
+          sprite.setTexture('atlas', 'misa-confused');
+          break;
+        case 'DISGUSTED':
+          sprite.setTexture('atlas', 'misa-disgusted');
+          break;
         case 'NEUTRAL':
         default:
           sprite.setTexture('atlas', 'misa-front');
