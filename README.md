@@ -41,26 +41,33 @@ The backend will automatically restart if you change any of the files in the `to
 
 Create a `.env` file in the `frontend` directory, with the line: `NEXT_PUBLIC_TOWNS_SERVICE_URL=http://localhost:8081` (if you deploy the towns service to another location, put that location here instead).
 
-You will also create an Youtube Data API key. 
-1. Make sure you have a Google account. If you don't have one yet, you will have to create one.\
-2. Log in to to [Google Cloud Console](https://console.cloud.google.com/getting-started
-) with your Google account.
+For ease of debugging, you might also set the environmental variable `NEXT_PUBLIC_TOWN_DEV_MODE=true`. When set to `true`, the frontend will
+automatically connect to the town with the friendly name "DEBUG_TOWN" (creating one if needed), and will *not* try to connect to the Twilio API. This is useful if you want to quickly test changes to the frontend (reloading the page and re-acquiring video devices can be much slower than re-loading without Twilio).
+
+You will need to create an Youtube Data API key.
+1. Make sure you have a Google account. If you don't have one yet, you will have to create one.
+2. Log in to to [Google Cloud Console](https://console.cloud.google.com/getting-started) with your Google account.
 3. On the sidebar, click on "APIs & Services".
 4. You should be brought to the page "Enabled APIs & services", and on the page there is "CREATE PROJECT" button, click on that.
 5. Give it a project name like "Covey.town" and leave the Location as "No organization"
 6. After creating the project, you will be taken to dashboard with many information like Project Info, Resources, and so on.
 7. On the sidebar, navigate to APIs & Services > Library.
 8. On the library page, find the section titled YouTube and select YouTube Data API v3.
-8. You will arrive att the YouTube Data API page, click the blue button that says "Enable" to enable the API.
-9. On the sidebar, navigate to APIs & Services > Credentials
-10. Click on "CREATE CREDENTIALS" near the top and select "API key". It will automatically generate an API key for you. **Copy the key** and keep it somewhere for now.
+9. You will arrive att the YouTube Data API page, click the blue button that says "Enable" to enable the API.
+10. On the sidebar, navigate to APIs & Services > Credentials
+11. Click on "CREATE CREDENTIALS" near the top and select "API key". It will automatically generate an API key for you. **Copy the key** and keep it somewhere for now.
 
 Now that you have generated the key, you have to add it to the `.env` file in the `frontend` directory that you created, with the line `NEXT_PUBLIC_TOWN_YOUTUBE_API_KEY={API_key}`, where you replace `{API_key}` with the API key you created and copied just now.
 
+You will also need to create an AWS api key. Follow this [article](link) to create the aws access key id and the aws secret access key. **Copy** those keys and keep it somewhere for now.
+Now add the following values to the `.env` file in the `frontend` directory that you created.
+| Config Value            | Description                               |
+| ----------------------- | ----------------------------------------- |
+| `TWILIO_ACCOUNT_SID`    | Visible on your twilio account dashboard. |
+| `TWILIO_API_KEY_SID`    | The SID of the new API key you created.   |
+| `TWILIO_API_KEY_SECRET` | The secret for the API key you created.   |
+| `TWILIO_API_AUTH_TOKEN` | Visible on your twilio account dashboard. |
 
-
-For ease of debugging, you might also set the environmental variable `NEXT_PUBLIC_TOWN_DEV_MODE=true`. When set to `true`, the frontend will
-automatically connect to the town with the friendly name "DEBUG_TOWN" (creating one if needed), and will *not* try to connect to the Twilio API. This is useful if you want to quickly test changes to the frontend (reloading the page and re-acquiring video devices can be much slower than re-loading without Twilio).
 
 ### Running the frontend
 
