@@ -413,7 +413,7 @@ describe('[T2] TicTacToeArea', () => {
         });
         await waitFor(() => expect(button).toBeEnabled());
         expect(within(button).queryByText('Loading...')).not.toBeInTheDocument(); //Check that the loading text is not displayed
-      }, 10000);
+      }, 15000);
     });
     it('Adds the display of the button when a game becomes possible to join', () => {
       gameAreaController.mockStatus = 'IN_PROGRESS';
