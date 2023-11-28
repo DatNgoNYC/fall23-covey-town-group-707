@@ -61,15 +61,15 @@ Now that you have generated the key, you have to add it to the `.env` file in th
 
 You will also need to create an AWS api key. Follow this [article](link) to create the aws access key id and the aws secret access key. **Copy** those keys and keep it somewhere for now.
 Now add the following values to the `.env` file in the `frontend` directory that you created.
-| Config Value            | Description                               |
-| ----------------------- | ----------------------------------------- |
-| `TWILIO_ACCOUNT_SID`    | Visible on your twilio account dashboard. |
-| `TWILIO_API_KEY_SID`    | The SID of the new API key you created.   |
-| `TWILIO_API_KEY_SECRET` | The secret for the API key you created.   |
-| `TWILIO_API_AUTH_TOKEN` | Visible on your twilio account dashboard. |
-
+| Config Value                            | Description                                         |
+| --------------------------------------- | --------------------------------------------------- |
+| `NEXT_PUBLIC_TOWN_AWS_DEV_MODE`         | Set as `false`.                                     |
+| `NEXT_PUBLIC_TOWN_AWS_ACCESS_KEY_ID`    | The access key id of the new API key you created.   |
+| `NEXT_PUBLIC_TOWN_AWS_SECRET_ACCESS_KEY`| The secret for the API key you created.             |
+| `NEXT_PUBLIC_TOWN_AWS_REGION`           | Set as `us-east-1`.                                 |
 
 ### Running the frontend
 
-In the `frontend` directory, run `npm run dev` (again, you'll need to run `npm install` the very first time). After several moments (or minutes, depending on the speed of your machine), a browser will open with the frontend running locally.
+In the `frontend` directory, run `npm install` and `npm install aws-sdk` the very first time.
+Then, to run the frontend, run `npm run dev`. After several moments (or minutes, depending on the speed of your machine), a browser will open with the frontend running locally.
 The frontend will automatically re-compile and reload in your browser if you change any files in the `frontend/src` directory.
