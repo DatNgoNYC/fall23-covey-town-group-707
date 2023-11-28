@@ -11,6 +11,6 @@
 		}
 	],
 	"settings": {
-		"typescript.tsdk": "covey-town-project-boeing-707/node_modules/typescript/lib",
+		"typescript.tsdk": "fall23-team-project-group-707/node_modules/typescript/lib",
 	}
 }
