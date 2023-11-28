@@ -16,6 +16,7 @@ import {
   ServerToClientEvents,
   TownJoinResponse,
   ViewingArea,
+  DanceMove,
 } from '../types/CoveyTownSocket';
 import { isConversationArea, isViewingArea } from '../types/TypeUtils';
 import PlayerController from './PlayerController';
@@ -152,6 +153,25 @@ describe('TownController', () => {
 
       //Uses the correct (new) location when emitting that update locally
       expect(expectedPlayerUpdate.location).toEqual(newLocation);
+    });
+    it("Emits the local player's dance move updates to the socket", () => {
+      const newDanceMove: DanceMove = 'Disco';
+      const expectedPlayerUpdate = testController.ourPlayer;
+      expectedPlayerUpdate.danceMove = newDanceMove;
+      const dancedPlayerListener = jest.fn();
+
+      testController.addListener('playerDanced', dancedPlayerListener);
+
+      testController.emitDanceMoveChange(newDanceMove);
+
+      //Emits the event to the socket
+      expect(mockSocket.emit).toBeCalledWith('playerDanceMoveChange', newDanceMove);
+
+      //Emits the playerDanceMoveChange event to locally subscribed listerners, indicating that the player dance move changed
+      expect(dancedPlayerListener).toBeCalledWith(expectedPlayerUpdate);
+
+      //Uses the correct (new) dance move when emitting that update locally
+      expect(expectedPlayerUpdate.danceMove).toEqual(newDanceMove);
     });
     it('Emits locally written chat messages to the socket, and dispatches no other events', () => {
       const testMessage: ChatMessage = {
@@ -448,6 +468,15 @@ describe('TownController', () => {
         'playerMoved',
         testPlayer,
         'playerMoved',
+        PlayerController.fromPlayerModel(testPlayer),
+      );
+    });
+    it('Emits playerDanced events when players changes dance move', async () => {
+      testPlayer.danceMove = 'Beyonce';
+      emitEventAndExpectListenerFiring(
+        'playerDanced',
+        testPlayer,
+        'playerDanced',
         PlayerController.fromPlayerModel(testPlayer),
       );
     });
