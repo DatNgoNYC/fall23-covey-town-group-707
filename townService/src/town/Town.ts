@@ -289,17 +289,6 @@ export default class Town {
   }
 
   /**
-   * Updates the dance move of a player within the town
-   *
-   * @param player Player to update dance move for
-   * @param location New dance move for this player
-   */
-  private _updatePlayerDanceMove(player: Player, danceMove: DanceMove | undefined): void {
-    player.danceMove = danceMove;
-    this._broadcastEmitter.emit('playerDanced', player.toPlayerModel());
-  }
-
-  /**
    * Removes a player from a conversation area, updating the conversation area's occupants list,
    * and emitting the appropriate message (area updated or area destroyed)
    *
