@@ -9,7 +9,7 @@ export default class JukeboxArea extends Interactable {
   addedToScene() {
     super.addedToScene();
     this.setTintFill();
-    this.setAlpha(0.3);
+    this.setAlpha(0);
     this.setDepth(-1);
     this.scene.add.text(
       this.x - this.displayWidth / 2,

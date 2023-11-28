@@ -96,6 +96,13 @@ export default class JukeboxArea extends InteractableArea {
    */
   public remove(player: Player): void {
     super.remove(player);
+
+    if (this._occupants.length === 0) {
+      this._jukebox.curSong = undefined;
+      this._jukebox.queue = [];
+    }
+
+    // emits area changed
     this._viewingArea.remove(player);
   }
 
@@ -184,7 +191,12 @@ export default class JukeboxArea extends InteractableArea {
     }
 
     if (command.type === 'VoteOnSongInQueue') {
-      this._jukebox.voteOnSongInQueue(command.song, command.vote);
+      this._jukebox.voteOnSongInQueue(
+        command.song,
+        command.vote,
+        command.prevVote,
+        this.occupants.length,
+      );
       this._emitAreaChanged();
 
       return undefined as InteractableCommandReturnType<CommandType>;

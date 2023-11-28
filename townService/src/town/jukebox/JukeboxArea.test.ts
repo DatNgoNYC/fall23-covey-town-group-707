@@ -46,6 +46,7 @@ describe('JukeboxArea', () => {
 
   const player1: Player = new Player('player1', townEmitter);
   const player2: Player = new Player('player2', townEmitter);
+  const player3: Player = new Player('player3', townEmitter);
 
   beforeEach(() => {
     const id = nanoid();
@@ -281,8 +282,24 @@ describe('JukeboxArea', () => {
     });
 
     describe('test command VoteOnSongInQueue', () => {
-      let upvoteCommand: VoteOnSongInQueueCommand;
-      let downvoteCommand: VoteOnSongInQueueCommand;
+      const upvoteCommand: VoteOnSongInQueueCommand = {
+        type: 'VoteOnSongInQueue',
+        song: song3,
+        vote: 'Upvote',
+        prevVote: 'None',
+      };
+      const downvoteCommand: VoteOnSongInQueueCommand = {
+        type: 'VoteOnSongInQueue',
+        song: song4,
+        vote: 'Downvote',
+        prevVote: 'None',
+      };
+      const noneVoteCommand: VoteOnSongInQueueCommand = {
+        type: 'VoteOnSongInQueue',
+        song: song4,
+        vote: 'None',
+        prevVote: 'None',
+      };
 
       beforeEach(() => {
         // add all the songs to the queue
@@ -292,8 +309,7 @@ describe('JukeboxArea', () => {
         jukeboxArea.handleCommand({ type: 'AddSongToQueue', song: song4 });
         expect(jukeboxArea.toModel().queue.length).toEqual(2);
 
-        upvoteCommand = { type: 'VoteOnSongInQueue', song: song3, vote: 'Upvote' };
-        downvoteCommand = { type: 'VoteOnSongInQueue', song: song4, vote: 'Downvote' };
+        jukeboxArea.addPlayersWithinBounds([player1, player2, player3]);
       });
 
       it('should add an upvote to the given song when given an upvote', () => {
@@ -325,6 +341,21 @@ describe('JukeboxArea', () => {
           song: song4,
           numUpvotes: 0,
           numDownvotes: 1,
+        });
+      });
+      it('should add no vote to the given song when given a none vote', () => {
+        expect(jukeboxArea.toModel().queue.find(e => e.song.videoId === song4.videoId)).toEqual({
+          song: song4,
+          numUpvotes: 0,
+          numDownvotes: 0,
+        });
+
+        jukeboxArea.handleCommand(noneVoteCommand);
+
+        expect(jukeboxArea.toModel().queue.find(e => e.song.videoId === song4.videoId)).toEqual({
+          song: song4,
+          numUpvotes: 0,
+          numDownvotes: 0,
         });
       });
     });

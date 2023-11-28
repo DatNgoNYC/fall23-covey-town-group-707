@@ -161,7 +161,8 @@ export default class JukeboxAreaController extends InteractableAreaController<
 
       // updates video player with the new video player provided in the new jukebox model
       // updating is handled by the viewing area controller property
-      this._viewingAreaController.updateFrom(newJukeboxModel.videoPlayer, this.occupants);
+      this.viewingAreaController.updateFrom(newJukeboxModel.videoPlayer, this.occupants);
+      this.emit('videoPlayerChanged', this.viewingAreaController);
 
       this._model = newJukeboxModel;
     } else if (newModel.type === 'ViewingArea') {
@@ -198,11 +199,12 @@ export default class JukeboxAreaController extends InteractableAreaController<
    * @param jukeboxVote Whether it is a upvote or downvote
    * @param song The song to vote on
    */
-  public async vote(jukeboxVote: JukeboxVote, song: Song) {
+  public async vote(jukeboxVote: JukeboxVote, song: Song, prevVote: JukeboxVote) {
     await this._townController.sendInteractableCommand(this.id, {
       type: 'VoteOnSongInQueue',
       song: song,
       vote: jukeboxVote,
+      prevVote,
     });
   }
 

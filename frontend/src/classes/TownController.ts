@@ -487,26 +487,6 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     });
 
     /**
-     * When a player's emotion changes, update local state and emit an event to the controller's event listeners
-     */
-    this._socket.on('playerEmotionChanged', changedEmotionPlayer => {
-      const playerToUpdate = this.players.find(
-        eachPlayer => eachPlayer.id === changedEmotionPlayer.id,
-      );
-
-      if (playerToUpdate) {
-        if (playerToUpdate !== this._ourPlayer) {
-          /*
-           * If we are told that OUR emotion changed, we shouldn't update our emotion because it's probably
-           * lagging behind real time. Instead, we update if it's another player's change.
-           */
-          playerToUpdate.emotion = changedEmotionPlayer.emotion;
-        }
-        this.emit('playerEmotionChanged', playerToUpdate);
-      }
-    });
-
-    /**
      * When an interactable's state changes, push that update into the relevant controller
      *
      * If an interactable area transitions from active to inactive (or inactive to active), this handler will emit

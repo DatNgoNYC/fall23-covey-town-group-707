@@ -36,6 +36,10 @@ export default class Jukebox {
     return this._curSong;
   }
 
+  public set curSong(song: Song | undefined) {
+    this._curSong = song;
+  }
+
   /**
    * Gets the list of songs in the jukebox queue.
    *
@@ -43,6 +47,10 @@ export default class Jukebox {
    */
   public get queue(): SongQueueItem[] {
     return this._queue;
+  }
+
+  public set queue(queue: SongQueueItem[]) {
+    this._queue = queue;
   }
 
   /**
@@ -68,12 +76,19 @@ export default class Jukebox {
   /**
    * Adds the given vote to the song provided in the queue, and sorts the queue
    * to ensure that it remains sorted in descending order of net votes (upvotes - downvotes).
+   * Filters out any songs that have downvotes from over 50% of the occupants.
+   * Does not do anything if the vote cast is the same as the player's previous vote on the song.
    *
    * @param song represents the song the user casts a vote on
-   * @param vote represents the type of the vote - either upvote or downvote (JukeboxVote)
+   * @param vote represents the type of the vote
    * @throws InvalidParametersError if the song specified is not in the queue
    */
-  public voteOnSongInQueue(song: Song, vote: JukeboxVote) {
+  public voteOnSongInQueue(
+    song: Song,
+    vote: JukeboxVote,
+    prevVote: JukeboxVote,
+    numOccupants: number,
+  ) {
     const songInQueue: SongQueueItem | undefined = this.queue.find(
       queueItem => queueItem.song.videoId === song.videoId,
     );
@@ -82,14 +97,39 @@ export default class Jukebox {
       throw new InvalidParametersError('Song not in queue.');
     }
 
-    if (vote === 'Upvote') {
-      songInQueue.numUpvotes += 1;
-    } else if (vote === 'Downvote') {
-      songInQueue.numDownvotes += 1;
-    }
+    if (vote !== prevVote) {
+      switch (vote) {
+        case 'Upvote': {
+          songInQueue.numUpvotes += 1;
 
-    this._queue = this._queue.sort(
-      (a, b) => b.numUpvotes - b.numDownvotes - (a.numUpvotes - a.numDownvotes),
-    );
+          if (prevVote === 'None') {
+            songInQueue.numDownvotes -= 0;
+          } else {
+            // remove previous downvote, it has been converted to upvote
+            songInQueue.numDownvotes -= 1;
+          }
+
+          break;
+        }
+        case 'Downvote':
+          songInQueue.numDownvotes += 1;
+
+          if (prevVote === 'None') {
+            songInQueue.numUpvotes -= 0;
+          } else {
+            // remove previous upvote, it has been converted to downvote
+            songInQueue.numUpvotes -= 1;
+          }
+
+          break;
+        case 'None':
+        default:
+          break;
+      }
+
+      this._queue = this._queue
+        .filter(songQueueItem => songQueueItem.numDownvotes <= 0.5 * numOccupants)
+        .sort((a, b) => b.numUpvotes - b.numDownvotes - (a.numUpvotes - a.numDownvotes));
+    }
   }
 }
