@@ -158,9 +158,9 @@ describe('TownController', () => {
       const newDanceMove: DanceMove = 'Disco';
       const expectedPlayerUpdate = testController.ourPlayer;
       expectedPlayerUpdate.danceMove = newDanceMove;
-      const movedPlayerListener = jest.fn();
+      const dancedPlayerListener = jest.fn();
 
-      testController.addListener('playerDanced', movedPlayerListener);
+      testController.addListener('playerDanced', dancedPlayerListener);
 
       testController.emitDanceMoveChange(newDanceMove);
 
@@ -168,7 +168,7 @@ describe('TownController', () => {
       expect(mockSocket.emit).toBeCalledWith('playerDanceMoveChange', newDanceMove);
 
       //Emits the playerDanceMoveChange event to locally subscribed listerners, indicating that the player dance move changed
-      expect(movedPlayerListener).toBeCalledWith(expectedPlayerUpdate);
+      expect(dancedPlayerListener).toBeCalledWith(expectedPlayerUpdate);
 
       //Uses the correct (new) dance move when emitting that update locally
       expect(expectedPlayerUpdate.danceMove).toEqual(newDanceMove);

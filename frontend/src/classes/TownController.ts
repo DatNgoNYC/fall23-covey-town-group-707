@@ -508,7 +508,7 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
    * Emit a dance move change event for the current player, updating the state locally and
    * also notifying the townService that our player dance move changed.
    *
-   * @param newDanceMove
+   * @param newDanceMove the dance move of the player, if it is undefined, then the player is not dancing
    */
   public emitDanceMoveChange(newDanceMove: DanceMove | undefined) {
     this._socket.emit('playerDanceMoveChange', newDanceMove);
