@@ -64,7 +64,7 @@
     "build": "next build",
     "export": "next export",
     "dev": "next dev",
-    "test": "cross-env DEBUG_PRINT_LIMIT=0 jest --runInBand",
+    "test": "cross-env jest --runInBand",
     "test-watch": "jest --watch",
     "eject": "react-scripts eject",
     "format": "eslint . --ext .js,.jsx,.ts,.tsx --fix",

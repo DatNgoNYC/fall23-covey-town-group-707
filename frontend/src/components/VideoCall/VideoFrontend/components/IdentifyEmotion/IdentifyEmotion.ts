@@ -82,7 +82,7 @@ export function IdentifyEmotion() {
   const client: AWS.Rekognition = new AWS.Rekognition();
 
   useEffect(() => {
-    // let timeout: NodeJS.Timeout;
+    let timeout: NodeJS.Timeout;
 
     const detectUserEmotion = async () => {
       let userEmotion: Emotion = 'NEUTRAL';
@@ -140,12 +140,12 @@ export function IdentifyEmotion() {
         console.error('Error detecting emotions:', error);
       } finally {
         townController.emitEmotionChange(userEmotion);
-        // timeout = setTimeout(detectUserEmotion, EMOTION_API_REQUEST_DELAY);
+        timeout = setTimeout(detectUserEmotion, EMOTION_API_REQUEST_DELAY);
       }
     };
 
     detectUserEmotion();
 
-    // return () => clearTimeout(timeout);
+    return () => clearTimeout(timeout);
   }, [mediaStreamTrack]);
 }
