@@ -3,13 +3,30 @@ import useTownController from '../../hooks/useTownController';
 import JukeboxAreaController, {
   useJukeboxAreaCurSong,
   useJukeboxAreaQueue,
-  useSuggestionFormModal,
 } from '../../classes/interactable/JukeboxAreaController';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { JukeboxVote, Song, SongQueueItem } from '../../types/CoveyTownSocket';
 import PlayerController from '../../classes/PlayerController';
 import { useInteractableAreaOccupants } from '../../classes/interactable/InteractableAreaController';
 import SuggestionFormWrapper from './SuggestionForm';
+
+interface UseSuggestionFormModalResult {
+  isOpen: boolean;
+  toggleModal: () => void;
+}
+
+export function useSuggestionFormModal(): UseSuggestionFormModalResult {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleModal = () => {
+    setIsOpen(!isOpen);
+  };
+
+  return {
+    isOpen,
+    toggleModal,
+  };
+}
 
 type JukeboxAreaViewProps = {
   controller: JukeboxAreaController;

@@ -13,9 +13,6 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import JukeboxAreaController, {
-  useSuggestionFormModal,
-} from '../../classes/interactable/JukeboxAreaController';
 import { Song } from '../../types/CoveyTownSocket';
 import { searchSong } from './YoutubeSearch';
 import assert from 'assert';

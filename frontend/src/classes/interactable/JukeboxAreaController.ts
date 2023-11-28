@@ -289,21 +289,3 @@ export function useJukeboxViewingAreaController(
 
   return viewingAreaController;
 }
-
-interface UseSuggestionFormModalResult {
-  isOpen: boolean;
-  toggleModal: () => void;
-}
-
-export function useSuggestionFormModal(): UseSuggestionFormModalResult {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleModal = () => {
-    setIsOpen(!isOpen);
-  };
-
-  return {
-    isOpen,
-    toggleModal,
-  };
-}
