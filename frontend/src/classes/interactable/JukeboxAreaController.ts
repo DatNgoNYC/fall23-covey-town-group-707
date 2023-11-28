@@ -6,7 +6,7 @@ import {
   SongQueueItem,
   ViewingArea as ViewingAreaModel,
 } from '../../types/CoveyTownSocket';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import TownController from '../TownController';
 import ViewingAreaController, { ViewingAreaEvents } from './ViewingAreaController';
 

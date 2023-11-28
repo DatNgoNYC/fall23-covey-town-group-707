@@ -12,7 +12,7 @@ import {
   Stack,
   useToast,
 } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Song } from '../../types/CoveyTownSocket';
 import { searchSong } from './YoutubeSearch';
 import assert from 'assert';
@@ -22,9 +22,7 @@ type SuggestionFormWrapperProps = {
   isOpen: boolean;
   handleClose: () => void;
 };
-type SuggestionFormProps = {
-  handleQueueSong: (song: Song) => Promise<void>;
-};
+
 type ResultsContainerProps = {
   songs: Song[];
   onClickHandler: (song: Song) => void;
@@ -69,9 +67,8 @@ function ResultsContainer({ songs, onClickHandler }: ResultsContainerProps): JSX
 }
 
 /* This is the modal content and what the user sees and interacts with. */
-export function SuggestionForm(/* { handleQueueSong }: SuggestionFormProps */): JSX.Element {
+export function SuggestionForm(): JSX.Element {
   const townController = useTownController();
-  // use controller.queueSong(song:Song) later when we send the song to backend
   const [songName, setSongName] = React.useState('');
   const [artistName, setArtistName] = React.useState('');
   const [results, setResults] = React.useState<Song[]>([]);
@@ -101,6 +98,7 @@ export function SuggestionForm(/* { handleQueueSong }: SuggestionFormProps */): 
         throw new Error('Song is not defined');
       }
 
+      // We use the townController hook here so we can get the JukeboxArea and send the queue command to the backend.
       const controller = townController.jukeboxAreas.find(jukeboxAreaController => {
         if (jukeboxAreaController.occupantsByID.includes(townController.ourPlayer.id)) {
           return jukeboxAreaController;
@@ -122,7 +120,7 @@ export function SuggestionForm(/* { handleQueueSong }: SuggestionFormProps */): 
   };
 
   return (
-    <Container>
+    <Container backgroundColor={'blue'}>
       <Input
         aria-label='songName'
         placeholder='Song Name'
@@ -162,32 +160,14 @@ export default function SuggestionFormWrapper({
   isOpen,
   handleClose,
 }: SuggestionFormWrapperProps): JSX.Element {
-  useEffect(() => {
-    // This code runs when the component mounts
-    console.log('suggestionformwrapper is mounting, showform:', isOpen);
-
-    return () => {
-      // This code runs when the component is about to unmount
-      console.log('suggestionformwrapper is unmounting, showform:', isOpen);
-    };
-  }, []);
-
   return (
     <Modal isOpen={isOpen} onClose={handleClose} closeOnOverlayClick={false}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{'Suggest a song!'}</ModalHeader>
         <ModalCloseButton />
-        <SuggestionForm /* handleQueueSong={handleQueueSong}  */ />
+        <SuggestionForm />
       </ModalContent>
     </Modal>
   );
 }
-
-// function areEqual(prevProps: SuggestionFormWrapperProps, nextProps: SuggestionFormWrapperProps) {
-//   console.log('isrunning');
-//   return (
-//     prevProps.handleQueueSong === nextProps.handleQueueSong &&
-//     prevProps.showForm === nextProps.showForm
-//   );
-// }
