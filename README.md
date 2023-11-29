@@ -71,7 +71,7 @@ Now add the following values to the `.env` file in the `frontend` directory that
 
 After configuring the frontend, run `npm install`.
 
-Lastly, navigate to the root directory and run `npm install` again.
+Or, to install all the dependencies, you can run `npm install` only in the root directory.
 
 ### Starting the backend
 
@@ -87,6 +87,11 @@ The frontend will automatically re-compile and reload in your browser if you cha
 
 Simply running `npm install` in all three folders should install all needed dependencies. However, if you run into errors such that the proper dependencies are not properly installed, run the following commands `npm install aws-sdk` (for installing AWS SDK) and `npm install react-icons` (for installing React icons).
 
+### NPM Install failures
+
+The libraries used for React require some native binaries to be installed – code written and compiled for your computer (not JavaScript). If you run into issues with `npm install` not succeeding, please try installing the following libraries using either [Homebrew (if on Mac)](https://brew.sh/), apt-get, or your favorite other package manager: `pixman`, `cairo`, `pkgconfig` and `pango`. For example, run `brew install pixman cairo pkgconfig pango`. If you are on a newer Mac with an M1 or M2 chip, you may need to use `arch -arm64 brew install pixman cairo pango`. On Windows:The failure `error /bin/bash: node: command not found` has been reported upon `npm install` in the `frontend` directory. If you encounter this error, please try to delete the `node_modules` directory and re-run `npm install` in the `frontend` directory from a bash shell instead of a windows command prompt.
+
 ## Running the app remotely
 
 Go to the link https://covey-jam-front.onrender.com/ to access and run the app.
+
