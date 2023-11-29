@@ -10,6 +10,7 @@ import {
   ChatMessage,
   ConversationArea as ConversationAreaModel,
   CoveyTownSocket,
+  Emotion,
   DanceMove,
   Interactable,
   InteractableCommand,
@@ -147,6 +148,12 @@ export default class Town {
     });
 
     // Register an event listener for the client socket: if the client updates their
+    // player emotion, inform the CoveyTownController
+    socket.on('playerEmotionChange', (emotion: Emotion) => {
+      this._updatePlayerEmotion(newPlayer, emotion);
+    });
+
+    // Register an event listener for the client socket: if the client updates their
     // player dance move, inform the CoveyTownController
     socket.on('playerDanceMoveChange', (danceMove: DanceMove | undefined) => {
       this._updatePlayerDanceMove(newPlayer, danceMove);
@@ -262,6 +269,11 @@ export default class Town {
     player.location = location;
 
     this._broadcastEmitter.emit('playerMoved', player.toPlayerModel());
+  }
+
+  private _updatePlayerEmotion(player: Player, emotion: Emotion): void {
+    player.emotion = emotion;
+    this._broadcastEmitter.emit('playerEmotionChanged', player.toPlayerModel());
   }
 
   /**

@@ -16,7 +16,9 @@ import {
   ClientToServerEvents,
   ConversationArea,
   CoveyTownSocket,
+  DanceMove,
   Direction,
+  Emotion,
   Interactable,
   PlayerLocation,
   ServerToClientEvents,
@@ -144,18 +146,26 @@ export class MockedPlayer {
 
   player: Player | undefined;
 
+  emotion: Emotion;
+
+  danceMove: DanceMove | undefined;
+
   constructor(
     socket: MockProxy<CoveyTownSocket>,
     socketToRoomMock: MockProxy<TypedEventBroadcaster<ServerToClientEvents>>,
     userName: string,
     townID: string,
     player: Player | undefined,
+    emotion?: Emotion | undefined,
+    danceMove?: DanceMove | undefined,
   ) {
     this.socket = socket;
     this.socketToRoomMock = socketToRoomMock;
     this.userName = userName;
     this.townID = townID;
     this.player = player;
+    this.emotion = emotion || 'NEUTRAL';
+    this.danceMove = danceMove;
   }
 
   moveTo(x: number, y: number, rotation: Direction = 'front', moving = false): void {

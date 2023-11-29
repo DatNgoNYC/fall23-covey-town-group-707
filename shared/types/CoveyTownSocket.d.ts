@@ -40,10 +40,21 @@ export interface Player {
   id: PlayerID;
   userName: string;
   location: PlayerLocation;
+  emotion: Emotion;
   danceMove?: DanceMove;
 }
 
 export type XY = { x: number; y: number };
+
+export type Emotion =
+  | 'NEUTRAL'
+  | 'HAPPY'
+  | 'SAD'
+  | 'SURPRISED'
+  | 'ANGRY'
+  | 'FEAR'
+  | 'CONFUSED'
+  | 'DISGUSTED';
 
 // Represents a song, which has a name,
 // artist, and a unique videoID
@@ -75,7 +86,7 @@ export interface PlayerLocation {
   interactableID?: string;
 }
 
-export type DanceMove = "Disco" | "Bob" | "Beyonce" | "Spin";
+export type DanceMove = 'Disco' | 'Bob' | 'Beyonce' | 'Spin';
 
 export type ChatMessage = {
   author: string;
@@ -275,6 +286,7 @@ export type InteractableCommandResponse<MessageType> = {
 
 export interface ServerToClientEvents {
   playerMoved: (movedPlayer: Player) => void;
+  playerEmotionChanged: (changedEmotionPlayer: Player) => void;
   playerDanced: (dancedPlayer: Player) => void;
   playerDisconnect: (disconnectedPlayer: Player) => void;
   playerJoined: (newPlayer: Player) => void;
@@ -290,6 +302,7 @@ export interface ClientToServerEvents {
   chatMessage: (message: ChatMessage) => void;
   playerMovement: (movementData: PlayerLocation) => void;
   playerDanceMoveChange: (danceMove: DanceMove | undefined) => void;
+  playerEmotionChange: (emotion: Emotion) => void;
   interactableUpdate: (update: Interactable) => void;
   interactableCommand: (
     command: InteractableCommand & InteractableCommandBase

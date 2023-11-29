@@ -11,6 +11,7 @@ import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import Participant from '../Participant/Participant';
 import useSelectedParticipant from '../VideoProvider/useSelectedParticipant/useSelectedParticipant';
 import { JukeboxVideoPlayerWrapper } from '../../../../Town/interactables/JukeboxVideoPlayer';
+import { IdentifyEmotion } from '../../hooks/IdentifyEmotion/IdentifyEmotion';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -81,6 +82,10 @@ export default function ParticipantList() {
   const nearbyPlayers = usePlayersInVideoCall();
   const isRemoteParticipantScreenSharing =
     screenShareParticipant && screenShareParticipant !== localParticipant;
+
+  if (process.env.JEST_WORKER_ID === undefined || process.env.NODE_ENV !== 'test') {
+    IdentifyEmotion();
+  }
 
   const classes = useStyles('fullwidth');
   // if (participants.length === 0) return null; // Don't render this component if there are no remote participants.

@@ -214,6 +214,34 @@ export default class TownGameScene extends Phaser.Scene {
     return undefined;
   }
 
+  /**
+   * Identifies the name of the sprite texture based on the player's emotion
+   *
+   * @param player to get the emotion of
+   * @returns string containing the sprite texture name
+   */
+  getPlayerEmotion(player: PlayerController) {
+    switch (player.emotion) {
+      case 'HAPPY':
+        return 'misa-happy';
+      case 'ANGRY':
+        return 'misa-angry';
+      case 'FEAR':
+        return 'misa-fear';
+      case 'SAD':
+        return 'misa-sad';
+      case 'SURPRISED':
+        return 'misa-surprised';
+      case 'CONFUSED':
+        return 'misa-confused';
+      case 'DISGUSTED':
+        return 'misa-disgusted';
+      case 'NEUTRAL':
+      default:
+        return 'misa-front';
+    }
+  }
+
   moveOurPlayerTo(destination: Partial<PlayerLocation>) {
     const gameObjects = this.coveyTownController.ourPlayer.gameObjects;
     if (!gameObjects) {
@@ -282,7 +310,9 @@ export default class TownGameScene extends Phaser.Scene {
             gameObjects.sprite.setTexture('atlas', 'misa-back');
           } else if (prevVelocity.y > 0) {
             gameObjects.sprite.anims.stop();
-            gameObjects.sprite.setTexture('atlas', 'misa-front');
+
+            const playerEmotionSprite = this.getPlayerEmotion(ourPlayer);
+            gameObjects.sprite.setTexture('atlas', playerEmotionSprite);
           }
           break;
       }
@@ -357,7 +387,9 @@ export default class TownGameScene extends Phaser.Scene {
           // If we were dancing, pick and idle frame to use
           if (prevDanceMove !== undefined) {
             gameObjects.sprite.anims.stop();
-            gameObjects.sprite.setTexture('atlas', 'misa-front');
+
+            const playerEmotionSprite = this.getPlayerEmotion(ourPlayer);
+            gameObjects.sprite.setTexture('atlas', playerEmotionSprite);
           }
           break;
       }
@@ -651,12 +683,22 @@ export default class TownGameScene extends Phaser.Scene {
     this._onGameReadyListeners.forEach(listener => listener());
     this._onGameReadyListeners = [];
     this.coveyTownController.addListener('playersChanged', players => this.updatePlayers(players));
+    this.coveyTownController.addListener('playerEmotionChanged', player =>
+      this.updatePlayerSpriteEmotion(player),
+    );
+  }
+
+  updatePlayerSpriteEmotion(player: PlayerController) {
+    //Make sure that each player has sprites
+    const playerEmotionSprite = this.getPlayerEmotion(player);
+    player.gameObjects?.sprite.setTexture('atlas', playerEmotionSprite);
   }
 
   createPlayerSprites(player: PlayerController) {
     if (!player.gameObjects) {
+      const playerEmotionSprite = this.getPlayerEmotion(player);
       const sprite = this.physics.add
-        .sprite(player.location.x, player.location.y, 'atlas', 'misa-front')
+        .sprite(player.location.x, player.location.y, 'atlas', playerEmotionSprite)
         .setSize(30, 40)
         .setOffset(0, 24);
       const label = this.add.text(

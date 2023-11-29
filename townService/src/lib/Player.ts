@@ -4,6 +4,7 @@ import {
   PlayerLocation,
   TownEmitter,
   DanceMove,
+  Emotion,
 } from '../types/CoveyTownSocket';
 
 /**
@@ -12,6 +13,8 @@ import {
 export default class Player {
   /** The current location of this user in the world map * */
   public location: PlayerLocation;
+
+  public emotion: Emotion;
 
   public danceMove: DanceMove | undefined;
 
@@ -41,6 +44,7 @@ export default class Player {
     this._id = nanoid();
     this._sessionToken = nanoid();
     this.townEmitter = townEmitter;
+    this.emotion = 'NEUTRAL';
     this.danceMove = undefined;
   }
 
@@ -69,6 +73,7 @@ export default class Player {
       id: this._id,
       location: this.location,
       userName: this._userName,
+      emotion: this.emotion,
       danceMove: this.danceMove,
     };
   }

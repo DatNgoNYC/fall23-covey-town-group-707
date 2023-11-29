@@ -16,6 +16,7 @@ import {
   ChatMessage,
   CoveyTownSocket,
   DanceMove,
+  Emotion,
   GameState,
   Interactable as InteractableAreaModel,
   InteractableCommand,
@@ -82,6 +83,11 @@ export type TownEvents = {
    * the new location can be found on the PlayerController.
    */
   playerMoved: (movedPlayer: PlayerController) => void;
+  /**
+   * An event that indicates that a player's emotion has changed. This event is dispatched after updating the player's emotion -
+   * the new emotion can be found on the PlayerController.
+   */
+  playerEmotionChanged: (newEmotionPlayer: PlayerController) => void;
   /**
    * An event that indicates that a player's dance move has changed. This event is dispatched after updating the player's dance move -
    * the new dance move can be found on the PlayerController.
@@ -445,6 +451,26 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     });
 
     /**
+     * When a player's emotion changes, update local state and emit an event to the controller's event listeners
+     */
+    this._socket.on('playerEmotionChanged', changedEmotionPlayer => {
+      const playerToUpdate = this.players.find(
+        eachPlayer => eachPlayer.id === changedEmotionPlayer.id,
+      );
+
+      if (playerToUpdate) {
+        if (playerToUpdate !== this._ourPlayer) {
+          /*
+           * If we are told that OUR emotion changed, we shouldn't update our emotion because it's probably
+           * lagging behind real time. Instead, we update if it's another player's change.
+           */
+          playerToUpdate.emotion = changedEmotionPlayer.emotion;
+        }
+        this.emit('playerEmotionChanged', playerToUpdate);
+      }
+    });
+
+    /**
      * When a player moves, update local state and emit an event to the controller's event listeners
      */
     this._socket.on('playerDanced', dancedPlayer => {
@@ -502,6 +528,20 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     assert(ourPlayer);
     ourPlayer.location = newLocation;
     this.emit('playerMoved', ourPlayer);
+  }
+
+  /**
+   * Emit a emotion change event for the current player, updating the state locally and
+   * also notifying the townService that our player emotion changed.
+   *
+   * @param newEmotion the emotion of the player
+   */
+  public emitEmotionChange(newEmotion: Emotion) {
+    this._socket.emit('playerEmotionChange', newEmotion);
+    const ourPlayer = this._ourPlayer;
+    assert(ourPlayer);
+    ourPlayer.emotion = newEmotion;
+    this.emit('playerEmotionChanged', ourPlayer);
   }
 
   /**
