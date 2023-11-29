@@ -63,7 +63,6 @@ export function ViewingAreaVideo({
 
   return (
     <Container className='participant-wrapper'>
-      Viewing Area: {controller.id}
       <ReactPlayer
         url={video}
         ref={reactPlayerRef}

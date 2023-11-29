@@ -8,6 +8,7 @@ import JukeboxAreaController, {
   useJukeboxViewingAreaController,
 } from '../../../classes/interactable/JukeboxAreaController';
 import useTownController from '../../../hooks/useTownController';
+import { Container } from '@chakra-ui/react';
 
 /**
  *  The JukeboxVideoPlayer plays a song video, if the URL is set, using the ViewingAreaVideo component
@@ -25,7 +26,19 @@ function JukeboxVideoPlayer({ jukeboxArea }: { jukeboxArea: JukeboxArea }): JSX.
   const curSong = useJukeboxAreaCurSong(jukeboxAreaController);
 
   if (curSong.videoId !== noSongPlaying.videoId) {
-    return <ViewingAreaVideo controller={viewingAreaController} />;
+    return (
+      <Container
+        style={{
+          position: 'fixed',
+          bottom: '0',
+          left: '0',
+          marginLeft: '20px',
+          marginBottom: '20px',
+          width: '30%',
+        }}>
+        <ViewingAreaVideo controller={viewingAreaController} />;
+      </Container>
+    );
   } else {
     // forces game to emit "jukeboxArea" event again so that
     // re-interacting with the area works as expected
