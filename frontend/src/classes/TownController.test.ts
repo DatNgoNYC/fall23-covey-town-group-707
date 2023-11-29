@@ -17,6 +17,7 @@ import {
   TownJoinResponse,
   ViewingArea,
   DanceMove,
+  Emotion,
 } from '../types/CoveyTownSocket';
 import { isConversationArea, isViewingArea } from '../types/TypeUtils';
 import PlayerController from './PlayerController';
@@ -172,6 +173,25 @@ describe('TownController', () => {
 
       //Uses the correct (new) dance move when emitting that update locally
       expect(expectedPlayerUpdate.danceMove).toEqual(newDanceMove);
+    });
+    it("Emits the local player's emotion updates to the socket", () => {
+      const newEmotion: Emotion = 'HAPPY';
+      const expectedPlayerUpdate = testController.ourPlayer;
+      expectedPlayerUpdate.emotion = newEmotion;
+      const playerEmotionChangeListener = jest.fn();
+
+      testController.addListener('playerEmotionChanged', playerEmotionChangeListener);
+
+      testController.emitEmotionChange(newEmotion);
+
+      // Emits the event to the socket
+      expect(mockSocket.emit).toBeCalledWith('playerEmotionChange', newEmotion);
+
+      // Emits the playerEmotionChanged event to locally subscribed listerners, indicating that the player emotion changed
+      expect(playerEmotionChangeListener).toBeCalledWith(expectedPlayerUpdate);
+
+      // Uses the correct (new) emotion when emitting that update locally
+      expect(expectedPlayerUpdate.emotion).toEqual(newEmotion);
     });
     it('Emits locally written chat messages to the socket, and dispatches no other events', () => {
       const testMessage: ChatMessage = {
@@ -479,6 +499,15 @@ describe('TownController', () => {
         'playerDanced',
         testPlayer,
         'playerDanced',
+        PlayerController.fromPlayerModel(testPlayer),
+      );
+    });
+    it('Emits playerEmotionChanged events when players changes emotion', async () => {
+      testPlayer.emotion = 'FEAR';
+      emitEventAndExpectListenerFiring(
+        'playerEmotionChanged',
+        testPlayer,
+        'playerEmotionChanged',
         PlayerController.fromPlayerModel(testPlayer),
       );
     });
