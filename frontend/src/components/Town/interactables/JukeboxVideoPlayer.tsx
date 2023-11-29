@@ -34,6 +34,7 @@ function JukeboxVideoPlayer({ jukeboxArea }: { jukeboxArea: JukeboxArea }): JSX.
           left: '0',
           marginLeft: '20px',
           marginBottom: '20px',
+          width: '30%',
         }}>
         <ViewingAreaVideo controller={viewingAreaController} />;
       </Container>

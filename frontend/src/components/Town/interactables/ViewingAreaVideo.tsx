@@ -102,7 +102,7 @@ export function ViewingAreaVideo({
           }
         }}
         controls={true}
-        width='60%'
+        width='100%'
         height='100%'
       />
     </Container>
