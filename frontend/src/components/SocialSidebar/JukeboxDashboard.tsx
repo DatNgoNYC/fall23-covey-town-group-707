@@ -177,14 +177,9 @@ function JukeboxDashboardView({
           colorScheme='teal'
           variant='outline'
           size='sm'
-          onClick={handleSuggestSong}>
+          onClick={toggleModal}>
           Suggest Song
         </Button>
-        <SuggestionFormWrapper
-          controller={controller}
-          showForm={showForm}
-          handleClose={handleClose}
-        />
       </Box>
       <Box>
         <Heading as='h3' fontSize='m'>
