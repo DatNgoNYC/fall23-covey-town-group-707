@@ -11,7 +11,7 @@ import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import Participant from '../Participant/Participant';
 import useSelectedParticipant from '../VideoProvider/useSelectedParticipant/useSelectedParticipant';
 import { JukeboxVideoPlayerWrapper } from '../../../../Town/interactables/JukeboxVideoPlayer';
-import { IdentifyEmotion } from '../../hooks/IdentifyEmotion/IdentifyEmotion';
+import { useIdentifyEmotion } from '../../hooks/useIdentifyEmotion/useIdentifyEmotion';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -84,7 +84,7 @@ export default function ParticipantList() {
     screenShareParticipant && screenShareParticipant !== localParticipant;
 
   if (process.env.JEST_WORKER_ID === undefined || process.env.NODE_ENV !== 'test') {
-    IdentifyEmotion();
+    useIdentifyEmotion();
   }
 
   const classes = useStyles('fullwidth');
