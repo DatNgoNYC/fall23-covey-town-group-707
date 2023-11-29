@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Divider,
   HStack,
   Heading,
   IconButton,
@@ -22,8 +21,7 @@ import PlayerController from '../../classes/PlayerController';
 import { useInteractableAreaOccupants } from '../../classes/interactable/InteractableAreaController';
 import SuggestionFormWrapper from './SuggestionForm';
 import { AiOutlineDislike, AiOutlineLike } from 'react-icons/ai';
-import { MdOutlineLibraryMusic } from 'react-icons/md';
-import { MdOutlineSpaceBar } from 'react-icons/md';
+import { MdOutlineLibraryMusic, MdOutlineSpaceBar } from 'react-icons/md';
 import { Bs1Square, Bs2Square, Bs3Square, Bs4Square } from 'react-icons/bs';
 
 type JukeboxAreaViewProps = {
