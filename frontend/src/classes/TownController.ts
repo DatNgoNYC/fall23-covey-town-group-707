@@ -530,6 +530,12 @@ export default class TownController extends (EventEmitter as new () => TypedEmit
     this.emit('playerMoved', ourPlayer);
   }
 
+  /**
+   * Emit a emotion change event for the current player, updating the state locally and
+   * also notifying the townService that our player emotion changed.
+   *
+   * @param newEmotion the emotion of the player
+   */
   public emitEmotionChange(newEmotion: Emotion) {
     this._socket.emit('playerEmotionChange', newEmotion);
     const ourPlayer = this._ourPlayer;

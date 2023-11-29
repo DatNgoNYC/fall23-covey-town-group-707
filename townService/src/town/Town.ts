@@ -272,7 +272,6 @@ export default class Town {
   }
 
   private _updatePlayerEmotion(player: Player, emotion: Emotion): void {
-    // do we need to do anything other than set the new emotion?
     player.emotion = emotion;
     this._broadcastEmitter.emit('playerEmotionChanged', player.toPlayerModel());
   }

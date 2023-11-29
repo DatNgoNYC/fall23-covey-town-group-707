@@ -8,9 +8,17 @@ import AWS from 'aws-sdk';
 import TownController from '../../../../../classes/TownController';
 import assert from 'assert';
 
+// timeout delay between API requests in ms
 const EMOTION_API_REQUEST_DELAY = 3000;
 
+/**
+ * Gets the current frame of a given media stream.
+ * 
+ * @param mediaStreamTrack is the stream to take the frame of
+ * @returns the image as a Buffer object
+ */
 async function captureFrame(mediaStreamTrack: MediaStreamTrack): Promise<Buffer> {
+  // ImageCapture: https://developer.mozilla.org/en-US/docs/Web/API/ImageCapture/ImageCapture
   const imageCapture = new (window as any).ImageCapture(mediaStreamTrack);
 
   const imageBlob: Blob = await imageCapture.takePhoto();
@@ -20,14 +28,29 @@ async function captureFrame(mediaStreamTrack: MediaStreamTrack): Promise<Buffer>
   return imageBuffer;
 }
 
+/**
+ * Makes an API request to Rekognition, making use of the DetectFaces endpoint
+ * provided. It identifies the emotions in the given image, and returns the emotion
+ * that the model predicted with the greatest confidence for the first face idenitified
+ * in the image.
+ * 
+ * The function returns a promise that either resolves to an emotion or undefined, or rejects
+ * with the error if there were any when making an API request.
+ * 
+ * @param client AWS Rekognition client to use for API call 
+ * @param image to detect emotion from
+ * @returns a promise that resolves with the emotion recognized (AWS type) or undefined if none
+ */
 function emotionDetectionRequest(
   client: AWS.Rekognition,
   image: Buffer,
 ): Promise<AWS.Rekognition.EmotionName | undefined> {
+  // request parameters
   const params = {
     Image: {
       Bytes: image,
     },
+    // gets all attributes from the API request
     Attributes: ['ALL'],
   };
 
@@ -54,6 +77,12 @@ function emotionDetectionRequest(
   });
 }
 
+/**
+ * Hook that identifies the emotion of the person using the frame from 
+ * the local video track's media stream. This useEffect is created on first mount,
+ * and then re-rendered whenever the media stream changes. The video frame is taken
+ * after every EMOTION_API_REQUEST_DELAY milliseconds using a timeout.
+ */
 export function IdentifyEmotion() {
   const debugAWS = process.env.NEXT_PUBLIC_TOWN_AWS_DEV_MODE;
 
@@ -66,6 +95,7 @@ export function IdentifyEmotion() {
   ) as LocalVideoTrack | undefined;
   const mediaStreamTrack: MediaStreamTrack | undefined = useMediaStreamTrack(localVideoTrack);
 
+  assert(process.env.NEXT_PUBLIC_TOWN_AWS_REGION, 'AWS Region must be defined');
   assert(process.env.NEXT_PUBLIC_TOWN_AWS_ACCESS_KEY_ID, 'AWS Access Key must be defined');
   assert(process.env.NEXT_PUBLIC_TOWN_AWS_SECRET_ACCESS_KEY, 'AWS Secret Key must be defined');
 

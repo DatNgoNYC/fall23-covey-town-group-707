@@ -158,6 +158,7 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
     if (this.gameObjects && !this.gameObjects.locationManagedByGameScene) {
       const { sprite } = this.gameObjects;
 
+      // chooses the sprite texture image based on the emotion
       switch (this.emotion) {
         case 'HAPPY':
           sprite.setTexture('atlas', 'misa-happy');

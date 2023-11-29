@@ -214,6 +214,12 @@ export default class TownGameScene extends Phaser.Scene {
     return undefined;
   }
 
+  /**
+   * Identifies the name of the sprite texture based on the player's emotion
+   *
+   * @param player to get the emotion of
+   * @returns string containing the sprite texture name
+   */
   getPlayerEmotion(player: PlayerController) {
     switch (player.emotion) {
       case 'HAPPY':
