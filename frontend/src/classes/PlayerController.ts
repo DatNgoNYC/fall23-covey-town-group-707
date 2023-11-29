@@ -1,10 +1,16 @@
 import EventEmitter from 'events';
 import TypedEmitter from 'typed-emitter';
-import { Player as PlayerModel, PlayerLocation, DanceMove } from '../types/CoveyTownSocket';
+import {
+  Player as PlayerModel,
+  PlayerLocation,
+  Emotion,
+  DanceMove,
+} from '../types/CoveyTownSocket';
 export const MOVEMENT_SPEED = 175;
 
 export type PlayerEvents = {
   movement: (newLocation: PlayerLocation) => void;
+  emotion: (newEmotion: Emotion) => void;
   dance: (newDanceMove: DanceMove) => void;
 };
 
@@ -15,6 +21,8 @@ export type PlayerGameObjects = {
 };
 export default class PlayerController extends (EventEmitter as new () => TypedEmitter<PlayerEvents>) {
   private _location: PlayerLocation;
+
+  private _emotion: Emotion;
 
   private _danceMove: DanceMove | undefined;
 
@@ -28,12 +36,15 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
     id: string,
     userName: string,
     location: PlayerLocation,
+    emotion?: Emotion,
     danceMove?: DanceMove | undefined,
   ) {
     super();
     this._id = id;
     this._userName = userName;
     this._location = location;
+    // default emotion is neutral
+    this._emotion = emotion || 'NEUTRAL';
     this._danceMove = danceMove;
   }
 
@@ -56,6 +67,15 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
     return this._danceMove;
   }
 
+  set emotion(newEmotion: Emotion) {
+    this._emotion = newEmotion;
+    this._updateSpriteEmotion();
+  }
+
+  get emotion(): Emotion {
+    return this._emotion;
+  }
+
   get userName(): string {
     return this._userName;
   }
@@ -69,6 +89,7 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
       id: this.id,
       userName: this.userName,
       location: this.location,
+      emotion: this.emotion,
       danceMove: this.danceMove,
     };
   }
@@ -133,11 +154,47 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
     }
   }
 
+  private _updateSpriteEmotion() {
+    if (this.gameObjects && !this.gameObjects.locationManagedByGameScene) {
+      const { sprite } = this.gameObjects;
+
+      // chooses the sprite texture image based on the emotion
+      switch (this.emotion) {
+        case 'HAPPY':
+          sprite.setTexture('atlas', 'misa-happy');
+          break;
+        case 'ANGRY':
+          sprite.setTexture('atlas', 'misa-angry');
+          break;
+        case 'FEAR':
+          sprite.setTexture('atlas', 'misa-fear');
+          break;
+        case 'SAD':
+          sprite.setTexture('atlas', 'misa-sad');
+          break;
+        case 'SURPRISED':
+          sprite.setTexture('atlas', 'misa-surprised');
+          break;
+        case 'CONFUSED':
+          sprite.setTexture('atlas', 'misa-confused');
+          break;
+        case 'DISGUSTED':
+          sprite.setTexture('atlas', 'misa-disgusted');
+          break;
+        case 'NEUTRAL':
+        default:
+          sprite.setTexture('atlas', 'misa-front');
+          break;
+      }
+    }
+  }
+
   static fromPlayerModel(modelPlayer: PlayerModel): PlayerController {
     return new PlayerController(
       modelPlayer.id,
       modelPlayer.userName,
       modelPlayer.location,
+      modelPlayer.emotion,
       modelPlayer.danceMove,
     );
   }

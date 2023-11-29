@@ -15,7 +15,7 @@ import JukeboxAreaController, {
   useJukeboxAreaCurSong,
   useJukeboxAreaQueue,
 } from '../../classes/interactable/JukeboxAreaController';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { JukeboxVote, Song, SongQueueItem } from '../../types/CoveyTownSocket';
 import PlayerController from '../../classes/PlayerController';
 import { useInteractableAreaOccupants } from '../../classes/interactable/InteractableAreaController';
@@ -24,9 +24,28 @@ import { AiOutlineDislike, AiOutlineLike } from 'react-icons/ai';
 import { MdOutlineLibraryMusic, MdOutlineSpaceBar } from 'react-icons/md';
 import { Bs1Square, Bs2Square, Bs3Square, Bs4Square } from 'react-icons/bs';
 
+interface UseSuggestionFormModalResult {
+  isOpen: boolean;
+  toggleModal: () => void;
+}
+
+export function useSuggestionFormModal(): UseSuggestionFormModalResult {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleModal = () => {
+    setIsOpen(!isOpen);
+  };
+
+  return {
+    isOpen,
+    toggleModal,
+  };
+}
+
 type JukeboxAreaViewProps = {
   controller: JukeboxAreaController;
   ourPlayer: PlayerController;
+  toggleModal: () => void;
 };
 
 type SongQueueItemDisplayProps = {
@@ -114,19 +133,14 @@ function SongQueueItemDisplay({
  *
  * See relevant hooks: useTownController.
  */
-function JukeboxDashboardView({ controller, ourPlayer }: JukeboxAreaViewProps): JSX.Element {
+function JukeboxDashboardView({
+  controller,
+  ourPlayer,
+  toggleModal,
+}: JukeboxAreaViewProps): JSX.Element {
   const occupants = useInteractableAreaOccupants(controller);
   const song = useJukeboxAreaCurSong(controller);
   const queue = useJukeboxAreaQueue(controller);
-  const [showForm, setShowForm] = useState(false);
-
-  const handleSuggestSong = () => {
-    setShowForm(true);
-  };
-
-  const handleClose = () => {
-    setShowForm(false);
-  };
 
   if (occupants.filter(p => p === ourPlayer).length === 0) {
     return <></>;
@@ -210,6 +224,12 @@ function JukeboxDashboardView({ controller, ourPlayer }: JukeboxAreaViewProps): 
  */
 export default function JukeboxDashboard(): JSX.Element {
   const townController = useTownController();
+  const { isOpen, toggleModal } = useSuggestionFormModal();
+
+  // Add this useEffect to monitor changes in isOpen
+  useEffect(() => {
+    console.log('isOpen value in JukeboxDashboard:', isOpen);
+  }, [isOpen]);
 
   return (
     <Box>
@@ -218,8 +238,10 @@ export default function JukeboxDashboard(): JSX.Element {
           controller={controller}
           ourPlayer={townController.ourPlayer}
           key={controller.id}
+          toggleModal={toggleModal}
         />
       ))}
+      <SuggestionFormWrapper isOpen={isOpen} handleClose={toggleModal} />
     </Box>
   );
 }
