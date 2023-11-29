@@ -191,7 +191,7 @@ function JukeboxDashboardView({
         <Heading as='h3' fontSize='m'>
           Song queue:
         </Heading>
-        <Box overflowY='auto' maxH='220px'>
+        <Box overflowY='auto' maxH='400px'>
           <OrderedList>
             {queue.map(queueItem => {
               return (
