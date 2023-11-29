@@ -182,7 +182,7 @@ function JukeboxDashboardView({ controller, ourPlayer }: JukeboxAreaViewProps): 
         <Heading as='h3' fontSize='m'>
           Song queue:
         </Heading>
-        <Box overflowY='auto' maxH='400px'>
+        <Box overflowY='auto' maxH='220px'>
           <OrderedList>
             {queue.map(queueItem => {
               return (
