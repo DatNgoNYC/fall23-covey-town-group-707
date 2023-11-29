@@ -312,7 +312,7 @@
 	"spriteSourceSize": {"x":1,"y":21,"w":30,"h":41},
 	"sourceSize": {"w":32,"h":62}
 },
-"misa-suprised":
+"misa-surprised":
 {
 	"frame": {"x":65,"y":271,"w":30,"h":43},
 	"rotated": false,
@@ -327,6 +327,6 @@
 	"format": "RGBA8888",
 	"size": {"w":128,"h":415},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:962ffb10d473dfbfe84967062344efb4:19ad6cd6b7177e891a3e5c77cacbcbca:cbce6b53f0f49e0bf15173c25c41f876$"
+	"smartupdate": "$TexturePacker:SmartUpdate:62396f1360c65268e3787fc36cc17ea2:19ad6cd6b7177e891a3e5c77cacbcbca:cbce6b53f0f49e0bf15173c25c41f876$"
 }
 }

@@ -213,7 +213,7 @@
             <key type="filename">tuxemon-misa/misa-right-walk.003.png</key>
             <key type="filename">tuxemon-misa/misa-right.png</key>
             <key type="filename">tuxemon-misa/misa-sad.png</key>
-            <key type="filename">tuxemon-misa/misa-suprised.png</key>
+            <key type="filename">tuxemon-misa/misa-surprised.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
