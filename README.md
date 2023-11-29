@@ -1,8 +1,8 @@
 # Covey.Town
 
-Covey.Town provides a virtual meeting space where different groups of people can have simultaneous video calls, allowing participants to drift between different conversations, just like in real life.
+Covey.Town provides a virtual meeting space where different groups of people can have simultaneous video calls, allowing participants to drift between different conversations, just like in real life. Covey.Town also allows users to have fun with each other by listening to music together, dancing, and expressing their real life emotions through their avatars.
 
-**INSERT HIGH LEVEL ARCHITECTURE OF COVEY.TOWN**
+![Covey.Town Architecture](docs/covey-town-architecture.png)
 
 The figure above depicts the high-level architecture of Covey.Town.
 The frontend client (in the `frontend` directory of this repository) uses the [PhaserJS Game Library](https://phaser.io) to create a 2D game interface, using tilemaps and sprites.
