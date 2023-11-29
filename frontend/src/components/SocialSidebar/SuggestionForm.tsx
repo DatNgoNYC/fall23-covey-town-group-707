@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Container,
   Flex,
@@ -26,41 +27,64 @@ type SuggestionFormWrapperProps = {
 type ResultsContainerProps = {
   songs: Song[];
   onClickHandler: (song: Song) => void;
+  chosenSong: Song | undefined;
 };
 type ResultCardProps = {
   song: Song;
   onClickHandler: (song: Song) => void;
+  chosenSong: Song | undefined;
 };
 
-function ResultCard({ song, onClickHandler }: ResultCardProps): JSX.Element {
+function ResultCard({ song, onClickHandler, chosenSong }: ResultCardProps): JSX.Element {
   return (
     <Flex
+      bg={chosenSong?.videoId === song.videoId ? 'teal.50' : 'white'}
       onClick={() => {
         onClickHandler(song);
-      }}>
+      }}
+      direction='row'
+      align='center'
+      maxW='100%'
+      maxH='150px'
+      overflow='hidden'>
       <Image
-        flex={`1 1 0`}
-        className='thumbnail'
+        maxW='50%'
+        minW='50%'
         src={`https://img.youtube.com/vi/${song.videoId}/hqdefault.jpg`}
         alt=''
       />
-      <Flex className='songInfo' flex={`1 1 0`} dir='vertical'>
+      <Box
+        flex='1' // Takes up the other half of the width
+        p='2' // Padding for song info
+        textAlign='left'>
         <p className='name'>{song.songName}</p>
         <p className='artist'>{song.artistName}</p>
-      </Flex>
+      </Box>
     </Flex>
   );
 }
 
-function ResultsContainer({ songs, onClickHandler }: ResultsContainerProps): JSX.Element {
-  if (songs.length === 0) {
-    return <></>;
-  }
+function ResultsContainer({
+  songs,
+  onClickHandler,
+  chosenSong,
+}: ResultsContainerProps): JSX.Element {
+  const resultsContainerStyling: React.CSSProperties = {
+    gap: '20px',
+    overflowY: 'scroll',
+  };
 
   return (
-    <Stack>
+    <Stack style={resultsContainerStyling}>
       {songs.map(song => {
-        return <ResultCard key={song.videoId} song={song} onClickHandler={onClickHandler} />;
+        return (
+          <ResultCard
+            key={song.videoId}
+            song={song}
+            onClickHandler={onClickHandler}
+            chosenSong={chosenSong}
+          />
+        );
       })}
     </Stack>
   );
@@ -120,37 +144,39 @@ export function SuggestionForm(): JSX.Element {
   };
 
   return (
-    <Container backgroundColor={'blue'}>
-      <Input
-        aria-label='songName'
-        placeholder='Song Name'
-        onChange={event => {
-          setSongName(event.target.value);
-        }}
-        onKeyDown={event => {
-          // The character model will move around if we don't stop the key event propagation.
-          event.stopPropagation();
-        }}
-      />
-      <Input
-        aria-label='artistName'
-        placeholder='Artist Name'
-        onChange={event => {
-          setArtistName(event.target.value);
-        }}
-        onKeyDown={event => {
-          event.stopPropagation();
-        }}
-      />
-      <ResultsContainer songs={results} onClickHandler={resultsClickHandler} />
-      <Flex>
+    <Container>
+      <Flex marginBottom={`30px`}>
+        <Flex>
+          <Input
+            aria-label='songName'
+            placeholder='Song Name'
+            onChange={event => {
+              setSongName(event.target.value);
+            }}
+            onKeyDown={event => {
+              // The character model will move around if we don't stop the key event propagation.
+              event.stopPropagation();
+            }}
+          />
+          <Input
+            aria-label='artistName'
+            placeholder='Artist Name'
+            onChange={event => {
+              setArtistName(event.target.value);
+            }}
+            onKeyDown={event => {
+              event.stopPropagation();
+            }}
+          />
+        </Flex>
         <Button aria-label='search' onClick={searchEventHandler}>
           Search
         </Button>
-        <Button aria-label='queue' onClick={queueEventHandler}>
-          Add to Queue
-        </Button>
       </Flex>
+      <ResultsContainer songs={results} onClickHandler={resultsClickHandler} chosenSong={song} />
+      <Button aria-label='queue' onClick={queueEventHandler} marginTop={`30px`}>
+        Add to Queue
+      </Button>
     </Container>
   );
 }
@@ -162,8 +188,18 @@ export default function SuggestionFormWrapper({
 }: SuggestionFormWrapperProps): JSX.Element {
   return (
     <Modal isOpen={isOpen} onClose={handleClose} closeOnOverlayClick={false}>
-      <ModalOverlay />
-      <ModalContent>
+      <ModalOverlay
+        style={{
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        }}
+      />
+      <ModalContent
+        style={{
+          padding: '20px',
+          maxWidth: `calc(max(30vw, 550px))`,
+          display: 'flex',
+          flexDirection: 'column',
+        }}>
         <ModalHeader>{'Suggest a song!'}</ModalHeader>
         <ModalCloseButton />
         <SuggestionForm />
