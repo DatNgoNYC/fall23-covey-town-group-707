@@ -1,4 +1,16 @@
-import { Box, Button, HStack, Heading, ListItem, OrderedList, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Divider,
+  HStack,
+  Heading,
+  IconButton,
+  ListItem,
+  OrderedList,
+  StackDivider,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import useTownController from '../../hooks/useTownController';
 import JukeboxAreaController, {
   useJukeboxAreaCurSong,
@@ -9,6 +21,8 @@ import { JukeboxVote, Song, SongQueueItem } from '../../types/CoveyTownSocket';
 import PlayerController from '../../classes/PlayerController';
 import { useInteractableAreaOccupants } from '../../classes/interactable/InteractableAreaController';
 import SuggestionFormWrapper from './SuggestionForm';
+import { AiOutlineDislike, AiOutlineLike } from 'react-icons/ai';
+import { MdOutlineLibraryMusic } from 'react-icons/md';
 
 type JukeboxAreaViewProps = {
   controller: JukeboxAreaController;
@@ -24,10 +38,19 @@ type SongQueueItemDisplayProps = {
  * Displays a song, the song name and artist name for the song
  */
 function SongDisplay({ song }: { song: Song }): JSX.Element {
+  const songSubstring = song.songName.substring(0, 35);
+  const artistSubstring = song.artistName.substring(0, 35);
+
   return (
     <>
-      <Text>Song name: {song.songName}</Text>
-      <Text>Artist name: {song.artistName}</Text>
+      <Box>
+        <h4 style={{ color: 'teal' }}>Song name:</h4>
+        <Text>{song.songName.length <= 35 ? songSubstring : songSubstring.concat('...')}</Text>
+        <h4 style={{ color: 'teal' }}>Artist name:</h4>
+        <Text>
+          {song.artistName.length <= 35 ? artistSubstring : artistSubstring.concat('...')}
+        </Text>
+      </Box>
     </>
   );
 }
@@ -56,17 +79,35 @@ function SongQueueItemDisplay({
   };
 
   return (
-    <HStack>
+    <VStack>
       <SongDisplay song={songQueueItem.song} />
-      <Button onClick={handleUpvote} aria-label='Upvote' isDisabled={prevVote === 'Upvote'}>
-        Upvote
-      </Button>
-      <Text>{songQueueItem.numUpvotes}</Text>
-      <Button onClick={handleDownvote} aria-label='Downvote' isDisabled={prevVote === 'Downvote'}>
-        Downvote
-      </Button>
-      <Text>{songQueueItem.numDownvotes}</Text>
-    </HStack>
+      <Box>
+        <HStack>
+          <IconButton
+            variant={prevVote === 'Upvote' ? 'solid' : 'outline'}
+            colorScheme='teal'
+            size='sm'
+            fontSize='20px'
+            icon={<AiOutlineLike />}
+            onClick={handleUpvote}
+            aria-label='Upvote'>
+            Upvote
+          </IconButton>
+          <Text>{songQueueItem.numUpvotes}</Text>
+          <IconButton
+            variant={prevVote === 'Downvote' ? 'solid' : 'outline'}
+            colorScheme='teal'
+            size='sm'
+            fontSize='20px'
+            icon={<AiOutlineDislike />}
+            onClick={handleDownvote}
+            aria-label='Downvote'>
+            Downvote
+          </IconButton>
+          <Text>{songQueueItem.numDownvotes}</Text>
+        </HStack>
+      </Box>
+    </VStack>
   );
 }
 
@@ -96,38 +137,57 @@ function JukeboxDashboardView({ controller, ourPlayer }: JukeboxAreaViewProps): 
   }
 
   return (
-    <Box>
-      <Heading as='h2' fontSize='l'>
-        Jukebox Area:
-      </Heading>
-      <Heading as='h3' fontSize='m'>
-        Current song playing:
-      </Heading>
-      <SongDisplay song={song} />
-      <Heading as='h3' fontSize='m'>
-        Song queue:
-      </Heading>
-      <OrderedList>
-        {queue.map(queueItem => {
-          return (
-            <ListItem key={queueItem.song.videoId}>
-              <SongQueueItemDisplay
-                songQueueItem={queueItem}
-                handleVote={(vote, songVotedOn, prevVote) =>
-                  controller.vote(vote, songVotedOn, prevVote)
-                }
-              />
-            </ListItem>
-          );
-        })}
-      </OrderedList>
-      <Button onClick={handleSuggestSong}>Suggest Song</Button>
-      <SuggestionFormWrapper
-        controller={controller}
-        showForm={showForm}
-        handleClose={handleClose}
-      />
-    </Box>
+    <VStack
+      align='left'
+      spacing={2}
+      borderColor='gray.500'
+      height='100%'
+      divider={<StackDivider borderColor='gray.200' />}
+      borderRadius='4px'>
+      <Box>
+        <Heading as='h2' fontSize='l'>
+          Jukebox Area:
+        </Heading>
+        <Button
+          leftIcon={<MdOutlineLibraryMusic />}
+          colorScheme='teal'
+          variant='outline'
+          size='sm'
+          onClick={handleSuggestSong}>
+          Suggest Song
+        </Button>
+        <SuggestionFormWrapper
+          controller={controller}
+          showForm={showForm}
+          handleClose={handleClose}
+        />
+      </Box>
+      <Box>
+        <Heading as='h3' fontSize='m'>
+          Current song playing:
+        </Heading>
+        <SongDisplay song={song} />
+      </Box>
+      <Box>
+        <Heading as='h3' fontSize='m'>
+          Song queue:
+        </Heading>
+        <OrderedList>
+          {queue.map(queueItem => {
+            return (
+              <ListItem key={queueItem.song.videoId}>
+                <SongQueueItemDisplay
+                  songQueueItem={queueItem}
+                  handleVote={(vote, songVotedOn, prevVote) =>
+                    controller.vote(vote, songVotedOn, prevVote)
+                  }
+                />
+              </ListItem>
+            );
+          })}
+        </OrderedList>
+      </Box>
+    </VStack>
   );
 }
 
