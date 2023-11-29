@@ -36,9 +36,9 @@ type ResultCardProps = {
 };
 
 function ResultCard({ song, onClickHandler, chosenSong }: ResultCardProps): JSX.Element {
-
   return (
-    <Flex bg={chosenSong?.videoId===song.videoId ? "teal.50" : "white"}
+    <Flex
+      bg={chosenSong?.videoId === song.videoId ? 'teal.50' : 'white'}
       onClick={() => {
         onClickHandler(song);
       }}
@@ -64,7 +64,11 @@ function ResultCard({ song, onClickHandler, chosenSong }: ResultCardProps): JSX.
   );
 }
 
-function ResultsContainer({ songs, onClickHandler, chosenSong }: ResultsContainerProps): JSX.Element {
+function ResultsContainer({
+  songs,
+  onClickHandler,
+  chosenSong,
+}: ResultsContainerProps): JSX.Element {
   const resultsContainerStyling: React.CSSProperties = {
     gap: '20px',
     overflowY: 'scroll',
@@ -73,7 +77,14 @@ function ResultsContainer({ songs, onClickHandler, chosenSong }: ResultsContaine
   return (
     <Stack style={resultsContainerStyling}>
       {songs.map(song => {
-        return <ResultCard key={song.videoId} song={song} onClickHandler={onClickHandler} chosenSong={chosenSong}/>;
+        return (
+          <ResultCard
+            key={song.videoId}
+            song={song}
+            onClickHandler={onClickHandler}
+            chosenSong={chosenSong}
+          />
+        );
       })}
     </Stack>
   );
@@ -162,7 +173,7 @@ export function SuggestionForm(): JSX.Element {
           Search
         </Button>
       </Flex>
-      <ResultsContainer songs={results} onClickHandler={resultsClickHandler} chosenSong={song}/>
+      <ResultsContainer songs={results} onClickHandler={resultsClickHandler} chosenSong={song} />
       <Button aria-label='queue' onClick={queueEventHandler} marginTop={`30px`}>
         Add to Queue
       </Button>
