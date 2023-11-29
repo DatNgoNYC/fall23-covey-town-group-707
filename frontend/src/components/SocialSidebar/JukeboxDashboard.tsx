@@ -23,6 +23,8 @@ import { useInteractableAreaOccupants } from '../../classes/interactable/Interac
 import SuggestionFormWrapper from './SuggestionForm';
 import { AiOutlineDislike, AiOutlineLike } from 'react-icons/ai';
 import { MdOutlineLibraryMusic } from 'react-icons/md';
+import { MdOutlineSpaceBar } from 'react-icons/md';
+import { Bs1Square, Bs2Square, Bs3Square, Bs4Square } from 'react-icons/bs';
 
 type JukeboxAreaViewProps = {
   controller: JukeboxAreaController;
@@ -42,16 +44,12 @@ function SongDisplay({ song }: { song: Song }): JSX.Element {
   const artistSubstring = song.artistName.substring(0, 35);
 
   return (
-    <>
-      <Box>
-        <h4 style={{ color: 'teal' }}>Song name:</h4>
-        <Text>{song.songName.length <= 35 ? songSubstring : songSubstring.concat('...')}</Text>
-        <h4 style={{ color: 'teal' }}>Artist name:</h4>
-        <Text>
-          {song.artistName.length <= 35 ? artistSubstring : artistSubstring.concat('...')}
-        </Text>
-      </Box>
-    </>
+    <Box>
+      <h4 style={{ color: 'teal' }}>Song name:</h4>
+      <Text>{song.songName.length <= 35 ? songSubstring : songSubstring.concat('...')}</Text>
+      <h4 style={{ color: 'teal' }}>Artist name:</h4>
+      <Text>{song.artistName.length <= 35 ? artistSubstring : artistSubstring.concat('...')}</Text>
+    </Box>
   );
 }
 
@@ -148,6 +146,20 @@ function JukeboxDashboardView({ controller, ourPlayer }: JukeboxAreaViewProps): 
         <Heading as='h2' fontSize='l'>
           Jukebox Area:
         </Heading>
+        <h4 style={{ color: 'teal' }}>Controls:</h4>
+        <HStack>
+          <Text>Press </Text>
+          <MdOutlineSpaceBar color='teal' />
+          <Text> (spacebar) to jam!</Text>
+        </HStack>
+        <HStack>
+          <Text>Hold </Text>
+          <Bs1Square color='teal' />
+          <Bs2Square color='teal' />
+          <Bs3Square color='teal' />
+          <Bs4Square color='teal' />
+          <Text> to dance!</Text>
+        </HStack>
         <Button
           leftIcon={<MdOutlineLibraryMusic />}
           colorScheme='teal'
@@ -172,20 +184,22 @@ function JukeboxDashboardView({ controller, ourPlayer }: JukeboxAreaViewProps): 
         <Heading as='h3' fontSize='m'>
           Song queue:
         </Heading>
-        <OrderedList>
-          {queue.map(queueItem => {
-            return (
-              <ListItem key={queueItem.song.videoId}>
-                <SongQueueItemDisplay
-                  songQueueItem={queueItem}
-                  handleVote={(vote, songVotedOn, prevVote) =>
-                    controller.vote(vote, songVotedOn, prevVote)
-                  }
-                />
-              </ListItem>
-            );
-          })}
-        </OrderedList>
+        <Box overflowY='auto' maxH='400px'>
+          <OrderedList>
+            {queue.map(queueItem => {
+              return (
+                <ListItem key={queueItem.song.videoId}>
+                  <SongQueueItemDisplay
+                    songQueueItem={queueItem}
+                    handleVote={(vote, songVotedOn, prevVote) =>
+                      controller.vote(vote, songVotedOn, prevVote)
+                    }
+                  />
+                </ListItem>
+              );
+            })}
+          </OrderedList>
+        </Box>
       </Box>
     </VStack>
   );
