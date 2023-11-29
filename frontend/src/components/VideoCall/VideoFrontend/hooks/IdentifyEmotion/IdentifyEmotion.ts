@@ -1,8 +1,8 @@
 import { LocalVideoTrack } from 'twilio-video';
 import useTownController from '../../../../../hooks/useTownController';
 import { Emotion } from '../../../../../types/CoveyTownSocket';
-import useMediaStreamTrack from '../../hooks/useMediaStreamTrack/useMediaStreamTrack';
-import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+import useMediaStreamTrack from '../useMediaStreamTrack/useMediaStreamTrack';
+import useVideoContext from '../useVideoContext/useVideoContext';
 import { useEffect } from 'react';
 import AWS from 'aws-sdk';
 import TownController from '../../../../../classes/TownController';
@@ -11,7 +11,6 @@ import assert from 'assert';
 const EMOTION_API_REQUEST_DELAY = 3000;
 
 async function captureFrame(mediaStreamTrack: MediaStreamTrack): Promise<Buffer> {
-  // TODO: fix the any typecasting
   const imageCapture = new (window as any).ImageCapture(mediaStreamTrack);
 
   const imageBlob: Blob = await imageCapture.takePhoto();
@@ -35,7 +34,6 @@ function emotionDetectionRequest(
   return new Promise((resolve, reject) => {
     client.detectFaces(params, (err, response) => {
       if (err) {
-        console.log(err);
         reject(err);
       } else {
         if (response.FaceDetails) {
@@ -93,7 +91,7 @@ export function IdentifyEmotion() {
           let detectedAWSEmotion: AWS.Rekognition.EmotionName | undefined;
 
           if (debugAWS && debugAWS.toLowerCase() === 'true') {
-            const emo: AWS.Rekognition.EmotionName[] = [
+            const emotions: AWS.Rekognition.EmotionName[] = [
               'NEUTRAL',
               'HAPPY',
               'SAD',
@@ -104,7 +102,7 @@ export function IdentifyEmotion() {
               'DISGUSTED',
             ];
 
-            detectedAWSEmotion = emo[Math.floor(Math.random() * emo.length)];
+            detectedAWSEmotion = emotions[Math.floor(Math.random() * emotions.length)];
           } else {
             detectedAWSEmotion = await emotionDetectionRequest(client, imageBuffer);
           }

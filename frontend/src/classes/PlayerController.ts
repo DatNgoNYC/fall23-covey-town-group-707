@@ -44,7 +44,7 @@ export default class PlayerController extends (EventEmitter as new () => TypedEm
     this._userName = userName;
     this._location = location;
     // default emotion is neutral
-    this._emotion = emotion ? emotion : 'NEUTRAL';
+    this._emotion = emotion || 'NEUTRAL';
     this._danceMove = danceMove;
   }
 
