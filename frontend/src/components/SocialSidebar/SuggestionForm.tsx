@@ -27,46 +27,26 @@ type SuggestionFormWrapperProps = {
 type ResultsContainerProps = {
   songs: Song[];
   onClickHandler: (song: Song) => void;
+  chosenSong: Song | undefined;
 };
 type ResultCardProps = {
   song: Song;
   onClickHandler: (song: Song) => void;
-  selected: string;
-  setSelected: (videoId: string) => void;
+  chosenSong: Song | undefined;
 };
 
-interface UserSelection {
-  selected: string;
-  setSelected: (videoId: string) => void;
-}
+function ResultCard({ song, onClickHandler, chosenSong }: ResultCardProps): JSX.Element {
 
-export function useUserSelection(): UserSelection {
-  const [selected, setSelectedVideo] = useState('undefined');
-
-  const setSelected = (videoId: string) => {
-    setSelectedVideo(videoId);
-  };
-
-  return {
-    selected,
-    setSelected,
-  };
-}
-
-function ResultCard({ song, onClickHandler, selected, setSelected }: ResultCardProps): JSX.Element {
   return (
-    <Flex
+    <Flex bg={chosenSong?.videoId===song.videoId ? "teal.50" : "white"}
       onClick={() => {
         onClickHandler(song);
-        setSelected(song.videoId);
       }}
       direction='row'
       align='center'
       maxW='100%'
       maxH='150px'
-      overflow='hidden'
-      borderWidth={selected === song.videoId ? '2px' : '0px'}
-      borderColor='yellow.500'>
+      overflow='hidden'>
       <Image
         maxW='50%'
         minW='50%'
@@ -84,9 +64,7 @@ function ResultCard({ song, onClickHandler, selected, setSelected }: ResultCardP
   );
 }
 
-function ResultsContainer({ songs, onClickHandler }: ResultsContainerProps): JSX.Element {
-  const { selected, setSelected } = useUserSelection();
-
+function ResultsContainer({ songs, onClickHandler, chosenSong }: ResultsContainerProps): JSX.Element {
   const resultsContainerStyling: React.CSSProperties = {
     gap: '20px',
     overflowY: 'scroll',
@@ -95,17 +73,7 @@ function ResultsContainer({ songs, onClickHandler }: ResultsContainerProps): JSX
   return (
     <Stack style={resultsContainerStyling}>
       {songs.map(song => {
-        return (
-          <ResultCard
-            key={song.videoId}
-            song={song}
-            onClickHandler={onClickHandler}
-            setSelected={(songId: string) => {
-              setSelected(songId);
-            }}
-            selected={selected}
-          />
-        );
+        return <ResultCard key={song.videoId} song={song} onClickHandler={onClickHandler} chosenSong={chosenSong}/>;
       })}
     </Stack>
   );
@@ -194,7 +162,7 @@ export function SuggestionForm(): JSX.Element {
           Search
         </Button>
       </Flex>
-      <ResultsContainer songs={results} onClickHandler={resultsClickHandler} />
+      <ResultsContainer songs={results} onClickHandler={resultsClickHandler} chosenSong={song}/>
       <Button aria-label='queue' onClick={queueEventHandler} marginTop={`30px`}>
         Add to Queue
       </Button>
