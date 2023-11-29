@@ -34,14 +34,6 @@ type ResultCardProps = {
 };
 
 function ResultCard({ song, onClickHandler }: ResultCardProps): JSX.Element {
-  const resultCardStyles: React.CSSProperties = {
-    display: 'flex',
-
-    maxHeight: '150px',
-    flexDirection: 'row',
-    maxWidth: '100%',
-    overflow: 'hidden',
-  };
 
   return (
     <Flex
