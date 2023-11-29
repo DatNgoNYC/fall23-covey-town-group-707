@@ -7,8 +7,7 @@ Covey.Town provides a virtual meeting space where different groups of people can
 The figure above depicts the high-level architecture of Covey.Town.
 The frontend client (in the `frontend` directory of this repository) uses the [PhaserJS Game Library](https://phaser.io) to create a 2D game interface, using tilemaps and sprites.
 The frontend implements video chat using the [Twilio Programmable Video](https://www.twilio.com/docs/video) API, and that aspect of the interface relies heavily on [Twilio's React Starter App](https://github.com/twilio/twilio-video-app-react). Twilio's React Starter App is packaged and reused under the Apache License, 2.0. The frontend implements song searching using the [Youtube Data API v3](https://developers.google.com/youtube/v3/docs
-). The frontend also implements emotion recognition using the [Amazon Rekognition API](https://docs.aws.amazon.com/rekognition/latest/APIReference/API_Emotion.html
-).
+). The frontend also implements emotion recognition using the [Amazon Rekognition API](https://docs.aws.amazon.com/rekognition/latest/APIReference/API_DetectFaces.html).
 
 A backend service (in the `townService` directory) implements the application logic: tracking which "towns" are available to be joined, and the state of each of those towns.
 
