@@ -1,8 +1,6 @@
 # Covey.Town
 
 Covey.Town provides a virtual meeting space where different groups of people can have simultaneous video calls, allowing participants to drift between different conversations, just like in real life.
-Covey.Town was built for Northeastern's [Spring 2021 software engineering course](https://neu-se.github.io/CS4530-CS5500-Spring-2021/), and is designed to be reused across semesters.
-You can view our reference deployment of the app at [app.covey.town](https://app.covey.town/), and our project showcase ([Fall 2022](https://neu-se.github.io/CS4530-Fall-2022/assignments/project-showcase), [Spring 2022](https://neu-se.github.io/CS4530-Spring-2022/assignments/project-showcase), [Spring 2021](https://neu-se.github.io/CS4530-CS5500-Spring-2021/project-showcase)) highlight select student projects.
 
 ![Covey.Town Architecture](docs/covey-town-architecture.png)
 
@@ -73,3 +71,7 @@ Now add the following values to the `.env` file in the `frontend` directory that
 In the `frontend` directory, run `npm install` and `npm install aws-sdk` the very first time.
 Then, to run the frontend, run `npm run dev`. After several moments (or minutes, depending on the speed of your machine), a browser will open with the frontend running locally.
 The frontend will automatically re-compile and reload in your browser if you change any files in the `frontend/src` directory.
+
+## Running the app remotely
+
+Go to the link https://covey-jam-front.onrender.com/ to access and run the app.
