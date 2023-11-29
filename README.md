@@ -2,11 +2,13 @@
 
 Covey.Town provides a virtual meeting space where different groups of people can have simultaneous video calls, allowing participants to drift between different conversations, just like in real life.
 
-![Covey.Town Architecture](docs/covey-town-architecture.png)
+**INSERT HIGH LEVEL ARCHITECTURE OF COVEY.TOWN**
 
 The figure above depicts the high-level architecture of Covey.Town.
 The frontend client (in the `frontend` directory of this repository) uses the [PhaserJS Game Library](https://phaser.io) to create a 2D game interface, using tilemaps and sprites.
-The frontend implements video chat using the [Twilio Programmable Video](https://www.twilio.com/docs/video) API, and that aspect of the interface relies heavily on [Twilio's React Starter App](https://github.com/twilio/twilio-video-app-react). Twilio's React Starter App is packaged and reused under the Apache License, 2.0.
+The frontend implements video chat using the [Twilio Programmable Video](https://www.twilio.com/docs/video) API, and that aspect of the interface relies heavily on [Twilio's React Starter App](https://github.com/twilio/twilio-video-app-react). Twilio's React Starter App is packaged and reused under the Apache License, 2.0. The frontend implements song searching using the [Youtube Data API v3](https://developers.google.com/youtube/v3/docs
+). The frontend also implements emotion recognition using the [Amazon Rekognition API](https://docs.aws.amazon.com/rekognition/latest/APIReference/API_Emotion.html
+).
 
 A backend service (in the `townService` directory) implements the application logic: tracking which "towns" are available to be joined, and the state of each of those towns.
 
@@ -30,17 +32,13 @@ To create an account and configure your local environment:
 | `TWILIO_API_KEY_SECRET` | The secret for the API key you created.   |
 | `TWILIO_API_AUTH_TOKEN` | Visible on your twilio account dashboard. |
 
-### Starting the backend
-
-Once your backend is configured, you can start it by running `npm start` in the `townService` directory (the first time you run it, you will also need to run `npm install`).
-The backend will automatically restart if you change any of the files in the `townService/src` directory.
+After configuring the backend, run `npm install`.
 
 ### Configuring the frontend
 
 Create a `.env` file in the `frontend` directory, with the line: `NEXT_PUBLIC_TOWNS_SERVICE_URL=http://localhost:8081` (if you deploy the towns service to another location, put that location here instead).
 
-For ease of debugging, you might also set the environmental variable `NEXT_PUBLIC_TOWN_DEV_MODE=true`. When set to `true`, the frontend will
-automatically connect to the town with the friendly name "DEBUG_TOWN" (creating one if needed), and will *not* try to connect to the Twilio API. This is useful if you want to quickly test changes to the frontend (reloading the page and re-acquiring video devices can be much slower than re-loading without Twilio).
+For ease of debugging, you might also set the environmental variable `NEXT_PUBLIC_TOWN_DEV_MODE=true`. When set to `true`, the frontend will automatically connect to the town with the friendly name "DEBUG_TOWN" (creating one if needed), and will *not* try to connect to the Twilio API. This is useful if you want to quickly test changes to the frontend (reloading the page and re-acquiring video devices can be much slower than re-loading without Twilio).
 
 You will need to create an Youtube Data API key.
 1. Make sure you have a Google account. If you don't have one yet, you will have to create one.
@@ -72,11 +70,23 @@ Now add the following values to the `.env` file in the `frontend` directory that
 | `NEXT_PUBLIC_TOWN_AWS_SECRET_ACCESS_KEY`| The secret access key you created above.  |
 | `NEXT_PUBLIC_TOWN_AWS_REGION`           | Set as `us-east-1`.                       |
 
+After configuring the frontend, run `npm install`.
+
+Lastly, navigate to the root directory and run `npm install` again.
+
+### Starting the backend
+
+Once your backend is configured, you can start it by running `npm start` in the `townService` directory.
+The backend will automatically restart if you change any of the files in the `townService/src` directory.
+
 ### Running the frontend
 
-In the `frontend` directory, run `npm install` the very first time.
 Then, to run the frontend, run `npm run dev`. After several moments (or minutes, depending on the speed of your machine), a browser will open with the frontend running locally.
 The frontend will automatically re-compile and reload in your browser if you change any files in the `frontend/src` directory.
+
+### Dependencies
+
+Simply running `npm install` in all three folders should install all needed dependencies. However, if you run into errors such that the proper dependencies are not properly installed, run the following commands `npm install aws-sdk` (for installing AWS SDK) and `npm install react-icons` (for installing React icons).
 
 ## Running the app remotely
 
