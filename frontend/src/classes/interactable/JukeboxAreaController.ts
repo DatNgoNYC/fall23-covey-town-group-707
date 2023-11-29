@@ -9,6 +9,7 @@ import {
 import { useEffect, useState } from 'react';
 import TownController from '../TownController';
 import ViewingAreaController, { ViewingAreaEvents } from './ViewingAreaController';
+import PlayerController from '../PlayerController';
 
 export type JukeboxAreaEvents = BaseInteractableEventMap &
   ViewingAreaEvents & {
@@ -127,6 +128,13 @@ export default class JukeboxAreaController extends InteractableAreaController<
     }
 
     return true;
+  }
+
+  updateFrom(newModel: JukeboxAreaModel | ViewingAreaModel, occupants: PlayerController[]): void {
+    if (newModel.type === 'JukeboxArea') {
+      this.occupants = occupants;
+    }
+    this._updateFrom(newModel);
   }
 
   /**

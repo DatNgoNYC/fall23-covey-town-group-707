@@ -15,7 +15,7 @@ import JukeboxAreaController, {
   useJukeboxAreaCurSong,
   useJukeboxAreaQueue,
 } from '../../classes/interactable/JukeboxAreaController';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { JukeboxVote, Song, SongQueueItem } from '../../types/CoveyTownSocket';
 import PlayerController from '../../classes/PlayerController';
 import { useInteractableAreaOccupants } from '../../classes/interactable/InteractableAreaController';
@@ -220,11 +220,6 @@ function JukeboxDashboardView({
 export default function JukeboxDashboard(): JSX.Element {
   const townController = useTownController();
   const { isOpen, toggleModal } = useSuggestionFormModal();
-
-  // Add this useEffect to monitor changes in isOpen
-  useEffect(() => {
-    console.log('isOpen value in JukeboxDashboard:', isOpen);
-  }, [isOpen]);
 
   return (
     <Box>
