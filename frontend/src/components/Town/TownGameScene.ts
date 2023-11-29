@@ -690,8 +690,10 @@ export default class TownGameScene extends Phaser.Scene {
 
   updatePlayerSpriteEmotion(player: PlayerController) {
     //Make sure that each player has sprites
-    const playerEmotionSprite = this.getPlayerEmotion(player);
-    player.gameObjects?.sprite.setTexture('atlas', playerEmotionSprite);
+    if (player.danceMove === undefined) {
+      const playerEmotionSprite = this.getPlayerEmotion(player);
+      player.gameObjects?.sprite.setTexture('atlas', playerEmotionSprite);
+    }
   }
 
   createPlayerSprites(player: PlayerController) {
