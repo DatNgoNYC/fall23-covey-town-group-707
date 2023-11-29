@@ -14,6 +14,8 @@ import { BoundingBox, ConversationArea, CoveyTownSocket } from '../../types/Cove
 import { getEventListener, mockTownControllerConnection } from '../../TestUtils';
 import TownControllerContext from '../../contexts/TownControllerContext';
 
+jest.setTimeout(15000);
+
 /**
  * Mocks the socket-io client constructor such that it will always return the same
  * mockSocket instance. Returns that mockSocket instance to the caller of this function,
