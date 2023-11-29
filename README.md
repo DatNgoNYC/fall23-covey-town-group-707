@@ -57,18 +57,24 @@ You will need to create an Youtube Data API key.
 
 Now that you have generated the key, you have to add it to the `.env` file in the `frontend` directory that you created, with the line `NEXT_PUBLIC_TOWN_YOUTUBE_API_KEY={API_key}`, where you replace `{API_key}` with the API key you created and copied just now.
 
-You will also need to create an AWS api key. Follow this [article](link) to create the aws access key id and the aws secret access key. **Copy** those keys and keep it somewhere for now.
+You will also need to create an AWS access key. First, follow this [article](https://docs.aws.amazon.com/rekognition/latest/dg/setting-up.html) to set up an AWS account and create a user. Then, we need to create an access key for the user you created:
+1. Sign in to the AWS Management Console and open the IAM console at https://console.aws.amazon.com/iam/.
+2. In the navigation pane, choose Users.
+3. Choose the name of the user you created previously.
+4. Choose the Security credentials tab.
+5. Choose Create access key. Then choose Download .csv file to save the access key ID and secret access key to a CSV file on your computer. Store the file in a secure location. You will not have access to the secret access key again after this dialog box closes. After you have downloaded the CSV file, choose Close.
+
 Now add the following values to the `.env` file in the `frontend` directory that you created.
-| Config Value                            | Description                                         |
-| --------------------------------------- | --------------------------------------------------- |
-| `NEXT_PUBLIC_TOWN_AWS_DEV_MODE`         | Set as `false`.                                     |
-| `NEXT_PUBLIC_TOWN_AWS_ACCESS_KEY_ID`    | The access key id of the new API key you created.   |
-| `NEXT_PUBLIC_TOWN_AWS_SECRET_ACCESS_KEY`| The secret for the API key you created.             |
-| `NEXT_PUBLIC_TOWN_AWS_REGION`           | Set as `us-east-1`.                                 |
+| Config Value                            | Description                               |
+| --------------------------------------- | ----------------------------------------- |
+| `NEXT_PUBLIC_TOWN_AWS_DEV_MODE`         | Set as `false`.                           |
+| `NEXT_PUBLIC_TOWN_AWS_ACCESS_KEY_ID`    | The access key id you created above.      |
+| `NEXT_PUBLIC_TOWN_AWS_SECRET_ACCESS_KEY`| The secret access key you created above.  |
+| `NEXT_PUBLIC_TOWN_AWS_REGION`           | Set as `us-east-1`.                       |
 
 ### Running the frontend
 
-In the `frontend` directory, run `npm install` and `npm install aws-sdk` the very first time.
+In the `frontend` directory, run `npm install` the very first time.
 Then, to run the frontend, run `npm run dev`. After several moments (or minutes, depending on the speed of your machine), a browser will open with the frontend running locally.
 The frontend will automatically re-compile and reload in your browser if you change any files in the `frontend/src` directory.
 
