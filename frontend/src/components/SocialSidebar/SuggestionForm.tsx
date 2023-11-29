@@ -31,29 +31,42 @@ type ResultsContainerProps = {
 type ResultCardProps = {
   song: Song;
   onClickHandler: (song: Song) => void;
+  selected: string;
+  setSelected: (videoId: string) => void;
 };
 
-function ResultCard({ song, onClickHandler }: ResultCardProps): JSX.Element {
-  const resultCardStyles: React.CSSProperties = {
-    display: 'flex',
+interface UserSelection {
+  selected: string;
+  setSelected: (videoId: string) => void;
+}
 
-    maxHeight: '150px',
-    flexDirection: 'row',
-    maxWidth: '100%',
-    overflow: 'hidden',
+export function useUserSelection(): UserSelection {
+  const [selected, setSelectedVideo] = useState('undefined');
+
+  const setSelected = (videoId: string) => {
+    setSelectedVideo(videoId);
   };
 
+  return {
+    selected,
+    setSelected,
+  };
+}
+
+function ResultCard({ song, onClickHandler, selected, setSelected }: ResultCardProps): JSX.Element {
   return (
     <Flex
       onClick={() => {
         onClickHandler(song);
+        setSelected(song.videoId);
       }}
       direction='row'
       align='center'
       maxW='100%'
-      maxH='150px' // Set the maximum height for the ResultCard
-      overflow='hidden' // Hide overflow content
-    >
+      maxH='150px'
+      overflow='hidden'
+      borderWidth={selected === song.videoId ? '2px' : '0px'}
+      borderColor='yellow.500'>
       <Image
         maxW='50%'
         minW='50%'
@@ -72,6 +85,8 @@ function ResultCard({ song, onClickHandler }: ResultCardProps): JSX.Element {
 }
 
 function ResultsContainer({ songs, onClickHandler }: ResultsContainerProps): JSX.Element {
+  const { selected, setSelected } = useUserSelection();
+
   const resultsContainerStyling: React.CSSProperties = {
     gap: '20px',
     overflowY: 'scroll',
@@ -80,7 +95,17 @@ function ResultsContainer({ songs, onClickHandler }: ResultsContainerProps): JSX
   return (
     <Stack style={resultsContainerStyling}>
       {songs.map(song => {
-        return <ResultCard key={song.videoId} song={song} onClickHandler={onClickHandler} />;
+        return (
+          <ResultCard
+            key={song.videoId}
+            song={song}
+            onClickHandler={onClickHandler}
+            setSelected={(songId: string) => {
+              setSelected(songId);
+            }}
+            selected={selected}
+          />
+        );
       })}
     </Stack>
   );
