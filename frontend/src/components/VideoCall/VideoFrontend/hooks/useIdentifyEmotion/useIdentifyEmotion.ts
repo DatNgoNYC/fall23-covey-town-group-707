@@ -83,7 +83,7 @@ function emotionDetectionRequest(
  * and then re-rendered whenever the media stream changes. The video frame is taken
  * after every EMOTION_API_REQUEST_DELAY milliseconds using a timeout.
  */
-export function IdentifyEmotion() {
+export function useIdentifyEmotion() {
   const debugAWS = process.env.NEXT_PUBLIC_TOWN_AWS_DEV_MODE;
 
   const townController: TownController = useTownController();
